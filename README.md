@@ -1,6 +1,6 @@
 # Factory Seat Companion for SimHub
 
-Phase 1 is implemented: a read-only .NET 8 core and diagnostic CLI that compare a **provisional** briefing with LMU menu settings. It includes synthetic fixtures, automated tests, freshness checks, connection recovery, and configurable polling. A SimHub plugin/dashboard is **not implemented yet**.
+Phase 1 is implemented: a read-only .NET 8 core and diagnostic CLI that compare a **provisional** briefing with LMU menu settings. It includes synthetic fixtures, automated tests, freshness checks, connection recovery, and configurable polling. Phase 2 has started: a SimHub plugin and Dash Studio overlay are scaffolded but not yet tested in SimHub. See [SimHub plugin](docs/simhub-plugin.md).
 
 The real Factory Seat `briefing.json` contract is pending. This application does not read career saves, infer a next round from them, or write into Factory Seat or LMU. Its only game requests are loopback HTTP GETs. No Factory Seat assemblies or assets are required.
 
