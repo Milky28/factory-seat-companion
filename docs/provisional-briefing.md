@@ -10,7 +10,7 @@
 | careerName, eventName, roundNumber | Required header metadata, round number positive |
 | state | Exactly Upcoming or Armed for setup validation; Completed/Skipped not accepted |
 | trackFolder, layoutFile | Factory Seat catalog identifiers; never substitute a display name |
-| raceMinutes | Positive minutes, compared with the unique RACE scheduled session lengthTime |
+| raceMinutes | Positive minutes, compared with the unique RACE scheduled session lengthTime when SESSSET_Finish_Criteria is "Time" |
 | fuelMultiplier, tireMultiplier | Nonnegative physical factors; zero can represent Off |
 | timeScale | Positive physical factor |
 | startTime | HH:mm or supported 12-hour readable time |
