@@ -1,0 +1,27 @@
+{
+  "contract": "factory-seat-companion-provisional",
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-09T12:00:00Z",
+  "careerName": "Example GT3 career (synthetic fixture)",
+  "eventName": "Bahrain endurance test",
+  "roundNumber": 3,
+  "state": "Upcoming",
+  "trackFolder": "BahrainWEC_2023",
+  "layoutFile": "layoutEndurance",
+  "raceMinutes": 360,
+  "fuelMultiplier": 1,
+  "tireMultiplier": 2,
+  "timeScale": 4,
+  "startTime": "11:15",
+  "startTimeRequired": true,
+  "car": {
+    "folder": "BMW_M4_LMGT3_2023",
+    "class": "GT3",
+    "number": "31",
+    "permittedNumbers": [],
+    "anyNumber": false,
+    "customTeam": false,
+    "team": "Team WRT",
+    "teamRequired": true
+  }
+}

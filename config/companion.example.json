@@ -1,0 +1,12 @@
+{
+  "pollSeconds": 1,
+  "requestTimeoutSeconds": 2,
+  "briefingMaxAgeMinutes": 120,
+  "snapshotMaxAgeSeconds": 10,
+  "navigationStatePointer": "/state",
+  "safeSetupStates": [],
+  "layoutMappings": [
+    { "trackFolder": "BahrainWEC_2023", "sceneDescription": "BAHRAINWEC_ENDCE", "layoutFile": "layoutEndurance" },
+    { "trackFolder": "BahrainWEC_2023", "sceneDescription": "BAHRAINWEC_OUTER", "layoutFile": "layoutOuter" }
+  ]
+}

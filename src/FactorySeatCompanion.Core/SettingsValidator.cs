@@ -1,0 +1,81 @@
+using System.Globalization;
+
+namespace FactorySeatCompanion.Core;
+
+public sealed class SettingsValidator(CompanionOptions options)
+{
+    public ValidationReport Validate(BriefingRead read, LmuSnapshot live, DateTimeOffset now)
+    {
+        var b = read.Briefing;
+        var car = b?.Car;
+        var checks = new List<SettingCheck>();
+        var lmuStatus = live.Status;
+        if (now - live.ObservedAt > TimeSpan.FromSeconds(options.SnapshotMaxAgeSeconds) || live.ObservedAt > now.AddSeconds(1))
+            lmuStatus = SourceStatus.Stale;
+        bool valid = read.Status == SourceStatus.Available && lmuStatus == SourceStatus.Available;
+        void Add(string id, string label, string? required, string? current, bool? matches, bool notApplicable = false, string? reason = null)
+        {
+            var status = !valid ? CheckStatus.Unknown : notApplicable ? CheckStatus.NotApplicable :
+                matches is null ? CheckStatus.Unknown : matches.Value ? CheckStatus.Match : CheckStatus.Mismatch;
+            checks.Add(new(id, label, required ?? "Unknown", current ?? "Unknown", status,
+                !valid ? $"Sources not current: briefing={read.Status}, LMU={lmuStatus}." : reason));
+        }
+        static bool Present(string? s) => !string.IsNullOrWhiteSpace(s);
+        static bool? Same(string? a, string? c) => Present(a) && Present(c)
+            ? string.Equals(a!.Trim(), c!.Trim(), StringComparison.OrdinalIgnoreCase) : null;
+        static string? Display(double? value) => value?.ToString("0.###", CultureInfo.InvariantCulture);
+        void Number(string id, string label, double? required, double? current, bool positive = false)
+        {
+            bool Sane(double? v) => v is { } n && double.IsFinite(n) && (positive ? n > 0 : n >= 0);
+            Add(id, label, Display(required), Display(current), Sane(required) && Sane(current)
+                ? Math.Abs(required!.Value - current!.Value) <= 0.001 : null);
+        }
+
+        Add("circuit", "Circuit", b?.TrackFolder, live.TrackFolder, Same(b?.TrackFolder, live.TrackFolder));
+        var layouts = options.LayoutMappings.Where(m => Same(m.TrackFolder, live.TrackFolder) == true &&
+            Same(m.SceneDescription, live.SceneDescription) == true).ToArray();
+        var mappedLayout = layouts.Length == 1 ? layouts[0].LayoutFile : null;
+        bool? layoutMatch = !Present(b?.LayoutFile) || !Present(b?.TrackFolder) || !Present(live.TrackFolder) ? null :
+            Same(b?.TrackFolder, live.TrackFolder) == false ? false : Same(b?.LayoutFile, mappedLayout);
+        Add("layout", "Exact layout", b?.LayoutFile, mappedLayout ?? live.SceneDescription, layoutMatch,
+            reason: mappedLayout is null ? "No unique cmpName + sceneDesc mapping. Layout display names are not used." : null);
+        Add("carModel", "Car model", car?.Folder, live.CarFolder, Same(car?.Folder, live.CarFolder));
+        bool? classMatch = Present(car?.Class) && live.Classes is { Length: > 0 }
+            ? live.Classes.Contains(car!.Class!.Trim(), StringComparer.OrdinalIgnoreCase) : null;
+        Add("carClass", "Car class", car?.Class, live.Classes is null ? null : string.Join(", ", live.Classes), classMatch);
+
+        bool unrestrictedNumber = car?.AnyNumber == true || car?.CustomTeam == true;
+        string[]? numbers = Present(car?.Number) ? [car!.Number!] : car?.PermittedNumbers;
+        static string CleanNumber(string s) => s.Trim().TrimStart('#').Trim();
+        bool? numberMatch = numbers is { Length: > 0 } && numbers.All(Present) && Present(live.Number)
+            ? numbers.Select(CleanNumber).Contains(CleanNumber(live.Number!), StringComparer.Ordinal) : null;
+        // Contradictory omission/identity policies are never a green result.
+        bool conflictingNumber = unrestrictedNumber && numbers is { Length: > 0 };
+        Add("carNumber", "Car number", unrestrictedNumber ? "Any number" : numbers is null ? null : string.Join(" / ", numbers),
+            live.Number, conflictingNumber ? null : numberMatch, unrestrictedNumber && !conflictingNumber,
+            conflictingNumber ? "Conflicting number policy." : null);
+        Add("team", "Team", car?.TeamRequired == false ? "Any team" : car?.Team, live.Team,
+            car?.TeamRequired == true ? Same(car.Team, live.Team) : null, car?.TeamRequired == false);
+        if (car?.CustomTeam != false)
+            Add("customTeam", "Custom team identity", car?.CustomTeam == true ? "Race Control custom team" : null,
+                null, null, reason: "REST custom-team marker has not been established; matching a team name is insufficient.");
+        if (Present(car?.LiveryName))
+            Add("livery", "Livery", car?.LiveryName, live.LiveryName, Same(car?.LiveryName, live.LiveryName));
+        Number("duration", "Race duration (min)", b?.RaceMinutes, live.RaceMinutes, true);
+        Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier);
+        Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier);
+        Number("timeScale", "Time scale", b?.TimeScale, live.TimeScale, true);
+        Add("startTime", "Race start time", b?.StartTimeRequired == false ? "Default / unrestricted" : b?.StartTime,
+            live.StartTime, b?.StartTimeRequired == true ? Same(Normalization.Time(b.StartTime), Normalization.Time(live.StartTime)) : null,
+            b?.StartTimeRequired == false && !Present(b.StartTime),
+            b?.StartTimeRequired == false && Present(b.StartTime) ? "Conflicting start-time policy." : null);
+
+        bool metadataValid = Present(b?.CareerName) && Present(b?.EventName) && b?.RoundNumber > 0;
+        bool ready = valid && metadataValid && checks.All(c => c.Status is CheckStatus.Match or CheckStatus.NotApplicable);
+        var diagnostics = live.Diagnostics.Concat([read.Diagnostic]).ToList();
+        if (!metadataValid) diagnostics.Add("Briefing career/event/round metadata missing or invalid.");
+        return new(b?.CareerName ?? "Unknown career", b?.EventName ?? "Unknown event", b?.RoundNumber, ready,
+            ready ? "READY TO RACE" : checks.Any(c => c.Status == CheckStatus.Mismatch) ? "SETUP MISMATCH" : "NOT VERIFIED",
+            read.Status, lmuStatus, live.ObservedAt, checks, diagnostics);
+    }
+}

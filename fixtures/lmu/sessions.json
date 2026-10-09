@@ -1,0 +1,7 @@
+{
+  "SESSSET_Fuel_Usage": { "currentValue": 1, "stringValue": "Realistic" },
+  "SESSSET_Tire_Wear": { "currentValue": 2, "stringValue": "2x" },
+  "SESSSET_race_timescale": { "currentValue": 4, "stringValue": "X4" },
+  "SESSSET_race_starting_time": { "currentValue": 675, "stringValue": "11:15 AM" },
+  "SESSSET_race_time": { "currentValue": 100, "stringValue": "100%" }
+}
