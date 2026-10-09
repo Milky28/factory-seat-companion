@@ -9,10 +9,9 @@ $ErrorActionPreference = 'Stop'
 Push-Location (Split-Path -Parent $PSScriptRoot)
 try {
     if (-not (Test-Path (Join-Path $SimHubPath 'SimHub.Plugins.dll'))) { throw "SimHub.Plugins.dll not found in $SimHubPath. Pass -SimHubPath." }
-    if (-not $SimHubPath.EndsWith('\')) { $SimHubPath += '\' }
     $out = 'artifacts/simhub'
     if (Test-Path $out) { Remove-Item $out -Recurse -Force }
-    dotnet build src/FactorySeatCompanion.SimHub -c Release -o $out "/p:SimHubPath=$SimHubPath"
+    dotnet build src/FactorySeatCompanion.SimHub -c Release -o $out "/p:SimHubPath=$($SimHubPath.TrimEnd('\'))"
     if ($LASTEXITCODE -ne 0) { throw 'Plugin build failed.' }
     dotnet publish src/FactorySeatCompanion.Cli -c Release -o "$out/FactorySeatCompanion"
     if ($LASTEXITCODE -ne 0) { throw 'CLI publish failed.' }
