@@ -44,6 +44,19 @@ Test("Duration comes from RACE lengthTime, never percentage", () =>
     var parsed = LmuJsonParser.Parse(sessions, "{}", setup, now);
     Assert(parsed.RaceMinutes is null && !Report(parsed).ReadyToRace);
 });
+Test("Duration is unknown unless the finish criteria is Time", () =>
+{
+    // Live LMU: "% Track Time" at 10% showed 2h24 in the menu while RACE lengthTime was 48.
+    var percent = Change(sessions, n => n["SESSSET_Finish_Criteria"]!["stringValue"] = "% Track Time");
+    var race = "{\"scheduledSessions\":[{\"name\":\"RACE\",\"lengthTime\":48}]}";
+    var parsed = LmuJsonParser.Parse(percent, race, setup, now);
+    Assert(parsed.RaceMinutes is null && parsed.Diagnostics.Any(d => d.Contains("SESSSET_Finish_Criteria")));
+    Status(Report(parsed), "duration", CheckStatus.Unknown);
+    var missing = Change(sessions, n => n.AsObject().Remove("SESSSET_Finish_Criteria"));
+    Assert(LmuJsonParser.Parse(missing, durations, setup, now).RaceMinutes is null);
+    var timed = Change(sessions, n => n["SESSSET_Finish_Criteria"]!["stringValue"] = " time ");
+    Assert(LmuJsonParser.Parse(timed, durations, setup, now).RaceMinutes == 360);
+});
 Test("12/24-hour start-time normalization", () =>
 {
     Assert(Normalization.Time("11:15 AM") == "11:15");
@@ -185,7 +198,8 @@ Test("Stale observation clears matches", () => Assert(!Report(live with { Observ
 Test("Endpoint failure clears only affected observations", () =>
 {
     var r = Report(LmuJsonParser.Parse("{", durations, setup, now));
-    Status(r, "fuel", CheckStatus.Unknown); Status(r, "duration", CheckStatus.Match); Status(r, "carModel", CheckStatus.Match);
+    // Duration needs SESSSET_Finish_Criteria from the sessions endpoint, so it is affected too.
+    Status(r, "fuel", CheckStatus.Unknown); Status(r, "duration", CheckStatus.Unknown); Status(r, "carModel", CheckStatus.Match);
     Assert(!r.ReadyToRace);
 });
 Test("Duplicate RACE sessions are ambiguous", () =>
@@ -230,6 +244,18 @@ Test("Unrecognized readable labels are diagnosed, not guessed", () =>
     var parsed = LmuJsonParser.Parse(json, durations, setup, now);
     Assert(parsed.FuelMultiplier is null);
     Assert(parsed.Diagnostics.Any(d => d.Contains("unsupported readable value")));
+});
+Test("Live navigation shape: object state and loadingStatus.loading", () =>
+{
+    var liveNav = Fixture("lmu/navigation.live-shape.synthetic.json");
+    var gameState = options with { NavigationStatePointer = "/state/gameState", SafeSetupStates = ["GSTATE_SETUP"] };
+    var objectPointer = NavigationPolicy.Evaluate(liveNav, options with { NavigationStatePointer = "/state", SafeSetupStates = ["GSTATE_SETUP"] });
+    Assert(!objectPointer.Safe && objectPointer.Diagnostic.Contains("single value"));
+    Assert(!NavigationPolicy.Evaluate(liveNav, new CompanionOptions { NavigationStatePointer = "/state/gameState" }).Safe);
+    Assert(NavigationPolicy.Evaluate(liveNav, gameState).Safe);
+    Assert(!NavigationPolicy.Evaluate(Change(liveNav, n => n["loadingStatus"]!["loading"] = true), gameState).Safe);
+    Assert(!NavigationPolicy.Evaluate(Change(liveNav, n => n["loadingStatus"]!["loading"] = 1), gameState).Safe);
+    Assert(!NavigationPolicy.Evaluate(Change(liveNav, n => n["state"]!["gameState"] = "GSTATE_DYN"), gameState).Safe);
 });
 Test("JSON-pointer nested state supported", () =>
     Assert(NavigationPolicy.Evaluate("{\"navigation\":{\"route\":\"SYNTHETIC_SETUP_ONLY\"}}", options with { NavigationStatePointer = "/navigation/route" }).Safe));
@@ -341,7 +367,7 @@ AsyncTest("Failed endpoint still allows independent checks", async () =>
         ? new HttpResponseMessage(HttpStatusCode.NotFound) : Endpoint(r, navigation)));
     using var http = new HttpClient(handler);
     var parsed = await new LmuApiClient(http, options).PollAsync();
-    Assert(parsed.FuelMultiplier is null && parsed.RaceMinutes == 360 && parsed.CarFolder == live.CarFolder);
+    Assert(parsed.FuelMultiplier is null && parsed.RaceMinutes is null && parsed.CarFolder == live.CarFolder);
 });
 AsyncTest("Oversized HTTP response becomes unavailable evidence", async () =>
 {

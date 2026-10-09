@@ -146,18 +146,24 @@ public static class LmuJsonParser
         }
 
         double? raceMinutes = null;
+        // Live capture: with "% Track Time" the menu showed 2h24 while RACE lengthTime was 48
+        // (Bahrain) or 24 (Road Atlanta). lengthTime matched the menu only when the criteria was "Time".
+        var finishCriteria = Setting("SESSSET_Finish_Criteria")?.Trim();
+        bool timedRace = string.Equals(finishCriteria, "Time", StringComparison.OrdinalIgnoreCase);
+        if (finishCriteria is not null && !timedRace)
+            diagnostics.Add($"SESSSET_Finish_Criteria '{finishCriteria[..Math.Min(finishCriteria.Length, 128)]}': RACE lengthTime is only minutes when it is 'Time'.");
         var scheduled = durations is null ? null : JsonRead.Property(durations.RootElement, "scheduledSessions");
         if (scheduled is { ValueKind: JsonValueKind.Array } array)
         {
             var races = array.EnumerateArray().Where(s => string.Equals(
                 JsonRead.Text(JsonRead.Property(s, "name"))?.Trim(), "RACE", StringComparison.OrdinalIgnoreCase)).ToArray();
-            if (races.Length == 1)
+            if (races.Length == 1 && timedRace)
             {
                 raceMinutes = Normalization.Number(JsonRead.Text(JsonRead.Property(races[0], "lengthTime")));
                 if (raceMinutes <= 0) raceMinutes = null;
             }
         }
-        if (raceMinutes is null) diagnostics.Add("RACE lengthTime missing, invalid or ambiguous; SESSSET_race_time is never used.");
+        if (raceMinutes is null && timedRace) diagnostics.Add("RACE lengthTime missing, invalid or ambiguous; SESSSET_race_time is never used.");
 
         var track = setup is null ? null : JsonRead.Property(setup.RootElement, "trackInfo");
         var car = setup is null ? null : JsonRead.Property(setup.RootElement, "selectedCar");

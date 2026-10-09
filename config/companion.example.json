@@ -3,7 +3,7 @@
   "requestTimeoutSeconds": 2,
   "briefingMaxAgeMinutes": 120,
   "snapshotMaxAgeSeconds": 10,
-  "navigationStatePointer": "/state",
+  "navigationStatePointer": "/state/gameState",
   "safeSetupStates": [],
   "layoutMappings": [
     { "trackFolder": "BahrainWEC_2023", "sceneDescription": "BAHRAINWEC_ENDCE", "layoutFile": "layoutEndurance" },
