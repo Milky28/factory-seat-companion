@@ -27,7 +27,7 @@ public sealed class DashboardRow
 // a missing, stale, future-dated or overflowing report is never READY TO RACE.
 public sealed class DashboardState
 {
-    // Eleven baseline rows plus the optional custom-team and livery rows.
+    // Eleven baseline rows plus the optional custom-team row, with one spare.
     public const int RowSlots = 13;
 
     private DashboardState(bool ready, string overall, string headline, string mode, string briefing, string lmu,

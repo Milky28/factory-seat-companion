@@ -39,7 +39,7 @@ All are prefixed `FactorySeatPlugin.`
 
 There is no settings screen yet (Phase 3). SimHub stores the plugin's common settings as `GeneralSettings` JSON in its plugin data folder after the first run; edit it with SimHub closed:
 
-- `BriefingPath`: a briefing file to use instead of the CLI's default (Factory Seat's `%AppData%\LmuCareer\briefing.json`, once the real-format reader is on main).
+- `BriefingPath`: a briefing file to use instead of the CLI's default (Factory Seat's `%AppData%\LmuCareer\briefing.json`).
 - `ConfigPath`: companion configuration, as for the CLI.
 - `FixturesPath`: synthetic fixture folder, to test the overlay without LMU. Shows `Mode: Fixture`.
 - `CliPath`: defaults to `FactorySeatCompanion\FactorySeatCompanion.Cli.exe` next to the plugin DLL.

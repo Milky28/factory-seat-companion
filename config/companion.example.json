@@ -1,7 +1,6 @@
 {
   "pollSeconds": 1,
   "requestTimeoutSeconds": 2,
-  "briefingMaxAgeMinutes": 120,
   "snapshotMaxAgeSeconds": 10,
   "navigationStatePointer": "/state/gameState",
   "safeSetupStates": [],

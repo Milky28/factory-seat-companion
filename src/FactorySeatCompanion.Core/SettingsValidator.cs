@@ -44,31 +44,26 @@ public sealed class SettingsValidator(CompanionOptions options)
             ? live.Classes.Contains(car!.Class!.Trim(), StringComparer.OrdinalIgnoreCase) : null;
         Add("carClass", "Car class", car?.Class, live.Classes is null ? null : string.Join(", ", live.Classes), classMatch);
 
+        // Custom-team cars may use any number; a null number means any livery until the first race decides.
         bool unrestrictedNumber = car?.AnyNumber == true || car?.CustomTeam == true;
-        string[]? numbers = Present(car?.Number) ? [car!.Number!] : car?.PermittedNumbers;
         static string CleanNumber(string s) => s.Trim().TrimStart('#').Trim();
-        bool? numberMatch = numbers is { Length: > 0 } && numbers.All(Present) && Present(live.Number)
-            ? numbers.Select(CleanNumber).Contains(CleanNumber(live.Number!), StringComparer.Ordinal) : null;
-        // Contradictory omission/identity policies are never a green result.
-        bool conflictingNumber = unrestrictedNumber && numbers is { Length: > 0 };
-        Add("carNumber", "Car number", unrestrictedNumber ? "Any number" : numbers is null ? null : string.Join(" / ", numbers),
-            live.Number, conflictingNumber ? null : numberMatch, unrestrictedNumber && !conflictingNumber,
-            conflictingNumber ? "Conflicting number policy." : null);
-        Add("team", "Team", car?.TeamRequired == false ? "Any team" : car?.Team, live.Team,
-            car?.TeamRequired == true ? Same(car.Team, live.Team) : null, car?.TeamRequired == false);
+        bool? numberMatch = Present(car?.Number) && Present(live.Number)
+            ? CleanNumber(car!.Number!) == CleanNumber(live.Number!) : null;
+        Add("carNumber", "Car number", unrestrictedNumber ? "Any number" : car?.Number,
+            live.Number, numberMatch, unrestrictedNumber);
+        // Factory Seat names a team only when the round fixes one.
+        Add("team", "Team", car is null ? null : car.Team ?? "Any team", live.Team,
+            Same(car?.Team, live.Team), car is not null && car.Team is null);
         if (car?.CustomTeam != false)
             Add("customTeam", "Custom team identity", car?.CustomTeam == true ? "Race Control custom team" : null,
                 null, null, reason: "REST custom-team marker has not been established; matching a team name is insufficient.");
-        if (Present(car?.LiveryName))
-            Add("livery", "Livery", car?.LiveryName, live.LiveryName, Same(car?.LiveryName, live.LiveryName));
         Number("duration", "Race duration (min)", b?.RaceMinutes, live.RaceMinutes, true);
         Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier);
         Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier);
         Number("timeScale", "Time scale", b?.TimeScale, live.TimeScale, true);
-        Add("startTime", "Race start time", b?.StartTimeRequired == false ? "Default / unrestricted" : b?.StartTime,
-            live.StartTime, b?.StartTimeRequired == true ? Same(Normalization.Time(b.StartTime), Normalization.Time(live.StartTime)) : null,
-            b?.StartTimeRequired == false && !Present(b.StartTime),
-            b?.StartTimeRequired == false && Present(b.StartTime) ? "Conflicting start-time policy." : null);
+        Add("startTime", "Race start time", b?.StartTimeDefault == true ? "LMU default" : b?.StartTime,
+            live.StartTime, b?.StartTimeDefault == false ? Same(Normalization.Time(b.StartTime), Normalization.Time(live.StartTime)) : null,
+            b?.StartTimeDefault == true);
 
         bool metadataValid = Present(b?.CareerName) && Present(b?.EventName) && b?.RoundNumber > 0;
         bool ready = valid && metadataValid && checks.All(c => c.Status is CheckStatus.Match or CheckStatus.NotApplicable);

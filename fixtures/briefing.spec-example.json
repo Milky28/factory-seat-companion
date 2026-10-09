@@ -1,0 +1,46 @@
+{
+  "format": "factory-seat-briefing",
+  "version": 1,
+  "app": "1.1.0",
+  "writtenAt": "2026-10-09T15:08:50-04:00",
+  "open": true,
+  "career": {
+    "id": "d2481b30-5814-49b9-8539-544ffecf9b00",
+    "name": "Road to Hypercar",
+    "season": 1,
+    "carClass": "GT3",
+    "reputation": 0,
+    "team": "",
+    "targetPosition": 6
+  },
+  "round": {
+    "number": 1,
+    "of": 8,
+    "state": "Armed",
+    "armedAt": "2026-10-09T09:12:52-04:00",
+    "guest": false,
+    "event": { "id": "qatar-1812", "name": "Qatar 1812 km", "realHours": 10, "pointsWeight": 1.5 },
+    "track": {
+      "folder": "Qatar_2024",
+      "name": "Lusail International Circuit",
+      "layoutFile": "layoutQatar",
+      "layoutName": "Grand Prix",
+      "trackCourse": "Lusail International Circuit"
+    },
+    "car": {
+      "class": "GT3",
+      "folder": "Ford_Mustang_GT3_2024",
+      "carTypes": ["Ford Mustang LMGT3"],
+      "name": "Ford Mustang",
+      "number": null,
+      "customTeam": false,
+      "team": null,
+      "liveryNumbers": []
+    },
+    "settings": { "raceMinutes": 30, "fuelUsage": 3, "tyreWear": 3, "timeScale": 20, "startTime": "11:00" },
+    "pitPlan": { "stints": 2, "stintMinutes": 15, "stops": 1 }
+  },
+  "sponsors": [
+    { "name": "Motul", "kind": "Podiums", "objective": "a podium", "status": "InProgress", "done": 0, "needed": 1, "reward": 3 }
+  ]
+}
