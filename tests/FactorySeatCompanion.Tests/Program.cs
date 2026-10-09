@@ -458,6 +458,40 @@ Test("Dashboard mismatch is shown, not ready", () =>
     Assert(!state.ReadyToRace && state.OverallStatus == "SETUP MISMATCH");
     Assert(state.Rows.Single(r => r.Id == "fuel").Status == "Mismatch");
 });
+Test("Mismatched rows carry a one-line fix hint in LMU's wording", () =>
+{
+    var report = Report(live with { FuelMultiplier = 2, TireMultiplier = 1, TimeScale = 1, StartTime = "09:00", Number = "46",
+        TrackFolder = "Qatar_2024", CarFolder = "Ford_Mustang_GT3_2024" });
+    string Hint(string id) => report.Checks.Single(c => c.Id == id).Hint ?? "(none)";
+    Assert(Hint("fuel") == "Set Fuel Usage to Realistic", Hint("fuel"));
+    Assert(Hint("tyres") == "Set Tyre Wear to X2", Hint("tyres"));
+    Assert(Hint("timeScale") == "Set Time Scale to X4", Hint("timeScale"));
+    Assert(Hint("startTime") == "Set Start Time to 11:15 AM", Hint("startTime"));
+    Assert(Hint("carNumber") == "Select car #31", Hint("carNumber"));
+    Assert(Hint("circuit") == "Select Bahrain International Circuit", Hint("circuit"));
+    Assert(Hint("layout") == "Select the Endurance Circuit layout", Hint("layout"));
+    Assert(Hint("carModel") == "Select the BMW M4 LMGT3", Hint("carModel"));
+    Assert(report.Checks.Where(c => c.Status != CheckStatus.Mismatch).All(c => c.Hint is null));
+    Assert(Report().Checks.All(c => c.Hint is null));
+    var normal = Report(requirement: briefing.Briefing! with { TimeScale = 1, TireMultiplier = 3 });
+    Assert(normal.Checks.Single(c => c.Id == "timeScale").Hint == "Set Time Scale to Normal");
+    Assert(normal.Checks.Single(c => c.Id == "tyres").Hint == "Set Tyre Wear to X3");
+    // Not current sources give Unknown rows, never hints.
+    Assert(Report(live with { FuelMultiplier = 2, ObservedAt = now.AddMinutes(-1) }).Checks.All(c => c.Hint is null));
+});
+Test("Dashboard shows NotApplicable as Any and lists fix hints", () =>
+{
+    var any = Dash(Report(requirement: briefing.Briefing! with { Car = briefing.Briefing!.Car! with { AnyNumber = true, Team = null } }));
+    var number = any.Rows.Single(r => r.Id == "carNumber");
+    Assert(any.ReadyToRace && number.Status == "NotApplicable" && number.StatusText == "Any", number.StatusText);
+    Assert(any.Rows.Single(r => r.Id == "fuel").StatusText == "Match" && any.Hints == "");
+    Assert(SettingCheck.DisplayStatus(CheckStatus.NotApplicable) == "Any");
+    var mismatch = Dash(Report(live with { FuelMultiplier = 2, TimeScale = 1 }));
+    Assert(mismatch.Rows.Single(r => r.Id == "fuel").Hint == "Set Fuel Usage to Realistic");
+    Assert(mismatch.Hints == "Set Fuel Usage to Realistic \u00B7 Set Time Scale to X4", mismatch.Hints);
+    var stale = Dash(Report(live with { FuelMultiplier = 2 }), 11);
+    Assert(stale.Hints == "" && stale.Rows.All(r => r.Hint == ""));
+});
 Test("Stale or future report is never ready", () =>
 {
     var stale = Dash(Report(), 11);

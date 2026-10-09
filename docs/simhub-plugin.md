@@ -33,7 +33,8 @@ All are prefixed `FactorySeatPlugin.`
 | `ReportAgeSeconds` | Age of the report's observation. |
 | `BridgeStatus` | `Running`, or why the companion is not running. |
 | `Diagnostics` | Report diagnostics joined with ` \| `. |
-| `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `Reason` | One slot per check row in report order. Unused slots have `Visible` false. |
+| `Hints` | Fix hints of every mismatched row, joined with ` · `. Empty when nothing mismatches or the report is stale. |
+| `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any`; `Hint` is set only on a fresh `Mismatch` row. |
 
 ## Settings
 

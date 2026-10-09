@@ -18,6 +18,9 @@ public sealed record RoundRequirement
     public bool? Guest { get; init; }
     public string? TrackFolder { get; init; }
     public string? LayoutFile { get; init; }
+    // Display names, used only to word fix hints. Matching always uses the identifiers.
+    public string? TrackName { get; init; }
+    public string? LayoutName { get; init; }
     public double? RaceMinutes { get; init; }
     public double? FuelMultiplier { get; init; }
     public double? TireMultiplier { get; init; }
@@ -32,6 +35,8 @@ public sealed record CarRequirement
 {
     // Effective car for this round, including guest drives; not necessarily the season car.
     public string? Folder { get; init; }
+    // Display name for fix hints (first car type, else the short name).
+    public string? Name { get; init; }
     public string? Class { get; init; }
     public string? Number { get; init; }
     // true: number was explicitly null, so any livery will do and the first race decides.
@@ -61,8 +66,13 @@ public sealed record LmuSnapshot
     public string[] Diagnostics { get; init; } = [];
 }
 
+// Hint: one line telling the driver what to change in LMU; set only on Mismatch rows.
 public sealed record SettingCheck(string Id, string Label, string Required, string Current,
-    CheckStatus Status, string? Reason = null);
+    CheckStatus Status, string? Reason = null, string? Hint = null)
+{
+    // NotApplicable rows are shown as "Any", the briefing's own wording. JSON keeps the enum name.
+    public static string DisplayStatus(CheckStatus status) => status == CheckStatus.NotApplicable ? "Any" : status.ToString();
+}
 public sealed record ValidationReport(string Career, string Event, int? Round, bool ReadyToRace,
     string OverallStatus, SourceStatus BriefingStatus, SourceStatus LmuStatus,
     DateTimeOffset ObservedAt, IReadOnlyList<SettingCheck> Checks, IReadOnlyList<string> Diagnostics);

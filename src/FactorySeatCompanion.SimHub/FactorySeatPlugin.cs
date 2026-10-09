@@ -38,6 +38,7 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
         this.AttachDelegate("ReportAgeSeconds", () => State().ReportAgeSeconds);
         this.AttachDelegate("BridgeStatus", () => State().BridgeStatus);
         this.AttachDelegate("Diagnostics", () => State().Diagnostics);
+        this.AttachDelegate("Hints", () => State().Hints);
         for (int i = 0; i < DashboardState.RowSlots; i++)
         {
             int slot = i;
@@ -48,6 +49,8 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
             this.AttachDelegate(prefix + "Required", () => State().Rows[slot].Required);
             this.AttachDelegate(prefix + "Current", () => State().Rows[slot].Current);
             this.AttachDelegate(prefix + "Status", () => State().Rows[slot].Status);
+            this.AttachDelegate(prefix + "StatusText", () => State().Rows[slot].StatusText);
+            this.AttachDelegate(prefix + "Hint", () => State().Rows[slot].Hint);
             this.AttachDelegate(prefix + "Reason", () => State().Rows[slot].Reason);
         }
         bridge.Start();

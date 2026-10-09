@@ -13,36 +13,45 @@ public sealed class SettingsValidator(CompanionOptions options)
         if (now - live.ObservedAt > TimeSpan.FromSeconds(options.SnapshotMaxAgeSeconds) || live.ObservedAt > now.AddSeconds(1))
             lmuStatus = SourceStatus.Stale;
         bool valid = read.Status == SourceStatus.Available && lmuStatus == SourceStatus.Available;
-        void Add(string id, string label, string? required, string? current, bool? matches, bool notApplicable = false, string? reason = null)
+        void Add(string id, string label, string? required, string? current, bool? matches, bool notApplicable = false,
+            string? reason = null, string? hint = null)
         {
             var status = !valid ? CheckStatus.Unknown : notApplicable ? CheckStatus.NotApplicable :
                 matches is null ? CheckStatus.Unknown : matches.Value ? CheckStatus.Match : CheckStatus.Mismatch;
             checks.Add(new(id, label, required ?? "Unknown", current ?? "Unknown", status,
-                !valid ? $"Sources not current: briefing={read.Status}, LMU={lmuStatus}." : reason));
+                !valid ? $"Sources not current: briefing={read.Status}, LMU={lmuStatus}." : reason,
+                status == CheckStatus.Mismatch ? hint : null));
         }
         static bool Present(string? s) => !string.IsNullOrWhiteSpace(s);
         static bool? Same(string? a, string? c) => Present(a) && Present(c)
             ? string.Equals(a!.Trim(), c!.Trim(), StringComparison.OrdinalIgnoreCase) : null;
         static string? Display(double? value) => value?.ToString("0.###", CultureInfo.InvariantCulture);
-        void Number(string id, string label, double? required, double? current, bool positive = false)
+        void Number(string id, string label, double? required, double? current, string hint, bool positive = false)
         {
             bool Sane(double? v) => v is { } n && double.IsFinite(n) && (positive ? n > 0 : n >= 0);
             Add(id, label, Display(required), Display(current), Sane(required) && Sane(current)
-                ? Math.Abs(required!.Value - current!.Value) <= 0.001 : null);
+                ? Math.Abs(required!.Value - current!.Value) <= 0.001 : null, hint: hint);
         }
+        // LMU's menu wording: factor 1 is Realistic (fuel, tyres) or Normal (time scale), otherwise X<n>.
+        static string Factor(double? value, string one) =>
+            value == 1 ? one : value == 0 ? "Off" : "X" + Display(value);
 
-        Add("circuit", "Circuit", b?.TrackFolder, live.TrackFolder, Same(b?.TrackFolder, live.TrackFolder));
+        Add("circuit", "Circuit", b?.TrackFolder, live.TrackFolder, Same(b?.TrackFolder, live.TrackFolder),
+            hint: $"Select {b?.TrackName ?? b?.TrackFolder}");
         var layouts = options.LayoutMappings.Where(m => Same(m.TrackFolder, live.TrackFolder) == true &&
             Same(m.SceneDescription, live.SceneDescription) == true).ToArray();
         var mappedLayout = layouts.Length == 1 ? layouts[0].LayoutFile : null;
         bool? layoutMatch = !Present(b?.LayoutFile) || !Present(b?.TrackFolder) || !Present(live.TrackFolder) ? null :
             Same(b?.TrackFolder, live.TrackFolder) == false ? false : Same(b?.LayoutFile, mappedLayout);
         Add("layout", "Exact layout", b?.LayoutFile, mappedLayout ?? live.SceneDescription, layoutMatch,
-            reason: mappedLayout is null ? "No unique cmpName + sceneDesc mapping. Layout display names are not used." : null);
-        Add("carModel", "Car model", car?.Folder, live.CarFolder, Same(car?.Folder, live.CarFolder));
+            reason: mappedLayout is null ? "No unique cmpName + sceneDesc mapping. Layout display names are not used." : null,
+            hint: $"Select the {b?.LayoutName ?? b?.LayoutFile} layout");
+        Add("carModel", "Car model", car?.Folder, live.CarFolder, Same(car?.Folder, live.CarFolder),
+            hint: $"Select the {car?.Name ?? car?.Folder}");
         bool? classMatch = Present(car?.Class) && live.Classes is { Length: > 0 }
             ? live.Classes.Contains(car!.Class!.Trim(), StringComparer.OrdinalIgnoreCase) : null;
-        Add("carClass", "Car class", car?.Class, live.Classes is null ? null : string.Join(", ", live.Classes), classMatch);
+        Add("carClass", "Car class", car?.Class, live.Classes is null ? null : string.Join(", ", live.Classes), classMatch,
+            hint: $"Select a {car?.Class} car");
 
         // Custom-team cars may use any number; a null number means any livery until the first race decides.
         bool unrestrictedNumber = car?.AnyNumber == true || car?.CustomTeam == true;
@@ -50,20 +59,26 @@ public sealed class SettingsValidator(CompanionOptions options)
         bool? numberMatch = Present(car?.Number) && Present(live.Number)
             ? CleanNumber(car!.Number!) == CleanNumber(live.Number!) : null;
         Add("carNumber", "Car number", unrestrictedNumber ? "Any number" : car?.Number,
-            live.Number, numberMatch, unrestrictedNumber);
+            live.Number, numberMatch, unrestrictedNumber, hint: $"Select car #{CleanNumber(car?.Number ?? "")}");
         // Factory Seat names a team only when the round fixes one.
         Add("team", "Team", car is null ? null : car.Team ?? "Any team", live.Team,
-            Same(car?.Team, live.Team), car is not null && car.Team is null);
+            Same(car?.Team, live.Team), car is not null && car.Team is null, hint: $"Select the {car?.Team} livery");
         if (car?.CustomTeam != false)
             Add("customTeam", "Custom team identity", car?.CustomTeam == true ? "Race Control custom team" : null,
                 null, null, reason: "REST custom-team marker has not been established; matching a team name is insufficient.");
-        Number("duration", "Race duration (min)", b?.RaceMinutes, live.RaceMinutes, true);
-        Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier);
-        Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier);
-        Number("timeScale", "Time scale", b?.TimeScale, live.TimeScale, true);
+        Number("duration", "Race duration (min)", b?.RaceMinutes, live.RaceMinutes,
+            $"Set Race Length to {Display(b?.RaceMinutes)} min", true);
+        Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier,
+            $"Set Fuel Usage to {Factor(b?.FuelMultiplier, "Realistic")}");
+        Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier,
+            $"Set Tyre Wear to {Factor(b?.TireMultiplier, "Realistic")}");
+        Number("timeScale", "Time scale", b?.TimeScale, live.TimeScale,
+            $"Set Time Scale to {Factor(b?.TimeScale, "Normal")}", true);
+        var startTime = Normalization.Time(b?.StartTime);
         Add("startTime", "Race start time", b?.StartTimeDefault == true ? "LMU default" : b?.StartTime,
-            live.StartTime, b?.StartTimeDefault == false ? Same(Normalization.Time(b.StartTime), Normalization.Time(live.StartTime)) : null,
-            b?.StartTimeDefault == true);
+            live.StartTime, b?.StartTimeDefault == false ? Same(startTime, Normalization.Time(live.StartTime)) : null,
+            b?.StartTimeDefault == true, hint: startTime is null ? null : "Set Start Time to " +
+                DateTime.ParseExact(startTime, "HH:mm", CultureInfo.InvariantCulture).ToString("h:mm tt", CultureInfo.InvariantCulture));
 
         bool metadataValid = Present(b?.CareerName) && Present(b?.EventName) && b?.RoundNumber > 0;
         bool ready = valid && metadataValid && checks.All(c => c.Status is CheckStatus.Match or CheckStatus.NotApplicable);

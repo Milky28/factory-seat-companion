@@ -33,4 +33,5 @@ public sealed class CompanionCheck
     public string Current { get; set; } = "";
     public string Status { get; set; } = "";
     public string? Reason { get; set; }
+    public string? Hint { get; set; }
 }

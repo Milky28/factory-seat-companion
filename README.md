@@ -49,7 +49,7 @@ For a single diagnostic result, add `--once`. Exit codes: 0 means all applicable
 
 ## Status and limitations
 
-- `Match`: identified values agree. `Mismatch`: known values differ. `Unknown`: absent, invalid, ambiguous, unsafe, stale, or unsupported evidence. `NotApplicable`: the briefing explicitly permits omission.
+- `Match`: identified values agree. `Mismatch`: known values differ. `Unknown`: absent, invalid, ambiguous, unsafe, stale, or unsupported evidence. `NotApplicable` (shown as `Any`, greyed on the overlay): the briefing explicitly allows any value, such as any car number or LMU's default start time. Each `Mismatch` row also carries a one-line `hint` in LMU's menu wording, for example `Set Tyre Wear to X3`.
 - Readiness requires valid briefing metadata, current sources, and every applicable row matching. Manual acknowledgement is not implemented.
 - Eleven baseline rows cover the ten requested categories by showing number and team separately. A custom-team row appears when needed.
 - `SESSSET_race_time` is ignored. RACE `lengthTime` supplies minutes only when `SESSSET_Finish_Criteria` reads `Time`. In `% Track Time` mode, live LMU showed 2h24 in the menu while `lengthTime` was 48 or 24, so duration stays unknown. Readable multiplier labels and 12/24-hour times are normalized. Raw setting `currentValue` is deliberately not interpreted without captured evidence of its numeric/enum semantics.
