@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Not part of FactorySeatCompanion.sln: it needs a local SimHub install. Build with scripts/Build-Plugin.ps1. -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>FactorySeatCompanion.SimHub</AssemblyName>
+    <RootNamespace>FactorySeatCompanion.SimHub</RootNamespace>
+    <SimHubPath Condition="'$(SimHubPath)' == ''">$(SIMHUB_INSTALL_PATH)</SimHubPath>
+    <SimHubPath Condition="'$(SimHubPath)' == ''">C:\Program Files (x86)\SimHub\</SimHubPath>
+    <!-- A /p: SimHubPath can't be reassigned here, so normalize into a separate property. -->
+    <SimHubDir>$([MSBuild]::EnsureTrailingSlash('$(SimHubPath)'))</SimHubDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Supplied by SimHub at runtime; never copied next to the plugin. -->
+    <Reference Include="SimHub.Plugins"><HintPath>$(SimHubDir)SimHub.Plugins.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="GameReaderCommon"><HintPath>$(SimHubDir)GameReaderCommon.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>$(SimHubDir)Newtonsoft.Json.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Xaml" />
+  </ItemGroup>
+</Project>

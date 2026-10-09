@@ -45,7 +45,7 @@ No endpoint offers an atomic event snapshot. Conservative navigation gating redu
 
 ## Next phases
 
-**Phase 2**: confirm actual navigation routes; import captured JSON fixtures; adapt the creator's real versioned contract; build a .NET Framework 4.8 SimHub SDK plugin that publishes immutable reports as custom properties. Keep disk/network work off `DataUpdate`. Decide between compatible core targeting and a local process bridge after a small runtime compatibility spike. Build/export a real Dash Studio dashboard and test pre-race visibility in LMU windowed and borderless modes, including “waiting for telemetry” behavior.
+**Phase 2**: confirm actual navigation routes; import captured JSON fixtures; adapt the creator's real versioned contract; build a .NET Framework 4.8 SimHub SDK plugin that publishes immutable reports as custom properties. Keep disk/network work off `DataUpdate`. Decided: a local process bridge, where the plugin runs the CLI with `--jsonl` (see [SimHub plugin](simhub-plugin.md)); the plugin and a draft overlay are scaffolded but untested in SimHub. Build/export a real Dash Studio dashboard and test pre-race visibility in LMU windowed and borderless modes, including “waiting for telemetry” behavior.
 
 **Phase 3**: installer/configuration UI, briefing location discovery, clear connection diagnostics, dashboard import instructions, and packaged Windows release. Do not install or enable speculative plugins automatically.
 

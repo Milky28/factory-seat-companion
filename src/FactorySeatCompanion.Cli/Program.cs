@@ -9,10 +9,12 @@ static async Task<int> RunAsync(string[] args)
     if (args.Length == 0 || args.Contains("--help"))
     {
         Console.WriteLine("Factory Seat Companion: Phase 1 diagnostic CLI");
-        Console.WriteLine("[--briefing <path>] [--fixtures <directory>] [--config <path>] [--once] [--json]");
+        Console.WriteLine("[--briefing <path>] [--fixtures <directory>] [--config <path>] [--once] [--json | --jsonl]");
         Console.WriteLine($"--briefing defaults to {FactorySeatBriefingReader.DefaultPath}");
         Console.WriteLine("--poll-seconds <1..60> --timeout-seconds <0.1..10>");
         Console.WriteLine("--inspect-navigation: GET /navigation/state once without garage access (no briefing needed).");
+        Console.WriteLine("--jsonl: one compact JSON report per line (SimHub plugin bridge).");
+        Console.WriteLine("--exit-when-stdin-closes: stop when the parent process closes standard input.");
         Console.WriteLine("Exit codes with --once: 0=verified, 2=not verified/mismatch, 1=usage/configuration error.");
         return 0;
     }
@@ -22,7 +24,7 @@ static async Task<int> RunAsync(string[] args)
     {
         var values = new Dictionary<string, string>(StringComparer.Ordinal);
         var flags = new HashSet<string>(StringComparer.Ordinal);
-        string[] validFlags = ["--once", "--json", "--inspect-navigation"];
+        string[] validFlags = ["--once", "--json", "--jsonl", "--inspect-navigation", "--exit-when-stdin-closes"];
         string[] validValues = ["--briefing", "--fixtures", "--config", "--poll-seconds", "--timeout-seconds"];
         for (int i = 0; i < args.Length; i++)
         {
@@ -35,6 +37,16 @@ static async Task<int> RunAsync(string[] args)
                 if (!values.TryAdd(args[i], args[++i])) throw new ArgumentException("Duplicate option.");
             }
             else throw new ArgumentException($"Unknown option or missing value: {args[i]}.");
+        }
+        if (flags.Contains("--json") && flags.Contains("--jsonl")) throw new ArgumentException("Use either --json or --jsonl.");
+        if (flags.Contains("--exit-when-stdin-closes"))
+        {
+            // The SimHub plugin keeps stdin open; EOF means the host exited or stopped the bridge.
+            _ = Task.Run(async () =>
+            {
+                while (await Console.In.ReadLineAsync() is not null) { }
+                cancellation.Cancel();
+            });
         }
         var options = values.TryGetValue("--config", out var configPath)
             ? JsonSerializer.Deserialize<CompanionOptions>(await File.ReadAllTextAsync(configPath, cancellation.Token), JsonDefaults.Options)
@@ -62,17 +74,19 @@ static async Task<int> RunAsync(string[] args)
         IFactorySeatReader reader = new FactorySeatBriefingReader(values.GetValueOrDefault("--briefing", FactorySeatBriefingReader.DefaultPath),
             source is FixtureLmuSource ? () => true : null);
         var validator = new SettingsValidator(options);
-        if (source is FixtureLmuSource && !flags.Contains("--json")) Console.WriteLine("FIXTURE MODE: synthetic observations, not live verification.");
+        bool structured = flags.Contains("--json") || flags.Contains("--jsonl");
+        var jsonOptions = flags.Contains("--jsonl") ? new JsonSerializerOptions(JsonDefaults.Options) { WriteIndented = false } : JsonDefaults.Options;
+        if (source is FixtureLmuSource && !structured) Console.WriteLine("FIXTURE MODE: synthetic observations, not live verification.");
         while (!cancellation.IsCancellationRequested)
         {
             var live = await source.PollAsync(cancellation.Token);
             // Read the briefing after network requests so an event change during polling is noticed.
             var briefing = await reader.ReadAsync(DateTimeOffset.UtcNow, cancellation.Token);
             var report = validator.Validate(briefing, live, DateTimeOffset.UtcNow);
-            if (flags.Contains("--json")) Console.WriteLine(JsonSerializer.Serialize(new
+            if (structured) Console.WriteLine(JsonSerializer.Serialize(new
             {
                 mode = source is FixtureLmuSource ? "Fixture" : "Live", report
-            }, JsonDefaults.Options));
+            }, jsonOptions));
             else Render(report);
             if (flags.Contains("--once")) return report.ReadyToRace ? 0 : 2;
             // Fixed delay after completion, no concurrent polls and no backlog on slow requests.

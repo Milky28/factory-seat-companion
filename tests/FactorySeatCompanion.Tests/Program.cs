@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using FactorySeatCompanion.Core;
+using FactorySeatCompanion.SimHub;
 
 // Dependency-free executable test runner. A failing assertion yields a nonzero exit code.
 var tests = new List<(string Name, Func<Task> Run)>();
@@ -427,6 +428,66 @@ AsyncTest("Cancellation propagates to caller", async () =>
     using var cts = new CancellationTokenSource(); cts.Cancel();
     try { await new LmuApiClient(http, options).PollAsync(cts.Token); throw new Exception("Expected cancellation"); }
     catch (OperationCanceledException) { }
+});
+// SimHub plugin bridge: the CLI's --jsonl line feeds DashboardState.
+var jsonl = new JsonSerializerOptions(JsonDefaults.Options) { WriteIndented = false };
+CompanionMessage Bridge(ValidationReport report) => JsonSerializer.Deserialize<CompanionMessage>(
+    JsonSerializer.Serialize(new { mode = "Fixture", report }, jsonl), JsonDefaults.Options)!;
+DashboardState Dash(ValidationReport report, double ageSeconds = 0) =>
+    DashboardState.Create(Bridge(report), report.ObservedAt.AddSeconds(ageSeconds), TimeSpan.FromSeconds(10), "Running");
+Test("Bridge line is single-line and round-trips rows", () =>
+{
+    var line = JsonSerializer.Serialize(new { mode = "Fixture", report = Report() }, jsonl);
+    Assert(!line.Contains('\n'), "JSONL output must be one line");
+    var state = Dash(Report());
+    Assert(state.ReadyToRace && state.OverallStatus == "READY TO RACE" && state.Mode == "Fixture");
+    Assert(state.Rows.Count == DashboardState.RowSlots);
+    Assert(state.Rows[0].Visible && state.Rows[0].Id == "circuit" && state.Rows[0].Status == "Match");
+    Assert(state.Rows.Count(r => r.Visible) == Report().Checks.Count);
+    Assert(state.Headline.Contains("Round"), state.Headline);
+});
+Test("All optional rows fit the dashboard slots", () =>
+{
+    var report = Report(requirement: briefing.Briefing! with { Car = briefing.Briefing!.Car! with { CustomTeam = true } });
+    Assert(report.Checks.Any(c => c.Id == "customTeam") && report.Checks.Count <= DashboardState.RowSlots, $"{report.Checks.Count} rows");
+    Assert(Dash(report).Rows.Count(r => r.Visible) == report.Checks.Count);
+});
+Test("Dashboard mismatch is shown, not ready", () =>
+{
+    var state = Dash(Report(live with { FuelMultiplier = 2 }));
+    Assert(!state.ReadyToRace && state.OverallStatus == "SETUP MISMATCH");
+    Assert(state.Rows.Single(r => r.Id == "fuel").Status == "Mismatch");
+});
+Test("Stale or future report is never ready", () =>
+{
+    var stale = Dash(Report(), 11);
+    Assert(!stale.ReadyToRace && stale.OverallStatus == "NOT VERIFIED" && stale.LmuStatus == "Stale");
+    Assert(stale.Rows.Where(r => r.Visible).All(r => r.Status == "Unknown" && r.Current == "Unknown"));
+    Assert(stale.Diagnostics.Contains("observed 11s ago"), stale.Diagnostics);
+    Assert(!Dash(Report(), -5).ReadyToRace);
+    Assert(!Dash(Report(live with { FuelMultiplier = 2 }), 11).OverallStatus.Contains("MISMATCH"));
+});
+Test("Missing report waits with hidden rows", () =>
+{
+    var state = DashboardState.Create(null, now, TimeSpan.FromSeconds(10), "Companion CLI not found: x");
+    Assert(!state.ReadyToRace && state.Rows.All(r => !r.Visible) && state.BridgeStatus.Contains("not found"));
+});
+Test("Dashboard does not trust a ready flag over row statuses", () =>
+{
+    var message = Bridge(Report());
+    message.Report!.Checks[2].Status = "Unknown";
+    Assert(!DashboardState.Create(message, message.Report.ObservedAt, TimeSpan.FromSeconds(10), "Running").ReadyToRace);
+    message = Bridge(Report());
+    for (int i = 0; i < 3; i++) message.Report!.Checks.Add(message.Report.Checks[0]);
+    Assert(!DashboardState.Create(message, message.Report!.ObservedAt, TimeSpan.FromSeconds(10), "Running").ReadyToRace);
+});
+Test("Plugin command line quoting", () =>
+{
+    Assert(WindowsCommandLine.Quote("plain") == "plain");
+    Assert(WindowsCommandLine.Quote("") == "\"\"");
+    Assert(WindowsCommandLine.Quote(@"C:\Program Files\SimHub\") == @"""C:\Program Files\SimHub\\""");
+    Assert(WindowsCommandLine.Quote("a\"b") == @"""a\""b""");
+    Assert(WindowsCommandLine.Join(["--briefing", @"C:\My Docs\b.json"]) == @"--briefing ""C:\My Docs\b.json""");
 });
 
 int failures = 0;
