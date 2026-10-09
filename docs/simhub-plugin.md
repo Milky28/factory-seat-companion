@@ -39,7 +39,7 @@ All are prefixed `FactorySeatPlugin.`
 
 There is no settings screen yet (Phase 3). SimHub stores the plugin's common settings as `GeneralSettings` JSON in its plugin data folder after the first run; edit it with SimHub closed:
 
-- `BriefingPath` (required): the development briefing file.
+- `BriefingPath`: a briefing file to use instead of the CLI's default (Factory Seat's `%AppData%\LmuCareer\briefing.json`, once the real-format reader is on main).
 - `ConfigPath`: companion configuration, as for the CLI.
 - `FixturesPath`: synthetic fixture folder, to test the overlay without LMU. Shows `Mode: Fixture`.
 - `CliPath`: defaults to `FactorySeatCompanion\FactorySeatCompanion.Cli.exe` next to the plugin DLL.
@@ -64,7 +64,7 @@ The plugin saves its settings only when SimHub exits cleanly (tray icon, Exit). 
 
 Steps 1, 2 and 4 passed in fixture mode on 2026-10-09; 3 and 5 are outstanding.
 
-1. SimHub loads the plugin and lists `FactorySeatPlugin.*` in the property picker. `BridgeStatus` explains a missing `BriefingPath`.
+1. SimHub loads the plugin and lists `FactorySeatPlugin.*` in the property picker.
 2. With `FixturesPath` set to `fixtures/lmu` and a fresh copy of the provisional briefing, the overlay shows READY TO RACE and Mode Fixture. Editing a fixture value turns that row red within a few seconds.
 3. Kill the CLI process: the overlay drops to NOT VERIFIED within `ReportMaxAgeSeconds` and recovers after the restart.
 4. Dash Studio imports the `.djson` (it was written by hand from the Dash Studio format and may need fixing on import). Check text sizes and the overlay size.

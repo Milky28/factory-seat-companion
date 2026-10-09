@@ -59,11 +59,6 @@ internal sealed class CompanionBridge : IDisposable
 
     private void RunOnce(CancellationToken token)
     {
-        if (string.IsNullOrWhiteSpace(settings.BriefingPath))
-        {
-            SetStatus("Set BriefingPath in the Factory Seat Companion plugin settings.");
-            return;
-        }
         string cliPath = string.IsNullOrWhiteSpace(settings.CliPath) ? defaultCliPath : settings.CliPath;
         if (!File.Exists(cliPath))
         {
@@ -71,7 +66,9 @@ internal sealed class CompanionBridge : IDisposable
             return;
         }
 
-        var args = new List<string> { "--jsonl", "--exit-when-stdin-closes", "--briefing", settings.BriefingPath };
+        var args = new List<string> { "--jsonl", "--exit-when-stdin-closes" };
+        // Empty uses the CLI's default, Factory Seat's own %AppData%\LmuCareer\briefing.json.
+        if (!string.IsNullOrWhiteSpace(settings.BriefingPath)) args.AddRange(new[] { "--briefing", settings.BriefingPath });
         if (!string.IsNullOrWhiteSpace(settings.ConfigPath)) args.AddRange(new[] { "--config", settings.ConfigPath });
         if (!string.IsNullOrWhiteSpace(settings.FixturesPath)) args.AddRange(new[] { "--fixtures", settings.FixturesPath });
         var info = new ProcessStartInfo
