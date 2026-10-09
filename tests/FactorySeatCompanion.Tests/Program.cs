@@ -15,13 +15,14 @@ var options = new CompanionOptions
         new("BahrainWEC_2023", "BAHRAINWEC_OUTER", "layoutOuter")]
 };
 string Fixture(string name) => File.ReadAllText(Path.Combine(fixtures, name));
-var briefingJson = Fixture("briefing.provisional.json");
+var briefingJson = Fixture("briefing.json");
 var sessions = Fixture("lmu/sessions.json");
 var durations = Fixture("lmu/durations.json");
 var setup = Fixture("lmu/setup.json");
 var navigation = Fixture("lmu/navigation.setup.synthetic.json");
 var replay = Fixture("lmu/navigation.replay.synthetic.json");
-var briefing = ProvisionalJsonBriefingReader.Parse(briefingJson, now, TimeSpan.FromHours(2));
+Func<bool> running = () => true;
+var briefing = FactorySeatBriefingReader.Parse(briefingJson, running);
 var live = LmuJsonParser.Parse(sessions, durations, setup, now);
 var validator = new SettingsValidator(options);
 
@@ -30,7 +31,7 @@ void AsyncTest(string name, Func<Task> action) => tests.Add((name, action));
 void Assert(bool value, string message = "Assertion failed") { if (!value) throw new Exception(message); }
 void Status(ValidationReport report, string id, CheckStatus expected) =>
     Assert(report.Checks.Single(c => c.Id == id).Status == expected, $"{id}: expected {expected}");
-ValidationReport Report(LmuSnapshot? snapshot = null, ProvisionalBriefing? requirement = null) =>
+ValidationReport Report(LmuSnapshot? snapshot = null, RoundRequirement? requirement = null) =>
     validator.Validate(requirement is null ? briefing : briefing with { Briefing = requirement }, snapshot ?? live, now);
 string Change(string json, Action<JsonNode> update)
 {
@@ -139,24 +140,23 @@ Test("Vehicle folder extracted from installed path, not manufacturer", () =>
     Assert(Normalization.VehicleFolder("BMW/file.veh") is null);
     Assert(Normalization.VehicleFolder("Installed/Vehicles/../file.veh") is null);
 });
-Test("Permitted numbers and exact locked number", () =>
+Test("Locked number compares exactly", () =>
 {
-    var b = briefing.Briefing! with { Car = briefing.Briefing!.Car! with { Number = null, PermittedNumbers = ["31", "46"] } };
-    Status(Report(live with { Number = "#46" }, b), "carNumber", CheckStatus.Match);
-    Status(Report(live with { Number = "32" }, b), "carNumber", CheckStatus.Mismatch);
+    Status(Report(live with { Number = "#31" }), "carNumber", CheckStatus.Match);
     Status(Report(live with { Number = "46" }), "carNumber", CheckStatus.Mismatch);
 });
-Test("Any livery explicitly skips number/team", () =>
+Test("Null number and team mean any livery", () =>
 {
-    var b = briefing.Briefing! with { Car = briefing.Briefing!.Car! with
-        { Number = null, PermittedNumbers = [], AnyNumber = true, TeamRequired = false } };
+    var b = briefing.Briefing! with { Car = briefing.Briefing!.Car! with { Number = null, AnyNumber = true, Team = null } };
     var r = Report(live with { Number = null, Team = null }, b);
     Assert(r.ReadyToRace); Status(r, "carNumber", CheckStatus.NotApplicable); Status(r, "team", CheckStatus.NotApplicable);
 });
-Test("Contradictory number policy remains unknown", () =>
+Test("Missing number field remains unknown", () =>
 {
-    var b = briefing.Briefing! with { Car = briefing.Briefing!.Car! with { AnyNumber = true } };
+    var b = briefing.Briefing! with { Car = briefing.Briefing!.Car! with { Number = null, AnyNumber = null } };
     Status(Report(requirement: b), "carNumber", CheckStatus.Unknown);
+    var json = Change(briefingJson, n => n["round"]!["car"]!.AsObject().Remove("number"));
+    Assert(FactorySeatBriefingReader.Parse(json, running).Briefing!.Car!.AnyNumber is null);
 });
 Test("Custom team cannot be proved by matching team name", () =>
 {
@@ -169,29 +169,71 @@ Test("Guest drive uses effective round car", () =>
     Status(Report(requirement: b), "carModel", CheckStatus.Mismatch);
     Status(Report(live with { CarFolder = "Ferrari_499P_2023", Classes = ["Hyper"] }, b), "carModel", CheckStatus.Match);
 });
-Test("Livery check when explicitly required", () =>
+Test("Null start time means LMU default; missing stays unknown", () =>
 {
-    var b = briefing.Briefing! with { Car = briefing.Briefing!.Car! with { LiveryName = "Sponsor livery" } };
-    Status(Report(requirement: b), "livery", CheckStatus.Mismatch);
-    Status(Report(live with { LiveryName = null }, b), "livery", CheckStatus.Unknown);
+    Status(Report(requirement: briefing.Briefing! with { StartTime = null, StartTimeDefault = null }), "startTime", CheckStatus.Unknown);
+    var json = Change(briefingJson, n => n["round"]!["settings"]!["startTime"] = null);
+    var parsed = FactorySeatBriefingReader.Parse(json, running);
+    Assert(parsed.Briefing!.StartTimeDefault == true);
+    Status(validator.Validate(parsed, live, now), "startTime", CheckStatus.NotApplicable);
 });
-Test("Optional/default start time must be explicit", () =>
+Test("Factory Seat example briefing parses", () =>
 {
-    Status(Report(requirement: briefing.Briefing! with { StartTime = null }), "startTime", CheckStatus.Unknown);
-    var b = briefing.Briefing! with { StartTime = null, StartTimeRequired = false };
-    Status(Report(requirement: b), "startTime", CheckStatus.NotApplicable);
-    Status(Report(requirement: briefing.Briefing! with { StartTimeRequired = false }), "startTime", CheckStatus.Unknown);
+    var parsed = FactorySeatBriefingReader.Parse(Fixture("briefing.spec-example.json"), running);
+    var r = parsed.Briefing!;
+    Assert(parsed.Status == SourceStatus.Available, parsed.Diagnostic);
+    Assert(r.CareerName == "Road to Hypercar" && r.EventName == "Qatar 1812 km" && r.RoundNumber == 1 && r.RoundCount == 8);
+    Assert(r.TrackFolder == "Qatar_2024" && r.LayoutFile == "layoutQatar" && r.Guest == false);
+    Assert(r.RaceMinutes == 30 && r.FuelMultiplier == 3 && r.TireMultiplier == 3 && r.TimeScale == 20);
+    Assert(r.StartTime == "11:00" && r.StartTimeDefault == false);
+    Assert(r.Car!.Folder == "Ford_Mustang_GT3_2024" && r.Car.Class == "GT3");
+    Assert(r.Car.AnyNumber == true && r.Car.Number is null && r.Car.Team is null && r.Car.CustomTeam == false);
 });
-Test("Stale/invalid briefing clears all matches", () =>
+Test("Unknown fields are ignored", () =>
 {
-    var stale = ProvisionalJsonBriefingReader.Parse(briefingJson, now.AddHours(3), TimeSpan.FromHours(2));
-    Assert(stale.Status == SourceStatus.Stale);
-    Assert(validator.Validate(stale, live, now).Checks.All(c => c.Status == CheckStatus.Unknown));
-    foreach (var json in new[] { "{}", "{", Change(briefingJson, n => n["schemaVersion"] = 2),
-        Change(briefingJson, n => n["state"] = "Completed"), Change(briefingJson, n => n["state"] = "Skipped"),
-        Change(briefingJson, n => n["generatedAt"] = now.AddHours(1).ToString("O")),
-        Change(briefingJson, n => n.AsObject().Remove("generatedAt")) })
-        Assert(ProvisionalJsonBriefingReader.Parse(json, now, TimeSpan.FromHours(2)).Status == SourceStatus.Invalid);
+    var json = Change(briefingJson, n => { n["futureField"] = 1; n["round"]!["car"]!["futureCarField"] = "x"; });
+    Assert(FactorySeatBriefingReader.Parse(json, running).Status == SourceStatus.Available);
+});
+Test("Closed career is shown but never verified", () =>
+{
+    bool probed = false;
+    var closed = FactorySeatBriefingReader.Parse(Change(briefingJson, n => n["open"] = false), () => probed = true);
+    Assert(closed.Status == SourceStatus.Stale && closed.Briefing!.RoundNumber == 3 && !probed);
+    Assert(validator.Validate(closed, live, now).Checks.All(c => c.Status == CheckStatus.Unknown));
+});
+Test("Open flag left by a crash is stale when Factory Seat is not running", () =>
+{
+    var crashed = FactorySeatBriefingReader.Parse(briefingJson, () => false);
+    Assert(crashed.Status == SourceStatus.Stale && crashed.Diagnostic.Contains("not running"));
+    Assert(!validator.Validate(crashed, live, now).ReadyToRace);
+});
+Test("No round between seasons", () =>
+{
+    var parsed = FactorySeatBriefingReader.Parse(Change(briefingJson, n => n["round"] = null), running);
+    Assert(parsed.Status == SourceStatus.Unavailable && parsed.Briefing is null);
+});
+Test("Invalid briefings are rejected", () =>
+{
+    foreach (var json in new[] { "{}", "{", Change(briefingJson, n => n["version"] = 2),
+        Change(briefingJson, n => n["format"] = "factory-seat-companion-provisional"),
+        Change(briefingJson, n => n.AsObject().Remove("version")), Change(briefingJson, n => n.AsObject().Remove("open")),
+        Change(briefingJson, n => n["open"] = "true"),
+        Change(briefingJson, n => n["round"]!["state"] = "Completed"), Change(briefingJson, n => n["round"]!["state"] = "Skipped") })
+        Assert(FactorySeatBriefingReader.Parse(json, running).Status == SourceStatus.Invalid, json);
+    Assert(FactorySeatBriefingReader.Parse(Change(briefingJson, n => n["version"] = 2), running).Diagnostic.Contains("update the companion"));
+});
+Test("Upcoming round is accepted", () =>
+    Assert(FactorySeatBriefingReader.Parse(Change(briefingJson, n => n["round"]!["state"] = "Upcoming"), running).Status == SourceStatus.Available));
+Test("Unknown car folder blocks readiness", () =>
+{
+    var parsed = FactorySeatBriefingReader.Parse(Change(briefingJson, n => n["round"]!["car"]!["folder"] = null), running);
+    var r = validator.Validate(parsed, live, now);
+    Assert(!r.ReadyToRace); Status(r, "carModel", CheckStatus.Unknown);
+});
+Test("Empty team is not compared", () =>
+{
+    var parsed = FactorySeatBriefingReader.Parse(Change(briefingJson, n => n["round"]!["car"]!["team"] = ""), running);
+    Status(validator.Validate(parsed, live with { Team = "Other team" }, now), "team", CheckStatus.NotApplicable);
 });
 Test("Missing header metadata blocks readiness", () => Assert(!Report(requirement: briefing.Briefing! with { RoundNumber = null }).ReadyToRace));
 Test("Stale observation clears matches", () => Assert(!Report(live with { ObservedAt = now.AddMinutes(-1) }).ReadyToRace));
@@ -210,8 +252,8 @@ Test("Duplicate RACE sessions are ambiguous", () =>
 Test("Duplicate JSON properties are rejected", () =>
 {
     Assert(LmuJsonParser.Parse(sessions, durations, "{\"selectedCar\":{},\"selectedCar\":{}}", now).CarFolder is null);
-    Assert(ProvisionalJsonBriefingReader.Parse(briefingJson.Replace("\"schemaVersion\": 1", "\"schemaVersion\": 1, \"schemaVersion\": 1"), now,
-        TimeSpan.FromHours(2)).Status == SourceStatus.Invalid);
+    Assert(FactorySeatBriefingReader.Parse(briefingJson.Replace("\"version\": 1", "\"version\": 1, \"version\": 1"),
+        running).Status == SourceStatus.Invalid);
 });
 Test("Wrapped setting records accepted only when unique", () =>
 {
@@ -262,7 +304,7 @@ Test("JSON-pointer nested state supported", () =>
 Test("Polling configuration rejects unsafe bounds", () =>
 {
     foreach (var o in new[] { options with { PollSeconds = 0 }, options with { RequestTimeoutSeconds = 0 },
-        options with { BriefingMaxAgeMinutes = double.NaN }, options with { SafeSetupStates = ["Replay"] } })
+        options with { SnapshotMaxAgeSeconds = double.NaN }, options with { SafeSetupStates = ["Replay"] } })
     {
         try { o.Validate(); throw new Exception("Should reject config"); } catch (InvalidDataException) { }
     }
@@ -275,11 +317,11 @@ AsyncTest("File refresh, partial write, deletion, and recovery", async () =>
     var path = Path.Combine(directory, "briefing.json");
     try
     {
-        var reader = new ProvisionalJsonBriefingReader(path, TimeSpan.FromHours(2));
+        var reader = new FactorySeatBriefingReader(path, running);
         Assert((await reader.ReadAsync(now)).Status == SourceStatus.Unavailable);
         await File.WriteAllTextAsync(path, briefingJson);
         Assert((await reader.ReadAsync(now)).Briefing!.RoundNumber == 3);
-        await File.WriteAllTextAsync(path, Change(briefingJson, n => n["roundNumber"] = 4));
+        await File.WriteAllTextAsync(path, Change(briefingJson, n => n["round"]!["number"] = 4));
         Assert((await reader.ReadAsync(now)).Briefing!.RoundNumber == 4);
         await File.WriteAllTextAsync(path, "{");
         Assert((await reader.ReadAsync(now)).Briefing is null);

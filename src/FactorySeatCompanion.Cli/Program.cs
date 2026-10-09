@@ -8,9 +8,10 @@ static async Task<int> RunAsync(string[] args)
 {
     if (args.Length == 0 || args.Contains("--help"))
     {
-        Console.WriteLine("Factory Seat Companion: Phase 1 diagnostic CLI (development contract only)");
-        Console.WriteLine("--briefing <path> [--fixtures <directory>] [--config <path>] [--once] [--json]");
-        Console.WriteLine("--poll-seconds <1..60> --timeout-seconds <0.1..10> --briefing-max-age-minutes <minutes>");
+        Console.WriteLine("Factory Seat Companion: Phase 1 diagnostic CLI");
+        Console.WriteLine("[--briefing <path>] [--fixtures <directory>] [--config <path>] [--once] [--json]");
+        Console.WriteLine($"--briefing defaults to {FactorySeatBriefingReader.DefaultPath}");
+        Console.WriteLine("--poll-seconds <1..60> --timeout-seconds <0.1..10>");
         Console.WriteLine("--inspect-navigation: GET /navigation/state once without garage access (no briefing needed).");
         Console.WriteLine("Exit codes with --once: 0=verified, 2=not verified/mismatch, 1=usage/configuration error.");
         return 0;
@@ -22,7 +23,7 @@ static async Task<int> RunAsync(string[] args)
         var values = new Dictionary<string, string>(StringComparer.Ordinal);
         var flags = new HashSet<string>(StringComparer.Ordinal);
         string[] validFlags = ["--once", "--json", "--inspect-navigation"];
-        string[] validValues = ["--briefing", "--fixtures", "--config", "--poll-seconds", "--timeout-seconds", "--briefing-max-age-minutes"];
+        string[] validValues = ["--briefing", "--fixtures", "--config", "--poll-seconds", "--timeout-seconds"];
         for (int i = 0; i < args.Length; i++)
         {
             if (validFlags.Contains(args[i]))
@@ -44,8 +45,7 @@ static async Task<int> RunAsync(string[] args)
         options = options with
         {
             PollSeconds = Override("--poll-seconds", options.PollSeconds),
-            RequestTimeoutSeconds = Override("--timeout-seconds", options.RequestTimeoutSeconds),
-            BriefingMaxAgeMinutes = Override("--briefing-max-age-minutes", options.BriefingMaxAgeMinutes)
+            RequestTimeoutSeconds = Override("--timeout-seconds", options.RequestTimeoutSeconds)
         };
         options.Validate();
         using var handler = new HttpClientHandler { AllowAutoRedirect = false, UseProxy = false };
@@ -56,10 +56,11 @@ static async Task<int> RunAsync(string[] args)
             Console.WriteLine(await new LmuApiClient(http, options).InspectNavigationAsync(cancellation.Token));
             return 0;
         }
-        if (!values.TryGetValue("--briefing", out var briefingPath)) throw new ArgumentException("--briefing is required.");
-        IFactorySeatReader reader = new ProvisionalJsonBriefingReader(briefingPath, TimeSpan.FromMinutes(options.BriefingMaxAgeMinutes));
         ILmuSource source = values.TryGetValue("--fixtures", out var fixturePath)
             ? new FixtureLmuSource(fixturePath) : new LmuApiClient(http, options);
+        // Fixture mode is synthetic end to end, so it does not require Factory Seat to be running.
+        IFactorySeatReader reader = new FactorySeatBriefingReader(values.GetValueOrDefault("--briefing", FactorySeatBriefingReader.DefaultPath),
+            source is FixtureLmuSource ? () => true : null);
         var validator = new SettingsValidator(options);
         if (source is FixtureLmuSource && !flags.Contains("--json")) Console.WriteLine("FIXTURE MODE: synthetic observations, not live verification.");
         while (!cancellation.IsCancellationRequested)

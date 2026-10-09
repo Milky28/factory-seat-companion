@@ -6,16 +6,16 @@ namespace FactorySeatCompanion.Core;
 public enum CheckStatus { Match, Mismatch, Unknown, NotApplicable }
 public enum SourceStatus { Available, Unavailable, Invalid, Stale, UnsafeState }
 
-// DEVELOPMENT CONTRACT ONLY. Replace the reader adapter when Factory Seat supplies its schema.
-public sealed record ProvisionalBriefing
+// Normalized requirements for the next round, read from Factory Seat's briefing.json.
+// Null means the briefing did not say; it is never treated as unrestricted.
+public sealed record RoundRequirement
 {
-    public string? Contract { get; init; }
-    public int? SchemaVersion { get; init; }
-    public DateTimeOffset? GeneratedAt { get; init; }
     public string? CareerName { get; init; }
     public string? EventName { get; init; }
     public int? RoundNumber { get; init; }
+    public int? RoundCount { get; init; }
     public string? State { get; init; }
+    public bool? Guest { get; init; }
     public string? TrackFolder { get; init; }
     public string? LayoutFile { get; init; }
     public double? RaceMinutes { get; init; }
@@ -23,8 +23,8 @@ public sealed record ProvisionalBriefing
     public double? TireMultiplier { get; init; }
     public double? TimeScale { get; init; }
     public string? StartTime { get; init; }
-    // Explicit omission policies: missing is Unknown, never implicitly optional.
-    public bool? StartTimeRequired { get; init; }
+    // true: startTime was explicitly null, meaning LMU's default start time.
+    public bool? StartTimeDefault { get; init; }
     public CarRequirement? Car { get; init; }
 }
 
@@ -34,15 +34,14 @@ public sealed record CarRequirement
     public string? Folder { get; init; }
     public string? Class { get; init; }
     public string? Number { get; init; }
-    public string[]? PermittedNumbers { get; init; }
+    // true: number was explicitly null, so any livery will do and the first race decides.
     public bool? AnyNumber { get; init; }
     public bool? CustomTeam { get; init; }
+    // Compared only when present; Factory Seat gives null when the team is not fixed.
     public string? Team { get; init; }
-    public bool? TeamRequired { get; init; }
-    public string? LiveryName { get; init; }
 }
 
-public sealed record BriefingRead(SourceStatus Status, ProvisionalBriefing? Briefing, string Diagnostic);
+public sealed record BriefingRead(SourceStatus Status, RoundRequirement? Briefing, string Diagnostic);
 public sealed record LmuSnapshot
 {
     public DateTimeOffset ObservedAt { get; init; }
@@ -73,7 +72,6 @@ public sealed record CompanionOptions
 {
     public double PollSeconds { get; init; } = 1;
     public double RequestTimeoutSeconds { get; init; } = 2;
-    public double BriefingMaxAgeMinutes { get; init; } = 120;
     public double SnapshotMaxAgeSeconds { get; init; } = 10;
     public string NavigationStatePointer { get; init; } = "/state";
     // Empty until actual navigation responses have been captured. Fail closed.
@@ -86,9 +84,8 @@ public sealed record CompanionOptions
             throw new InvalidDataException("pollSeconds must be between 1 and 60.");
         if (!double.IsFinite(RequestTimeoutSeconds) || RequestTimeoutSeconds < 0.1 || RequestTimeoutSeconds > 10)
             throw new InvalidDataException("requestTimeoutSeconds must be between 0.1 and 10.");
-        if (!double.IsFinite(BriefingMaxAgeMinutes) || BriefingMaxAgeMinutes <= 0 ||
-            !double.IsFinite(SnapshotMaxAgeSeconds) || SnapshotMaxAgeSeconds <= 0)
-            throw new InvalidDataException("Freshness limits must be positive finite values.");
+        if (!double.IsFinite(SnapshotMaxAgeSeconds) || SnapshotMaxAgeSeconds <= 0)
+            throw new InvalidDataException("snapshotMaxAgeSeconds must be a positive finite value.");
         if (string.IsNullOrEmpty(NavigationStatePointer) || !NavigationStatePointer.StartsWith('/') ||
             SafeSetupStates is null || LayoutMappings is null ||
             SafeSetupStates.Any(s => string.IsNullOrWhiteSpace(s) || s.Contains("replay", StringComparison.OrdinalIgnoreCase)))
