@@ -1,6 +1,6 @@
 # SimHub plugin and overlay (Phase 2, untested in SimHub)
 
-Status: scaffold. The plugin compiles for .NET Framework 4.8 against stand-in SimHub SDK assemblies, and its report handling is covered by the test runner. It has **not** been loaded in a real SimHub, and the Dash Studio overlay has **not** been imported. Treat both as drafts until the acceptance steps below pass.
+Status (2026-10-09): built against SimHub 9.13.2, loaded without errors, and the overlay showed READY TO RACE in fixture mode on the owner's PC. Live LMU acceptance is still outstanding.
 
 ## How it fits together
 
@@ -54,9 +54,15 @@ Needs Windows, SimHub, the .NET 8 SDK and the .NET Framework 4.8 Developer Pack.
 ./scripts/Build-Plugin.ps1 -Install        # also copies into SimHub (close SimHub first)
 ```
 
-Then start SimHub, enable Factory Seat Companion when it asks about the new plugin, and import `dashboard/FactorySeatCompanion.djson` in Dash Studio as an overlay.
+Then start SimHub and enable Factory Seat Companion when it asks about the new plugin. Dash Studio's Import button only takes packaged `.simhubdash` files, so copy `dashboard/FactorySeatCompanion.djson` to `SimHub\DashTemplates\FactorySeatCompanion\FactorySeatCompanion.djson` and start it from Dash Studio's Overlays list.
 
-## Acceptance (not yet done)
+SimHub refuses to start overlays above an undocumented pixel area ("This overlay is too large"). 900×580 was refused and 900×390 runs, so the overlay is 480×322. SimHub caches the size in a `.djson.metadata` file next to the dashboard; delete it after resizing.
+
+The plugin saves its settings only when SimHub exits cleanly (tray icon, Exit). The file is `SimHub\PluginsData\Common\FactorySeatPlugin.GeneralSettings.json`.
+
+## Acceptance
+
+Steps 1, 2 and 4 passed in fixture mode on 2026-10-09; 3 and 5 are outstanding.
 
 1. SimHub loads the plugin and lists `FactorySeatPlugin.*` in the property picker. `BridgeStatus` explains a missing `BriefingPath`.
 2. With `FixturesPath` set to `fixtures/lmu` and a fresh copy of the provisional briefing, the overlay shows READY TO RACE and Mode Fixture. Editing a fixture value turns that row red within a few seconds.
