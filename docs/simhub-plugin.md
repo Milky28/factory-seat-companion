@@ -56,7 +56,7 @@ Needs Windows, SimHub, the .NET 8 SDK and the .NET Framework 4.8 Developer Pack.
 
 Then start SimHub and enable Factory Seat Companion when it asks about the new plugin. Dash Studio's Import button only takes packaged `.simhubdash` files, so copy `dashboard/FactorySeatCompanion.djson` to `SimHub\DashTemplates\FactorySeatCompanion\FactorySeatCompanion.djson` and start it from Dash Studio's Overlays list.
 
-SimHub refuses to start overlays above an undocumented pixel area ("This overlay is too large"). 900×580 was refused and 900×390 runs, so the overlay is 480×322. SimHub caches the size in a `.djson.metadata` file next to the dashboard; delete it after resizing.
+SimHub refuses to start overlays above an undocumented pixel area ("This overlay is too large"). 900×580 was refused and 900×390 runs, so the overlay is 640×334. SimHub caches the size in a `.djson.metadata` file next to the dashboard; delete it after resizing.
 
 The plugin saves its settings only when SimHub exits cleanly (tray icon, Exit). The file is `SimHub\PluginsData\Common\FactorySeatPlugin.GeneralSettings.json`.
 
