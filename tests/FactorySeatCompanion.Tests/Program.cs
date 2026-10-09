@@ -10,7 +10,7 @@ var fixtures = Path.Combine(AppContext.BaseDirectory, "fixtures");
 var now = DateTimeOffset.Parse("2026-10-09T12:00:00Z");
 var options = new CompanionOptions
 {
-    SafeSetupStates = ["SYNTHETIC_SETUP_ONLY"], RequestTimeoutSeconds = 0.1,
+    SafeSetupStates = ["SYNTHETIC_SETUP_ONLY"], RequestTimeoutSeconds = 2,
     LayoutMappings = [new("BahrainWEC_2023", "BAHRAINWEC_ENDCE", "layoutEndurance"),
         new("BahrainWEC_2023", "BAHRAINWEC_OUTER", "layoutOuter")]
 };
@@ -279,8 +279,8 @@ AsyncTest("Live transport issues only loopback GETs", async () =>
     using var handler = new FakeHandler((request, _) => Task.FromResult(Endpoint(request, navigation)));
     using var http = new HttpClient(handler);
     var parsed = await new LmuApiClient(http, options).PollAsync();
-    Assert(parsed.CarFolder == live.CarFolder && parsed.RaceMinutes == 360);
-    Assert(handler.Requests.Count == 6);
+    Assert(parsed.CarFolder == live.CarFolder && parsed.RaceMinutes == 360, string.Join("; ", parsed.Diagnostics));
+    Assert(handler.Requests.Count == 6, $"Expected 6 requests, got {handler.Requests.Count}.");
     Assert(handler.Requests.All(r => r.Method == HttpMethod.Get && r.Uri.Host == "127.0.0.1" && r.Uri.Port == 6397));
 });
 AsyncTest("Replay never requests garage/settings", async () =>
@@ -328,7 +328,7 @@ AsyncTest("Timeout and connection recovery do not reuse values", async () =>
         return Endpoint(r, navigation);
     });
     using var http = new HttpClient(handler);
-    var client = new LmuApiClient(http, options);
+    var client = new LmuApiClient(http, options with { RequestTimeoutSeconds = 0.1 });
     Assert((await client.PollAsync()).Status == SourceStatus.Unavailable);
     offline = false;
     Assert((await client.PollAsync()).CarFolder == live.CarFolder);
