@@ -21,6 +21,8 @@ public static class NavigationPolicy
                 if (element.ValueKind != JsonValueKind.Object || !element.TryGetProperty(key, out element))
                     return new(false, null, "Navigation state pointer missing; garage polling disabled.");
             }
+            if (element.ValueKind is JsonValueKind.Object or JsonValueKind.Array)
+                return new(false, null, "Navigation state pointer does not reference a single value; garage polling disabled.");
             var state = JsonRead.Text(element);
             bool safe = state is not null && options.SafeSetupStates.Contains(state, StringComparer.Ordinal);
             return new(safe, state, safe ? "Configured setup state." : "Navigation state not explicitly allowed; garage polling disabled.");
@@ -44,6 +46,10 @@ public static class NavigationPolicy
                 // Only an explicit false clears these flags; unsupported flag encodings fail closed.
                 if (property.Value.ValueKind != JsonValueKind.False) return true;
             }
+            // Live LMU reports loading as loadingStatus.loading; it sends no isReplay/isLoading.
+            if (property.Name.Equals("loadingStatus", StringComparison.OrdinalIgnoreCase) &&
+                property.Value.ValueKind == JsonValueKind.Object &&
+                property.Value.TryGetProperty("loading", out var loading) && loading.ValueKind != JsonValueKind.False) return true;
             if (property.Name.Equals("loadingData", StringComparison.OrdinalIgnoreCase) &&
                 property.Value.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(property.Value.GetString()))
             {
