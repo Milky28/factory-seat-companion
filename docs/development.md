@@ -45,6 +45,16 @@ Polling uses a one-second delay after each completed cycle, not overlapping fixe
 
 For a single diagnostic result, add `--once`. Exit codes: 0 means all applicable checks were verified; 2 means mismatch, unknown, stale or unavailable; 1 means a usage/configuration/inspection error. Normal unavailable sources in continuous mode do not terminate the process.
 
+## Build and install from source
+
+Needs Windows, SimHub, the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) and the [.NET Framework 4.8 Developer Pack](https://dotnet.microsoft.com/download/dotnet-framework/net48). Close SimHub (tray icon, Exit), then from an administrator PowerShell in the repository folder:
+
+```powershell
+./scripts/Build-Plugin.ps1 -Install                      # add -SimHubPath "D:\path\to\SimHub\" if needed
+```
+
+This copies the plugin and a framework-dependent companion CLI into SimHub. Then copy `dashboard\FactorySeatCompanion.djson` to `SimHub\DashTemplates\FactorySeatCompanion\FactorySeatCompanion.djson`, and `config/companion.player.json` to `%AppData%\FactorySeatCompanion\companion.json`, which the plugin picks up without a `ConfigPath` setting. To build the player zip and installer instead, see [installer](installer.md).
+
 ## Status and limitations
 
 - `Match`: identified values agree. `Mismatch`: known values differ. `Unknown`: absent, invalid, ambiguous, unsafe, stale, or unsupported evidence. `NotApplicable`: the briefing explicitly permits omission.

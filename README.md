@@ -4,7 +4,7 @@ A SimHub overlay for **Le Mans Ultimate** that tells you, before you start a rac
 
 It only reads. It never changes LMU's settings, never writes to Factory Seat or your career save, and its only game traffic is local HTTP reads from LMU on your own PC.
 
-> **Status:** early and unpackaged. There is no download yet, so installing means building it from source (below). It has been run end to end on one PC; expect rough edges.
+> **Status:** early. It has been run end to end on one PC; expect rough edges.
 
 ## What it checks
 
@@ -23,46 +23,21 @@ A "Custom team identity" row appears when the round uses a Race Control custom t
 - Windows, with **Le Mans Ultimate** in windowed or borderless mode. SimHub overlays cannot draw over exclusive fullscreen.
 - **SimHub** (tested with 9.13.2).
 - **Factory Seat 1.1 or later**, which writes the open career's next round to `%AppData%\LmuCareer\briefing.json`. Earlier versions don't write this file, so the overlay stays at NOT VERIFIED. The format is described in [docs/briefing.md](docs/briefing.md).
-- To build it: the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) and the [.NET Framework 4.8 Developer Pack](https://dotnet.microsoft.com/download/dotnet-framework/net48).
 
 ## Install
 
-1. **Build and install the plugin.** Close SimHub (tray icon, Exit), then from a PowerShell window in the repository folder run:
+Download the latest `FactorySeatCompanion-Setup-<version>.exe` or `FactorySeatCompanion-<version>.zip` from the [Releases page](https://github.com/Milky28/factory-seat-companion/releases). Until a release is published, both are attached to each run of the [Player package workflow](https://github.com/Milky28/factory-seat-companion/actions/workflows/package.yml) as `FactorySeatCompanion-player` (open a green run and scroll to Artifacts; GitHub asks you to sign in).
 
-   ```powershell
-   ./scripts/Build-Plugin.ps1 -Install
-   ```
+1. **Exit SimHub** (tray icon, Exit).
+2. **Run the installer.** It finds your SimHub folder and installs the plugin, its companion program (no .NET install needed), a ready settings file and the overlay. If SimHub lives somewhere unusual, pick the folder that contains `SimHubWPF.exe`.
 
-   This builds the plugin and its companion program and copies both into `C:\Program Files (x86)\SimHub\`. If SimHub lives elsewhere, add `-SimHubPath "D:\path\to\SimHub\"`. You may need an administrator PowerShell to write into Program Files.
+   Or, with the zip: extract it into your SimHub folder (usually `C:\Program Files (x86)\SimHub\`) and let it merge the `FactorySeatCompanion` and `DashTemplates` folders.
+3. **Start SimHub** and enable **Factory Seat Companion** when SimHub asks about the new plugin.
+4. **Start the overlay.** Open **Dash Studio**, go to **Overlays**, and start **FactorySeatCompanion**. Move it where you want it over LMU's menus.
 
-2. **Install the overlay.** Dash Studio's Import button only accepts packaged `.simhubdash` files, so copy the dashboard by hand:
+To update, run the newer installer the same way. To remove it, uninstall **Factory Seat Companion (SimHub plugin)** from Windows' Installed apps.
 
-   ```
-   dashboard\FactorySeatCompanion.djson
-     → C:\Program Files (x86)\SimHub\DashTemplates\FactorySeatCompanion\FactorySeatCompanion.djson
-   ```
-
-   Create the `FactorySeatCompanion` folder if it doesn't exist.
-
-3. **Create a settings file.** Copy [`config/companion.example.json`](config/companion.example.json) somewhere outside the SimHub folder, for example `Documents\FactorySeatCompanion\companion.json`, and change `"safeSetupStates": []` to:
-
-   ```json
-   "safeSetupStates": ["GSTATE_SETUP"]
-   ```
-
-   This lets the checks run while you are in LMU's menus. They pause while you drive, watch a replay or load. The example ships with an empty list on purpose, because LMU reports its main menu and race setup screens identically; see [Known limits](#known-limits).
-
-4. **Start SimHub once** and enable **Factory Seat Companion** when SimHub asks about the new plugin. Then exit SimHub from the tray icon so it saves the plugin's settings file.
-
-5. **Point the plugin at your settings file.** With SimHub closed, open `C:\Program Files (x86)\SimHub\PluginsData\Common\FactorySeatPlugin.GeneralSettings.json` and set `ConfigPath` to the file from step 3 (use `\\` in JSON paths):
-
-   ```json
-   "ConfigPath": "C:\\Users\\you\\Documents\\FactorySeatCompanion\\companion.json"
-   ```
-
-   There is no settings screen yet. The other options are described in [docs/simhub-plugin.md](docs/simhub-plugin.md#settings).
-
-6. **Start the overlay.** Start SimHub, open **Dash Studio**, go to **Overlays**, and start **FactorySeatCompanion**. Move it where you want it over LMU's menus.
+The installed settings let the checks run while you are in LMU's menus (`"safeSetupStates": ["GSTATE_SETUP"]`); they pause while you drive, watch a replay or load. To change settings, copy `SimHub\FactorySeatCompanion\companion.json` to `%AppData%\FactorySeatCompanion\companion.json` and edit that copy: it takes precedence and updates never overwrite it. Restart SimHub afterwards. Other plugin options are in [docs/simhub-plugin.md](docs/simhub-plugin.md#settings); building from source is in [docs/development.md](docs/development.md#build-and-install-from-source).
 
 ## Using it
 
@@ -96,13 +71,13 @@ Common reasons for NOT VERIFIED:
 - **Briefing Stale:** Factory Seat is closed, or you've left the career. Reopen it.
 - **Briefing Unavailable:** Factory Seat hasn't written a briefing (version older than 1.1), or the career is between seasons.
 - **LMU Unavailable:** LMU isn't running, or isn't answering on its local port yet.
-- **LMU UnsafeState:** you're driving, in a replay or loading. Checks resume in the menus. If it never clears in the menus, check step 3 of Install.
+- **LMU UnsafeState:** you're driving, in a replay or loading. Checks resume in the menus. If it never clears in the menus, check that your settings file still has `"safeSetupStates": ["GSTATE_SETUP"]`.
 - **Exact layout Unknown:** the companion doesn't know how this layout is named in LMU yet. See below.
 
 ## Known limits
 
 - **Race duration in "% Track Time" mode** stays Unknown. LMU's API doesn't report the menu's race length in that mode. Set the finish criteria to **Time** to have it checked.
-- **Layouts need a mapping.** LMU and Factory Seat name layouts differently, and only Bahrain (Endurance and Outer) and Lusail ship in the example settings. Any other layout shows Unknown. To add one, select the layout in LMU: the Circuit row's LMU value is the `trackFolder`, and the Exact layout row's LMU value is the `sceneDescription`. Add both with the round's `layoutFile` to `layoutMappings` in your settings file and restart SimHub.
+- **Layouts need a mapping.** LMU and Factory Seat name layouts differently, and only Bahrain (Endurance and Outer) and Lusail ship in the installed settings. Any other layout shows Unknown. To add one, select the layout in LMU: the Circuit row's LMU value is the `trackFolder`, and the Exact layout row's LMU value is the `sceneDescription`. Add both with the round's `layoutFile` to `layoutMappings` in your `%AppData%\FactorySeatCompanion\companion.json` (see Install) and restart SimHub.
 - **Custom teams** can't be confirmed through LMU's API, so a round with a Race Control custom team always stays NOT VERIFIED.
 - **Main menu and race setup look the same to the API.** With `GSTATE_SETUP` allowed, checks also run on LMU's main menu. That's harmless because LMU's own menus read the same data there, but it means the companion can't tell you which screen you're on.
 - **Overlay size.** SimHub refuses to start overlays above an undocumented size, so the overlay is fixed at 720×406.
