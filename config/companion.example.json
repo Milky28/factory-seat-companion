@@ -6,6 +6,7 @@
   "safeSetupStates": [],
   "layoutMappings": [
     { "trackFolder": "BahrainWEC_2023", "sceneDescription": "BAHRAINWEC_ENDCE", "layoutFile": "layoutEndurance" },
-    { "trackFolder": "BahrainWEC_2023", "sceneDescription": "BAHRAINWEC_OUTER", "layoutFile": "layoutOuter" }
+    { "trackFolder": "BahrainWEC_2023", "sceneDescription": "BAHRAINWEC_OUTER", "layoutFile": "layoutOuter" },
+    { "trackFolder": "Qatar_2024", "sceneDescription": "QATARWEC", "layoutFile": "layoutQatar" }
   ]
 }
