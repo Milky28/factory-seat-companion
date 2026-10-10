@@ -620,6 +620,27 @@ Test("Plugin command line quoting", () =>
     Assert(WindowsCommandLine.Quote("a\"b") == @"""a\""b""");
     Assert(WindowsCommandLine.Join(["--briefing", @"C:\My Docs\b.json"]) == @"--briefing ""C:\My Docs\b.json""");
 });
+Test("Plugin config: setting, then player override, then installed default", () =>
+{
+    var appData = Path.Combine("C:", "Users", "p", "AppData", "Roaming");
+    var cli = Path.Combine("C:", "SimHub", "FactorySeatCompanion", "FactorySeatCompanion.Cli.exe");
+    var user = Path.Combine(appData, "FactorySeatCompanion", "companion.json");
+    var shipped = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(cli))!, "companion.json");
+    Assert(ConfigLocator.Resolve("x.json", cli, appData, _ => true) == "x.json");
+    Assert(ConfigLocator.Resolve("", cli, appData, _ => true) == user);
+    Assert(ConfigLocator.Resolve(" ", cli, appData, p => p == shipped) == shipped);
+    Assert(ConfigLocator.Resolve("", cli, appData, _ => false) is null);
+});
+Test("Installed player config allows only the menu state", () =>
+{
+    var player = JsonSerializer.Deserialize<CompanionOptions>(
+        File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "config", "companion.player.json")), JsonDefaults.Options)!;
+    player.Validate();
+    Assert(player.SafeSetupStates.SequenceEqual(["GSTATE_SETUP"]));
+    Assert(NavigationPolicy.Evaluate(Fixture("lmu/navigation.live-shape.synthetic.json"), player).Safe);
+    Assert(!NavigationPolicy.Evaluate(Change(Fixture("lmu/navigation.live-shape.synthetic.json"),
+        n => n["state"]!["gameState"] = "GSTATE_DYN"), player).Safe);
+});
 
 int failures = 0;
 foreach (var test in tests)

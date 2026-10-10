@@ -69,7 +69,9 @@ internal sealed class CompanionBridge : IDisposable
         var args = new List<string> { "--jsonl", "--exit-when-stdin-closes" };
         // Empty uses the CLI's default, Factory Seat's own %AppData%\LmuCareer\briefing.json.
         if (!string.IsNullOrWhiteSpace(settings.BriefingPath)) args.AddRange(new[] { "--briefing", settings.BriefingPath });
-        if (!string.IsNullOrWhiteSpace(settings.ConfigPath)) args.AddRange(new[] { "--config", settings.ConfigPath });
+        string? configPath = ConfigLocator.Resolve(settings.ConfigPath, cliPath,
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), File.Exists);
+        if (configPath != null) args.AddRange(new[] { "--config", configPath });
         if (!string.IsNullOrWhiteSpace(settings.FixturesPath)) args.AddRange(new[] { "--fixtures", settings.FixturesPath });
         var info = new ProcessStartInfo
         {
