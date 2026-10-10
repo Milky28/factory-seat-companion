@@ -29,6 +29,8 @@ All are prefixed `FactorySeatPlugin.`
 | `OverallStatus` | `READY TO RACE`, `SETUP MISMATCH` or `NOT VERIFIED`. |
 | `Headline` | Career / event / round. |
 | `Mode` | `Fixture` or `Live`. |
+| `Screen` | `Menu`, `Loading`, `InSession` or `Unknown`, from the latest fresh report. |
+| `ShowOverlay` | Boolean. Bind the overlay's visibility to it; see [When the overlay shows](#when-the-overlay-shows). |
 | `BriefingStatus`, `LmuStatus` | Source health from the report, or `Stale`. |
 | `ReportAgeSeconds` | Age of the report's observation. |
 | `BridgeStatus` | `Running`, or why the companion is not running. |
@@ -36,6 +38,23 @@ All are prefixed `FactorySeatPlugin.`
 | `Hints` | Fix hints of every mismatched row, joined with ` · `. Empty when nothing mismatches or the report is stale. |
 | `ManualCheck` | A note to check each setting by hand, set when the briefing is available but LMU's settings can't be read or the report is stale. Otherwise empty. |
 | `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Icon`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any`; `Icon` is ✓, ✗, – (Any) or ○ (Unknown); `Hint` is set only on a fresh `Mismatch` row. |
+
+## When the overlay shows
+
+The CLI classifies each poll's `/navigation/state` (`LmuScreenClassifier` in the core) and the `--jsonl` line carries it as `screen`. Values from the live probe on 2026-10-10 (LMU v1.4200, notes in the project's live-test findings):
+
+| LMU screen | navigation/state | `Screen` |
+| --- | --- | --- |
+| Main menu, race setup | `GSTATE_SETUP` / `NAV_MAIN_MENU` (identical) | `Menu` |
+| Loading | `loadingStatus.loading` true, `GSTATE_INIT` / `GSTATE_RESTART` | `Loading` |
+| In-event garage/monitor | `NAV_EVENT` | `InSession` |
+| Driving, pause, replay | `NAV_REALTIME` | `InSession` |
+| Leaving a session | `GSTATE_POST` | `InSession` |
+| LMU not reachable, anything else | | `Unknown` |
+
+LMU's menu is a self-contained web app that never reports its page, so nothing separates race setup from the main menu. `ShowOverlay` is true for `Menu` and `Unknown` (a stale report counts as `Unknown`, so the checklist stays up when the API breaks) and false for `Loading` and `InSession`. The `FactorySeatPlugin.ToggleOverlay` action flips that until LMU reaches a different known screen, so hiding it on the main menu lasts until the next session. Fixture mode reports `Menu`.
+
+Replay can be told apart from driving with `GET /rest/replay/isActive`, but both hide the overlay, so the CLI doesn't call it.
 
 ## Settings
 

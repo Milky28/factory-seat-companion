@@ -70,6 +70,12 @@ A "Custom team identity" row appears when the round uses a Race Control custom t
 2. Start LMU and set up the race in its single-player menus.
 3. Watch the overlay while you change settings. Each row updates within a couple of seconds. When every row is green, the banner turns green and reads **READY TO RACE**.
 
+### When the overlay shows
+
+The overlay shows while you're in LMU's menus and hides as soon as an event starts loading. It stays hidden in the garage, while driving, in the pause menu and in replays, and comes back when you return to the menus. LMU can't tell the companion whether you're on the main menu or on race setup, so it shows on both.
+
+To hide it on the main menu, bind a key or wheel button to it. In SimHub, open **Controls and events**, add a new mapping, press the button you want, and pick the action **FactorySeatPlugin.ToggleOverlay**. Pressing it hides the overlay until your next session, and pressing it again brings it back. If LMU isn't reachable, the overlay stays up so you can still see which settings the round needs.
+
 ## Reading the overlay
 
 The top banner sums everything up:
@@ -106,7 +112,7 @@ Common reasons for NOT VERIFIED:
 - **Race duration in "% Track Time" mode** stays Unknown. LMU's API doesn't report the menu's race length in that mode. Set the finish criteria to **Time** to have it checked.
 - **Layouts need a mapping.** LMU and Factory Seat name layouts differently, and only Bahrain (Endurance and Outer) and Lusail ship in the example settings. Any other layout shows Unknown. To add one, select the layout in LMU: the Circuit row's LMU value is the `trackFolder`, and the Exact layout row's LMU value is the `sceneDescription`. Add both with the round's `layoutFile` to `layoutMappings` in your settings file and restart SimHub.
 - **Custom teams** can't be confirmed through LMU's API, so a round with a Race Control custom team always stays NOT VERIFIED.
-- **Main menu and race setup look the same to the API.** With `GSTATE_SETUP` allowed, checks also run on LMU's main menu. That's harmless because LMU's own menus read the same data there, but it means the companion can't tell you which screen you're on.
+- **Main menu and race setup look the same to the API.** With `GSTATE_SETUP` allowed, checks also run on LMU's main menu, and the overlay shows there too. That's harmless because LMU's own menus read the same data there. Use the toggle in [When the overlay shows](#when-the-overlay-shows) to hide it.
 - **Overlay size.** SimHub refuses to start overlays above an undocumented size, so the overlay is fixed at 720×406.
 - LMU's local API is unofficial and undocumented. A game update can change it and break checks, which show as Unknown rather than a false match.
 

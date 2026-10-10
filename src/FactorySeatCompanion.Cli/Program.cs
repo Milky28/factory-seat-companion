@@ -85,9 +85,9 @@ static async Task<int> RunAsync(string[] args)
             var report = validator.Validate(briefing, live, DateTimeOffset.UtcNow);
             if (structured) Console.WriteLine(JsonSerializer.Serialize(new
             {
-                mode = source is FixtureLmuSource ? "Fixture" : "Live", report
+                mode = source is FixtureLmuSource ? "Fixture" : "Live", screen = live.Screen, report
             }, jsonOptions));
-            else Render(report);
+            else Render(report, live.Screen);
             if (flags.Contains("--once")) return report.ReadyToRace ? 0 : 2;
             // Fixed delay after completion, no concurrent polls and no backlog on slow requests.
             await Task.Delay(TimeSpan.FromSeconds(options.PollSeconds), cancellation.Token);
@@ -103,10 +103,10 @@ static async Task<int> RunAsync(string[] args)
     }
 }
 
-static void Render(ValidationReport report)
+static void Render(ValidationReport report, LmuScreen screen)
 {
     Console.WriteLine($"\n{report.Career} / {report.Event} / Round {report.Round} | {report.OverallStatus}");
-    Console.WriteLine($"Briefing: {report.BriefingStatus}; LMU: {report.LmuStatus}; observation: {report.ObservedAt:O}");
+    Console.WriteLine($"Briefing: {report.BriefingStatus}; LMU: {report.LmuStatus} ({screen}); observation: {report.ObservedAt:O}");
     foreach (var check in report.Checks)
     {
         if (!Console.IsOutputRedirected) Console.ForegroundColor = check.Status switch
