@@ -67,7 +67,7 @@ In this example the round needs a 30-minute race and tyre wear 3, but LMU is set
 
 The overlay shows while you're in LMU's menus and hides as soon as an event starts loading. It stays hidden in the garage, while driving, in the pause menu and in replays, and comes back when you return to the menus. LMU can't tell the companion whether you're on the main menu or on race setup, so it shows on both.
 
-To hide it on the main menu, bind a key or wheel button to it. In SimHub, open **Controls and events**, add a new mapping, press the button you want, and pick the action **FactorySeatPlugin.ToggleOverlay**. Pressing it hides the overlay until your next session, and pressing it again brings it back. If LMU isn't reachable, the overlay stays up so you can still see which settings the round needs.
+To hide it on the main menu, bind a key or wheel button to it. In SimHub, open **Controls and events**, add a new mapping, press the button you want, and pick the action **FactorySeatPlugin.ToggleOverlay**. Pressing it hides the overlay until your next session, and pressing it again brings it back. The overlay stays hidden until LMU is running. If LMU is running but its data can't be read, the overlay stays up so you can still see which settings the round needs.
 
 ## What it checks
 
@@ -125,7 +125,7 @@ The installed settings let the checks run while you're in LMU's menus (`"safeSet
 
 ## Known limits
 
-- **Race duration in "% Track Time" mode is checked by hand.** In that mode LMU doesn't report a Race Time change until the hours change or the session starts. The row shows ☐ Check, and the **To do:** line reminds you to set the Race Time, for example "Set Race Time to 0 hrs 30 mins (change the hours once so LMU confirms it)". Changing the hours switches LMU to Time mode, and the row is then compared normally.
+- **Race duration in "% Track Time" mode is checked by hand.** When an event first loads, LMU may not report the Race Time until you change it or start the session. The row shows ☐ Check, and the **To do:** line reminds you to set the Race Time, for example "Set Race Time to 0 hrs 30 mins (change it once and back so LMU confirms it)". Changing the Race Time once (for example 30 to 45 and back to 30 mins) switches LMU to Time mode, and the row is then compared normally.
 - **New layouts need a mapping.** LMU and Factory Seat name layouts differently. The installed settings map every layout in LMU and Factory Seat's catalog as of October 2026 (18 tracks, 38 layouts). A layout added later shows Unknown until it is mapped. To add one, select the layout in LMU: the message at the bottom of the overlay then reads "No layout mapping for trackFolder …, sceneDescription …". Add both values with the round's `layoutFile` (from `briefing.json`) to `layoutMappings` in your own settings file (see [Settings](#settings)) and restart SimHub.
 - **Custom teams** can't be confirmed through LMU's API, so a round with a Race Control custom team always stays NOT VERIFIED.
 - **Main menu and race setup look the same to the API.** With `GSTATE_SETUP` allowed, checks also run on LMU's main menu, and the overlay shows there too. That's harmless because LMU's own menus read the same data there. Use the toggle in [When the overlay shows](#when-the-overlay-shows) to hide it.

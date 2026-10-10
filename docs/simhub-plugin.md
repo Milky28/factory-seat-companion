@@ -29,7 +29,7 @@ All are prefixed `FactorySeatPlugin.`
 | `OverallStatus` | `READY TO RACE`, `SETUP MISMATCH` or `NOT VERIFIED`. |
 | `Headline` | Career / event / round. |
 | `Mode` | `Fixture` or `Live`. |
-| `Screen` | `Menu`, `Loading`, `InSession` or `Unknown`, from the latest fresh report. |
+| `Screen` | `Menu`, `Loading`, `InSession` or `Unknown` from the latest fresh report, or `NotRunning` while LMU's process isn't running. |
 | `ShowOverlay` | Boolean. Every item in the bundled overlay is bound to it; see [When the overlay shows](#when-the-overlay-shows). |
 | `BriefingStatus`, `LmuStatus` | Source health from the report, or `Stale`. |
 | `ReportAgeSeconds` | Age of the report's observation. |
@@ -50,9 +50,10 @@ The CLI classifies each poll's `/navigation/state` (`LmuScreenClassifier` in the
 | In-event garage/monitor | `NAV_EVENT` | `InSession` |
 | Driving, pause, replay | `NAV_REALTIME` | `InSession` |
 | Leaving a session | `GSTATE_POST` | `InSession` |
-| LMU not reachable, anything else | | `Unknown` |
+| LMU's process (`Le Mans Ultimate`) not running | | `NotRunning` (checked by the plugin every 2 s) |
+| LMU running but not reachable, anything else | | `Unknown` |
 
-LMU's menu is a self-contained web app that never reports its page, so nothing separates race setup from the main menu. `ShowOverlay` is true for `Menu` and `Unknown` (a stale report counts as `Unknown`, so the checklist stays up when the API breaks) and false for `Loading` and `InSession`. The `FactorySeatPlugin.ToggleOverlay` action flips that until LMU reaches a different known screen, so hiding it on the main menu lasts until the next session. Fixture mode reports `Menu`.
+LMU's menu is a self-contained web app that never reports its page, so nothing separates race setup from the main menu. `ShowOverlay` is true for `Menu` and `Unknown` (a stale report counts as `Unknown`, so the checklist stays up when the API breaks while LMU runs) and false for `Loading`, `InSession` and `NotRunning`. The `FactorySeatPlugin.ToggleOverlay` action flips that until LMU reaches a different known screen, so hiding it on the main menu lasts until the next session. Fixture mode reports `Menu` and skips the process check.
 
 Replay can be told apart from driving with `GET /rest/replay/isActive`, but both hide the overlay, so the CLI doesn't call it.
 
