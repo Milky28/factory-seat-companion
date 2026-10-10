@@ -59,6 +59,8 @@ public sealed record LmuSnapshot
     public string? Team { get; init; }
     public string? LiveryName { get; init; }
     public double? RaceMinutes { get; init; }
+    // LMU's race finish setting, e.g. "Time" or "% Track Time"; RaceMinutes is known only for "Time".
+    public string? FinishCriteria { get; init; }
     public double? FuelMultiplier { get; init; }
     public double? TireMultiplier { get; init; }
     public double? TimeScale { get; init; }
@@ -68,7 +70,8 @@ public sealed record LmuSnapshot
     public string[] Diagnostics { get; init; } = [];
 }
 
-// Hint: one line telling the driver what to change in LMU; set only on Mismatch rows.
+// Hint: one line telling the driver what to change in LMU; set on Mismatch rows, and on an Unknown
+// row only when an LMU setting is what keeps it from being checked.
 public sealed record SettingCheck(string Id, string Label, string Required, string Current,
     CheckStatus Status, string? Reason = null, string? Hint = null)
 {

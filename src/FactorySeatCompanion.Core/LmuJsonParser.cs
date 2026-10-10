@@ -187,6 +187,7 @@ public static class LmuJsonParser
             Team = JsonRead.Text(JsonRead.Property(car, "team")),
             LiveryName = JsonRead.Text(JsonRead.Property(car, "liveryName")),
             RaceMinutes = raceMinutes,
+            FinishCriteria = finishCriteria,
             FuelMultiplier = Multiplier("SESSSET_Fuel_Usage"),
             TireMultiplier = Multiplier("SESSSET_Tire_Wear"),
             TimeScale = Multiplier("SESSSET_race_timescale"),

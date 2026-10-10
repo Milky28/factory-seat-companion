@@ -34,7 +34,7 @@ public sealed class DashboardRow
         "NotApplicable" => "\u2013",
         _ => "\u25CB"
     };
-    // One line telling the driver what to change; empty unless the row is a fresh Mismatch.
+    // One line telling the driver what to change; only on a fresh Mismatch row, or an Unknown row an LMU setting blocks.
     public string Hint { get; }
 }
 
@@ -93,7 +93,7 @@ public sealed class DashboardState
         foreach (var check in checks.Take(RowSlots))
             rows.Add(fresh
                 ? new DashboardRow(true, check.Id, check.Label, check.Required, check.Current, check.Status, check.Reason ?? "",
-                    check.Status == "Mismatch" ? check.Hint ?? "" : "")
+                    check.Status is "Mismatch" or "Unknown" ? check.Hint ?? "" : "")
                 : new DashboardRow(true, check.Id, check.Label, check.Required, "Unknown", "Unknown", "Report is stale.", ""));
         while (rows.Count < RowSlots) rows.Add(DashboardRow.Hidden);
 

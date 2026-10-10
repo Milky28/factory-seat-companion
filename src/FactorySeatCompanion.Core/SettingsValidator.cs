@@ -75,6 +75,14 @@ public sealed class SettingsValidator(CompanionOptions options)
                 null, null, reason: "REST custom-team marker has not been established; matching a team name is insufficient.");
         Number("duration", "Race duration (min)", b?.RaceMinutes, live.RaceMinutes,
             $"Set Race Length to {Display(b?.RaceMinutes)} min", true);
+        // LMU only reports race minutes when the finish is set to Time, so say so instead of leaving a bare Unknown.
+        if (valid && live.RaceMinutes is null && Present(live.FinishCriteria) && b?.RaceMinutes is not null &&
+            !string.Equals(live.FinishCriteria!.Trim(), "Time", StringComparison.OrdinalIgnoreCase))
+            checks[^1] = checks[^1] with
+            {
+                Hint = $"Set Race Finish to Time, then Race Length to {Display(b.RaceMinutes)} min",
+                Reason = $"LMU's race finish is '{live.FinishCriteria}'; race length can only be checked when it is Time."
+            };
         Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier,
             $"Set Fuel Usage to {Factor(b?.FuelMultiplier, "Realistic")}");
         Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier,

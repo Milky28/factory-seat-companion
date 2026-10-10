@@ -54,6 +54,8 @@ Test("Duration is unknown unless the finish criteria is Time", () =>
     var parsed = LmuJsonParser.Parse(percent, race, setup, now);
     Assert(parsed.RaceMinutes is null && parsed.Diagnostics.Any(d => d.Contains("SESSSET_Finish_Criteria")));
     Status(Report(parsed), "duration", CheckStatus.Unknown);
+    var duration = Report(parsed).Checks.Single(c => c.Id == "duration");
+    Assert(duration.Hint == "Set Race Finish to Time, then Race Length to 360 min", duration.Hint ?? "(none)");
     var missing = Change(sessions, n => n.AsObject().Remove("SESSSET_Finish_Criteria"));
     Assert(LmuJsonParser.Parse(missing, durations, setup, now).RaceMinutes is null);
     var timed = Change(sessions, n => n["SESSSET_Finish_Criteria"]!["stringValue"] = " time ");
@@ -527,6 +529,8 @@ Test("Dashboard shows NotApplicable as Any and lists fix hints", () =>
     var mismatch = Dash(Report(live with { FuelMultiplier = 2, TimeScale = 1 }));
     Assert(mismatch.Rows.Single(r => r.Id == "fuel").Hint == "Set Fuel Usage to Realistic");
     Assert(mismatch.Rows.Single(r => r.Id == "fuel").Icon == "\u2717");
+    var percent = Dash(Report(live with { RaceMinutes = null, FinishCriteria = "% Track Time" }));
+    Assert(percent.Rows.Single(r => r.Id == "duration").Icon == "\u25CB" && percent.Hints.StartsWith("Set Race Finish to Time"), percent.Hints);
     Assert(mismatch.Hints == "Set Fuel Usage to Realistic \u00B7 Set Time Scale to X4", mismatch.Hints);
     var stale = Dash(Report(live with { FuelMultiplier = 2 }), 11);
     // Stale or unreadable LMU still lists every required setting, each with an open circle.

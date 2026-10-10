@@ -109,7 +109,7 @@ Common reasons for NOT VERIFIED:
 
 ## Known limits
 
-- **Race duration in "% Track Time" mode** stays Unknown. LMU's API doesn't report the menu's race length in that mode. Set the finish criteria to **Time** to have it checked.
+- **Race duration in "% Track Time" mode** stays Unknown. LMU's API doesn't report the menu's race length in that mode. The overlay's **To fix:** line says to set the race finish to **Time**, which lets it be checked.
 - **Layouts need a mapping.** LMU and Factory Seat name layouts differently, and only Bahrain (Endurance and Outer) and Lusail ship in the example settings. Any other layout shows Unknown. To add one, select the layout in LMU: the message at the bottom of the overlay then reads "No layout mapping for trackFolder …, sceneDescription …". Add both values with the round's `layoutFile` (from `briefing.json`) to `layoutMappings` in your settings file and restart SimHub.
 - **Custom teams** can't be confirmed through LMU's API, so a round with a Race Control custom team always stays NOT VERIFIED.
 - **Main menu and race setup look the same to the API.** With `GSTATE_SETUP` allowed, checks also run on LMU's main menu, and the overlay shows there too. That's harmless because LMU's own menus read the same data there. Use the toggle in [When the overlay shows](#when-the-overlay-shows) to hide it.
