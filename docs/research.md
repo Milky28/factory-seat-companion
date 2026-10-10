@@ -23,6 +23,10 @@ The user brief supplies experimental endpoint/field evidence. Exact original res
 
 Pending evidence: real sessions envelope and readable labels, numeric enum/index semantics, actual vehFile/fullPathTree format, setup/replay/loading navigation schema, car custom-team marker, class aliases if needed, and scene identifiers for other tracks. Unknown fields remain unknown rather than being guessed.
 
+## Layout scene identifiers
+
+Collected 2026-10-10 from an LMU install with every track owned. `GET /rest/race/track` lists each installed layout's `sceneDesc` with its display name, but not its location folder or layout file. 24 of the 38 layouts were tied to a layout file directly: each replay (`UserData\Replays\*.Vcr`) records the scene and location folder, and the results file written at the same time (`UserData\Log\Results\*.xml`, `TrackData`) names the layout `.mas`. Every scene paired with the same layout file in all sessions. The other 14 were matched by display name within their circuit, where the remaining layouts differ: Bahrain Paddock, Spa ELMS, Imola ELMS, COTA National, Lusail Short, Long Beach, Silverstone WEC/International/National and Paul Ricard 1A/1A-V2/1A-V2-Short/3A (Paul Ricard ELMS was confirmed from a results file). The `.mas` archives are encrypted, so their contents were not read.
+
 ## SimHub
 
 The official [Plugin and extensions SDKs](https://github.com/SHWotever/SimHub/wiki/Plugin-and-extensions-SDKs) describes the installed `PluginSdk/User.PluginSdkDemo` example and property/action extension scope. Inspected the installed `DataPluginDemo.cs`, `User.PluginSdkDemo.csproj`, and `GettingStarted.txt` location. The project targets .NET Framework 4.8 and demonstrates `IPlugin`, `IDataPlugin`, `IWPFSettingsV2`, `Init`, `End`, and `AttachDelegate` custom properties. Its comments require `DataUpdate` to remain fast and avoid exceptions. The existing local Lovely Car Data Capture source also demonstrates use of AttachDelegate, but is not a required dependency.
