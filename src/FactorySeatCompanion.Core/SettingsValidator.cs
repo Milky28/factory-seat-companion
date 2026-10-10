@@ -83,7 +83,7 @@ public sealed class SettingsValidator(CompanionOptions options)
         else
             Add("duration", "Race duration (min)", Display(b!.RaceMinutes), "Set in menu", null, manual: true,
                 reason: $"LMU's race finish is '{live.FinishCriteria ?? "unknown"}', so it doesn't report Race Time changes yet.",
-                hint: raceTime + " (change the hours once so LMU confirms it)");
+                hint: raceTime + " (change it once and back so LMU confirms it)");
         Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier,
             $"Set Fuel Usage to {Factor(b?.FuelMultiplier, "Realistic")}");
         Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier,

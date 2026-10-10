@@ -94,7 +94,7 @@ Test("Race duration compares in Time mode, otherwise is a manual check", () =>
         var report = Report(snapshot);
         var duration = report.Checks.Single(c => c.Id == "duration");
         Assert(report.ReadyToRace && duration.Status == CheckStatus.Manual && duration.Current == "Set in menu");
-        Assert(duration.Required == "360" && duration.Hint == "Set Race Time to 6 hrs 0 mins (change the hours once so LMU confirms it)",
+        Assert(duration.Required == "360" && duration.Hint == "Set Race Time to 6 hrs 0 mins (change it once and back so LMU confirms it)",
             duration.Hint ?? "(none)");
         Assert(SettingCheck.DisplayStatus(duration.Status) == "Check");
     }
