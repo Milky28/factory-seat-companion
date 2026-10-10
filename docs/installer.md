@@ -37,4 +37,4 @@ A `ConfigPath` set in `SimHub\PluginsData\Common\FactorySeatPlugin.GeneralSettin
 
 CI installs SimHub silently into a scratch folder (`scripts/Get-SimHubSdk.ps1`) only to compile against its DLLs; no SimHub file is packaged. The self-contained CLI publish fetches the .NET runtime pack from nuget.org; the project itself still has no NuGet dependencies.
 
-No GitHub Release is published automatically.
+To publish a release, run the **Release** workflow by hand (Actions > Release > Run workflow) with a version such as `0.1.0-beta.1`. It builds from the chosen branch, creates the tag `v<version>` and a GitHub release (a pre-release unless unticked) with the installer and zip attached. Nothing is released automatically.
