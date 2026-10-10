@@ -39,6 +39,8 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
         this.AttachDelegate("ReportAgeSeconds", () => State().ReportAgeSeconds);
         this.AttachDelegate("BridgeStatus", () => State().BridgeStatus);
         this.AttachDelegate("Diagnostics", () => State().Diagnostics);
+        this.AttachDelegate("Hints", () => State().Hints);
+        this.AttachDelegate("ManualCheck", () => State().ManualCheck);
         this.AttachDelegate("Screen", () => { State(); return visibility.Screen; });
         this.AttachDelegate("ShowOverlay", () => { State(); return visibility.Visible; });
         // Bind to a key or wheel button in SimHub's Controls and events to hide or show the overlay.
@@ -53,6 +55,9 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
             this.AttachDelegate(prefix + "Required", () => State().Rows[slot].Required);
             this.AttachDelegate(prefix + "Current", () => State().Rows[slot].Current);
             this.AttachDelegate(prefix + "Status", () => State().Rows[slot].Status);
+            this.AttachDelegate(prefix + "StatusText", () => State().Rows[slot].StatusText);
+            this.AttachDelegate(prefix + "Icon", () => State().Rows[slot].Icon);
+            this.AttachDelegate(prefix + "Hint", () => State().Rows[slot].Hint);
             this.AttachDelegate(prefix + "Reason", () => State().Rows[slot].Reason);
         }
         bridge.Start();

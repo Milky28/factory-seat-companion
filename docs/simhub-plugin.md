@@ -30,12 +30,14 @@ All are prefixed `FactorySeatPlugin.`
 | `Headline` | Career / event / round. |
 | `Mode` | `Fixture` or `Live`. |
 | `Screen` | `Menu`, `Loading`, `InSession` or `Unknown`, from the latest fresh report. |
-| `ShowOverlay` | Boolean. Bind the overlay's visibility to it; see [When the overlay shows](#when-the-overlay-shows). |
+| `ShowOverlay` | Boolean. Every item in the bundled overlay is bound to it; see [When the overlay shows](#when-the-overlay-shows). |
 | `BriefingStatus`, `LmuStatus` | Source health from the report, or `Stale`. |
 | `ReportAgeSeconds` | Age of the report's observation. |
 | `BridgeStatus` | `Running`, or why the companion is not running. |
 | `Diagnostics` | Report diagnostics joined with ` \| `. |
-| `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `Reason` | One slot per check row in report order. Unused slots have `Visible` false. |
+| `Hints` | Fix hints of every row that has one, joined with ` · `. Empty when nothing mismatches or the report is stale. |
+| `ManualCheck` | A note to check each setting by hand, set when the briefing is available but LMU's settings can't be read or the report is stale. Otherwise empty. |
+| `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Icon`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any` and `Manual` as `Check`; `Icon` is ✓, ✗, – (Any), ☐ (Check) or ○ (Unknown); `Hint` is set on a fresh `Mismatch` or `Manual` row. `Manual` rows (Race duration outside LMU's Time finish mode) don't block READY TO RACE. |
 
 ## When the overlay shows
 
