@@ -114,7 +114,7 @@ The footer shows where the data comes from. **Briefing** and **LMU** say whether
 | **Briefing Unavailable** | Factory Seat hasn't written a briefing (version older than 1.1), or the career is between seasons. |
 | **LMU Unavailable** | LMU isn't running, or isn't answering on its local port yet. |
 | **LMU UnsafeState** | You're driving, in a replay or loading. Checks resume in the menus. If it never clears in the menus, check that your settings still have `"safeSetupStates": ["GSTATE_SETUP"]`. |
-| **Exact layout Unknown** | The companion doesn't know how this layout is named in LMU yet. See [Known limits](#known-limits). |
+| **Exact layout Unknown** | The layout isn't mapped yet (see [Known limits](#known-limits)), or SimHub is reading an older settings file: clear `ConfigPath` in `SimHub\PluginsData\Common\FactorySeatPlugin.GeneralSettings.json` if it points at one. |
 | **Bridge** says the companion CLI wasn't found | Reinstall; the companion program is missing from `SimHub\FactorySeatCompanion\`. |
 
 ## Settings
@@ -126,7 +126,7 @@ The installed settings let the checks run while you're in LMU's menus (`"safeSet
 ## Known limits
 
 - **Race duration in "% Track Time" mode is checked by hand.** When an event first loads, LMU may not report the Race Time until you change it or start the session. The row shows ☐ Check, and the **To do:** line reminds you to set the Race Time, for example "Set Race Time to 0 hrs 30 mins (change it once and back so LMU confirms it)". Changing the Race Time once (for example 30 to 45 and back to 30 mins) switches LMU to Time mode, and the row is then compared normally.
-- **New layouts need a mapping.** LMU and Factory Seat name layouts differently. The installed settings map every layout in LMU and Factory Seat's catalog as of October 2026 (18 tracks, 38 layouts). A layout added later shows Unknown until it is mapped. To add one, select the layout in LMU: the message at the bottom of the overlay then reads "No layout mapping for trackFolder …, sceneDescription …". Add both values with the round's `layoutFile` (from `briefing.json`) to `layoutMappings` in your own settings file (see [Settings](#settings)) and restart SimHub.
+- **Layouts added after October 2026 need a mapping.** Every layout in LMU and Factory Seat's catalog as of October 2026 is mapped (18 tracks, 38 layouts); 14 of them were matched by name rather than confirmed in a session. A layout LMU adds later shows Unknown with "No layout mapping for trackFolder …, sceneDescription …" at the bottom of the overlay. Add both values with the round's `layoutFile` (from `briefing.json`) to `layoutMappings` in your own settings file (see [Settings](#settings)) and restart SimHub.
 - **Custom teams** can't be confirmed through LMU's API, so a round with a Race Control custom team always stays NOT VERIFIED.
 - **Main menu and race setup look the same to the API.** With `GSTATE_SETUP` allowed, checks also run on LMU's main menu, and the overlay shows there too. That's harmless because LMU's own menus read the same data there. Use the toggle in [When the overlay shows](#when-the-overlay-shows) to hide it.
 - **Overlay size.** SimHub refuses to start overlays above an undocumented size, so the overlay is fixed at 720×406.
