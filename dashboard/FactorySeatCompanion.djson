@@ -28,7 +28,15 @@
           "Height": 406,
           "Visible": true,
           "BackgroundColor": "#F2101318",
-          "Bindings": {}
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
@@ -39,7 +47,15 @@
           "Height": 52,
           "Visible": true,
           "BackgroundColor": "#FF171C24",
-          "Bindings": {}
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
@@ -57,6 +73,13 @@
               },
               "Mode": 2,
               "TargetPropertyName": "BackgroundColor"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           }
         },
@@ -76,7 +99,15 @@
           "BackgroundColor": "#00FFFFFF",
           "HorizontalAlignment": 0,
           "VerticalAlignment": 1,
-          "Bindings": {}
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
@@ -101,6 +132,13 @@
               },
               "Mode": 2,
               "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           }
         },
@@ -120,6 +158,13 @@
               },
               "Mode": 2,
               "TargetPropertyName": "BackgroundColor"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           }
         },
@@ -146,6 +191,13 @@
               },
               "Mode": 2,
               "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           }
         },
@@ -165,7 +217,15 @@
           "BackgroundColor": "#00FFFFFF",
           "HorizontalAlignment": 0,
           "VerticalAlignment": 1,
-          "Bindings": {}
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
@@ -183,7 +243,15 @@
           "BackgroundColor": "#00FFFFFF",
           "HorizontalAlignment": 0,
           "VerticalAlignment": 1,
-          "Bindings": {}
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
@@ -201,7 +269,15 @@
           "BackgroundColor": "#00FFFFFF",
           "HorizontalAlignment": 0,
           "VerticalAlignment": 1,
-          "Bindings": {}
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
@@ -219,7 +295,15 @@
           "BackgroundColor": "#00FFFFFF",
           "HorizontalAlignment": 0,
           "VerticalAlignment": 1,
-          "Bindings": {}
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
@@ -230,7 +314,15 @@
           "Height": 1,
           "Visible": true,
           "BackgroundColor": "#FF2A313B",
-          "Bindings": {}
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
@@ -244,7 +336,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -284,7 +376,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -324,7 +416,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -364,7 +456,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -404,7 +496,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -444,7 +536,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -470,7 +562,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -510,7 +602,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -550,7 +642,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -590,7 +682,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -630,7 +722,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -670,7 +762,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -696,7 +788,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -736,7 +828,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -776,7 +868,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -816,7 +908,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -856,7 +948,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -896,7 +988,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -922,7 +1014,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -962,7 +1054,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1002,7 +1094,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1042,7 +1134,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1082,7 +1174,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1122,7 +1214,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1148,7 +1240,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1188,7 +1280,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1228,7 +1320,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1268,7 +1360,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1308,7 +1400,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1348,7 +1440,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1374,7 +1466,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1414,7 +1506,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1454,7 +1546,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1494,7 +1586,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1534,7 +1626,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1574,7 +1666,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1600,7 +1692,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1640,7 +1732,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1680,7 +1772,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1720,7 +1812,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1760,7 +1852,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1800,7 +1892,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1826,7 +1918,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1866,7 +1958,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1906,7 +1998,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1946,7 +2038,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -1986,7 +2078,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2026,7 +2118,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2052,7 +2144,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2092,7 +2184,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2132,7 +2224,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2172,7 +2264,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2212,7 +2304,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2252,7 +2344,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2278,7 +2370,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2318,7 +2410,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2358,7 +2450,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2398,7 +2490,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2438,7 +2530,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2478,7 +2570,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2504,7 +2596,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2544,7 +2636,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2584,7 +2676,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2624,7 +2716,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2664,7 +2756,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2704,7 +2796,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2730,7 +2822,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2770,7 +2862,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2810,7 +2902,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2850,7 +2942,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2890,7 +2982,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2930,7 +3022,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2956,7 +3048,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -2996,7 +3088,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -3036,7 +3128,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -3076,7 +3168,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -3116,7 +3208,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -3156,7 +3248,7 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
@@ -3200,6 +3292,13 @@
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           },
           "TextWrapping": 2
@@ -3213,7 +3312,15 @@
           "Height": 1,
           "Visible": true,
           "BackgroundColor": "#FF2A313B",
-          "Bindings": {}
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
@@ -3238,6 +3345,13 @@
               },
               "Mode": 2,
               "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           }
         },
@@ -3264,6 +3378,13 @@
               },
               "Mode": 2,
               "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           },
           "TextWrapping": 2
