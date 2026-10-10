@@ -612,6 +612,29 @@ Test("Overlay shows in menus, hides in sessions, and a dismissal lasts until the
     overlay.Observe("Menu");
     Assert(overlay.Visible && overlay.Screen == "Menu", "back in the menus it shows again");
 });
+Test("Overlay stays hidden while LMU isn't running; the toggle still works", () =>
+{
+    var overlay = new OverlayVisibility();
+    overlay.Observe("Unknown", lmuRunning: false);
+    Assert(!overlay.Visible && overlay.Screen == "NotRunning", "hidden before LMU starts");
+    overlay.Toggle();
+    Assert(overlay.Visible, "the action can show it anyway");
+    overlay.Observe("Unknown", lmuRunning: true);
+    Assert(overlay.Visible, "LMU running with its API not answering still shows the checklist");
+    overlay.Observe("Menu", lmuRunning: true);
+    Assert(overlay.Visible);
+    overlay.Observe("Menu", lmuRunning: false);
+    Assert(!overlay.Visible, "hidden again once LMU exits");
+});
+Test("LMU process check is throttled", () =>
+{
+    int probes = 0;
+    var process = new LmuProcess(() => { probes++; return true; });
+    var t = DateTimeOffset.Parse("2026-10-10T12:00:00Z");
+    Assert(process.IsRunning(t) && process.IsRunning(t.AddSeconds(1)) && probes == 1);
+    process.IsRunning(t.AddSeconds(2));
+    Assert(probes == 2);
+});
 Test("Plugin command line quoting", () =>
 {
     Assert(WindowsCommandLine.Quote("plain") == "plain");

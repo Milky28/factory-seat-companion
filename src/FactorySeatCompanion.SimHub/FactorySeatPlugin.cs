@@ -19,6 +19,7 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
     private PluginSettings settings = new PluginSettings();
     private CompanionBridge? bridge;
     private readonly OverlayVisibility visibility = new OverlayVisibility();
+    private readonly LmuProcess lmu = new LmuProcess();
     private Tuple<DateTimeOffset, DashboardState>? cached;
 
     public PluginManager PluginManager { get; set; } = null!;
@@ -82,7 +83,8 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
         var maxAge = TimeSpan.FromSeconds(settings.ReportMaxAgeSeconds > 0 ? settings.ReportMaxAgeSeconds : 10);
         var latest = bridge?.Latest;
         var state = DashboardState.Create(latest, now, maxAge, bridge?.Status ?? "Not started");
-        visibility.Observe(OverlayVisibility.ScreenOf(latest, now, maxAge));
+        // Fixture mode tests the overlay without LMU, so it doesn't wait for the game.
+        visibility.Observe(OverlayVisibility.ScreenOf(latest, now, maxAge), latest?.Mode == "Fixture" || lmu.IsRunning(now));
         Volatile.Write(ref cached, Tuple.Create(now, state));
         return state;
     }

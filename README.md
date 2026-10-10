@@ -67,7 +67,7 @@ In this example the round needs a 30-minute race and tyre wear 3, but LMU is set
 
 The overlay shows while you're in LMU's menus and hides as soon as an event starts loading. It stays hidden in the garage, while driving, in the pause menu and in replays, and comes back when you return to the menus. LMU can't tell the companion whether you're on the main menu or on race setup, so it shows on both.
 
-To hide it on the main menu, bind a key or wheel button to it. In SimHub, open **Controls and events**, add a new mapping, press the button you want, and pick the action **FactorySeatPlugin.ToggleOverlay**. Pressing it hides the overlay until your next session, and pressing it again brings it back. If LMU isn't reachable, the overlay stays up so you can still see which settings the round needs.
+To hide it on the main menu, bind a key or wheel button to it. In SimHub, open **Controls and events**, add a new mapping, press the button you want, and pick the action **FactorySeatPlugin.ToggleOverlay**. Pressing it hides the overlay until your next session, and pressing it again brings it back. The overlay stays hidden until LMU is running. If LMU is running but its data can't be read, the overlay stays up so you can still see which settings the round needs.
 
 ## What it checks
 
