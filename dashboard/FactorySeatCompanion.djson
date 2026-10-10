@@ -27,39 +27,158 @@
           "Width": 720,
           "Height": 406,
           "Visible": true,
-          "BackgroundColor": "#F0101418",
-          "Bindings": {}
+          "BackgroundColor": "#F2101318",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
-          "Name": "StatusBar",
-          "Left": 4,
-          "Top": 4,
-          "Width": 712,
-          "Height": 36,
+          "Name": "HeaderBand",
+          "Left": 0,
+          "Top": 0,
+          "Width": 720,
+          "Height": 52,
           "Visible": true,
-          "BackgroundColor": "#FF7D6608",
+          "BackgroundColor": "#FF171C24",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "AccentBar",
+          "Left": 0,
+          "Top": 0,
+          "Width": 6,
+          "Height": 52,
+          "Visible": true,
+          "BackgroundColor": "#FF9A7D0A",
           "Bindings": {
             "BackgroundColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.ReadyToRace],'#FF1E8449',if([FactorySeatPlugin.OverallStatus]='SETUP MISMATCH','#FFB03A2E','#FF7D6608'))"
+                "Expression": "if([FactorySeatPlugin.ReadyToRace],'#FF1E8449',if([FactorySeatPlugin.OverallStatus]='SETUP MISMATCH','#FFB03A2E','#FF9A7D0A'))"
               },
               "Mode": 2,
               "TargetPropertyName": "BackgroundColor"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Brand",
+          "Left": 16,
+          "Top": 6,
+          "Width": 420,
+          "Height": 16,
+          "Visible": true,
+          "Text": "FACTORY SEAT  /  PRE-RACE CHECK",
+          "Font": "Roboto",
+          "FontSize": 11,
+          "FontWeight": "Bold",
+          "TextColor": "#FFE8A33D",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Headline",
+          "Left": 16,
+          "Top": 22,
+          "Width": 428,
+          "Height": 26,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFFFFFFF",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Headline]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "StatusPill",
+          "Left": 452,
+          "Top": 8,
+          "Width": 260,
+          "Height": 36,
+          "Visible": true,
+          "BackgroundColor": "#FF9A7D0A",
+          "Bindings": {
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ReadyToRace],'#FF1E8449',if([FactorySeatPlugin.OverallStatus]='SETUP MISMATCH','#FFB03A2E','#FF9A7D0A'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "OverallStatus",
-          "Left": 4,
-          "Top": 4,
-          "Width": 712,
+          "Left": 452,
+          "Top": 8,
+          "Width": 260,
           "Height": 36,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
-          "FontSize": 24,
+          "FontSize": 19,
           "FontWeight": "Bold",
           "TextColor": "#FFFFFFFF",
           "BackgroundColor": "#00FFFFFF",
@@ -72,42 +191,212 @@
               },
               "Mode": 2,
               "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Headline",
-          "Left": 8,
-          "Top": 42,
-          "Width": 704,
-          "Height": 20,
+          "Name": "HeaderSetting",
+          "Left": 36,
+          "Top": 56,
+          "Width": 150,
+          "Height": 14,
           "Visible": true,
-          "Text": "",
+          "Text": "SETTING",
           "Font": "Roboto",
-          "FontSize": 13,
-          "FontWeight": "Normal",
-          "TextColor": "#FFBDC3C7",
+          "FontSize": 10,
+          "FontWeight": "Bold",
+          "TextColor": "#FF6C7A89",
           "BackgroundColor": "#00FFFFFF",
           "HorizontalAlignment": 0,
           "VerticalAlignment": 1,
           "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "HeaderRequired",
+          "Left": 190,
+          "Top": 56,
+          "Width": 210,
+          "Height": 14,
+          "Visible": true,
+          "Text": "ROUND NEEDS",
+          "Font": "Roboto",
+          "FontSize": 10,
+          "FontWeight": "Bold",
+          "TextColor": "#FF6C7A89",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "HeaderCurrent",
+          "Left": 404,
+          "Top": 56,
+          "Width": 210,
+          "Height": 14,
+          "Visible": true,
+          "Text": "LMU NOW",
+          "Font": "Roboto",
+          "FontSize": 10,
+          "FontWeight": "Bold",
+          "TextColor": "#FF6C7A89",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "HeaderStatus",
+          "Left": 618,
+          "Top": 56,
+          "Width": 94,
+          "Height": 14,
+          "Visible": true,
+          "Text": "STATUS",
+          "Font": "Roboto",
+          "FontSize": 10,
+          "FontWeight": "Bold",
+          "TextColor": "#FF6C7A89",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "HeaderRule",
+          "Left": 8,
+          "Top": 71,
+          "Width": 704,
+          "Height": 1,
+          "Visible": true,
+          "BackgroundColor": "#FF2A313B",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row01Background",
+          "Left": 4,
+          "Top": 74,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#0DFFFFFF",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row01.Status]='Mismatch','#33E74C3C','#0DFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row01Icon",
+          "Left": 10,
+          "Top": 74,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
             "Text": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Headline]"
+                "Expression": "[FactorySeatPlugin.Row01.Icon]"
               },
               "Mode": 2,
               "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row01.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row01.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row01.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row01.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row01Label",
-          "Left": 8,
-          "Top": 64,
+          "Left": 36,
+          "Top": 74,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -127,20 +416,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row01.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row01Required",
-          "Left": 162,
-          "Top": 64,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 74,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -160,20 +456,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row01.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row01Current",
-          "Left": 386,
-          "Top": 64,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 74,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -193,47 +496,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row01Status",
-          "Left": 606,
-          "Top": 64,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row01.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row01.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row01.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row01.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row01.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row01.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row01Status",
+          "Left": 618,
+          "Top": 74,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row01.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row01.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row01.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row01.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row01.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row01.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row02Background",
+          "Left": 4,
+          "Top": 94,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#00000000",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row02.Status]='Mismatch','#33E74C3C','#00000000')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row02Icon",
+          "Left": 10,
+          "Top": 94,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row02.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row02.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row02.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row02.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row02.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -243,10 +619,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row02Label",
-          "Left": 8,
-          "Top": 86,
+          "Left": 36,
+          "Top": 94,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -266,20 +642,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row02.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row02Required",
-          "Left": 162,
-          "Top": 86,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 94,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -299,20 +682,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row02.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row02Current",
-          "Left": 386,
-          "Top": 86,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 94,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -332,47 +722,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row02Status",
-          "Left": 606,
-          "Top": 86,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row02.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row02.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row02.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row02.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row02.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row02.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row02Status",
+          "Left": 618,
+          "Top": 94,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row02.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row02.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row02.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row02.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row02.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row02.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row03Background",
+          "Left": 4,
+          "Top": 114,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#0DFFFFFF",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row03.Status]='Mismatch','#33E74C3C','#0DFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row03Icon",
+          "Left": 10,
+          "Top": 114,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row03.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row03.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row03.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row03.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row03.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -382,10 +845,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row03Label",
-          "Left": 8,
-          "Top": 108,
+          "Left": 36,
+          "Top": 114,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -405,20 +868,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row03.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row03Required",
-          "Left": 162,
-          "Top": 108,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 114,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -438,20 +908,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row03.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row03Current",
-          "Left": 386,
-          "Top": 108,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 114,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -471,47 +948,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row03Status",
-          "Left": 606,
-          "Top": 108,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row03.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row03.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row03.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row03.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row03.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row03.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row03Status",
+          "Left": 618,
+          "Top": 114,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row03.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row03.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row03.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row03.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row03.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row03.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row04Background",
+          "Left": 4,
+          "Top": 134,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#00000000",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row04.Status]='Mismatch','#33E74C3C','#00000000')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row04Icon",
+          "Left": 10,
+          "Top": 134,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row04.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row04.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row04.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row04.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row04.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -521,10 +1071,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row04Label",
-          "Left": 8,
-          "Top": 130,
+          "Left": 36,
+          "Top": 134,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -544,20 +1094,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row04.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row04Required",
-          "Left": 162,
-          "Top": 130,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 134,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -577,20 +1134,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row04.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row04Current",
-          "Left": 386,
-          "Top": 130,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 134,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -610,47 +1174,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row04Status",
-          "Left": 606,
-          "Top": 130,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row04.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row04.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row04.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row04.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row04.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row04.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row04Status",
+          "Left": 618,
+          "Top": 134,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row04.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row04.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row04.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row04.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row04.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row04.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row05Background",
+          "Left": 4,
+          "Top": 154,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#0DFFFFFF",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row05.Status]='Mismatch','#33E74C3C','#0DFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row05Icon",
+          "Left": 10,
+          "Top": 154,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row05.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row05.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row05.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row05.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row05.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -660,10 +1297,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row05Label",
-          "Left": 8,
-          "Top": 152,
+          "Left": 36,
+          "Top": 154,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -683,20 +1320,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row05.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row05Required",
-          "Left": 162,
-          "Top": 152,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 154,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -716,20 +1360,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row05.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row05Current",
-          "Left": 386,
-          "Top": 152,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 154,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -749,47 +1400,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row05Status",
-          "Left": 606,
-          "Top": 152,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row05.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row05.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row05.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row05.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row05.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row05.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row05Status",
+          "Left": 618,
+          "Top": 154,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row05.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row05.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row05.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row05.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row05.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row05.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row06Background",
+          "Left": 4,
+          "Top": 174,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#00000000",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row06.Status]='Mismatch','#33E74C3C','#00000000')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row06Icon",
+          "Left": 10,
+          "Top": 174,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row06.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row06.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row06.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row06.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row06.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -799,10 +1523,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row06Label",
-          "Left": 8,
+          "Left": 36,
           "Top": 174,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -822,20 +1546,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row06.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row06Required",
-          "Left": 162,
+          "Left": 190,
           "Top": 174,
-          "Width": 220,
-          "Height": 22,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -855,20 +1586,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row06.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row06Current",
-          "Left": 386,
+          "Left": 404,
           "Top": 174,
-          "Width": 216,
-          "Height": 22,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -888,47 +1626,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row06Status",
-          "Left": 606,
-          "Top": 174,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row06.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row06.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row06.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row06.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row06.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row06.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row06Status",
+          "Left": 618,
+          "Top": 174,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row06.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row06.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row06.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row06.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row06.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row06.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row07Background",
+          "Left": 4,
+          "Top": 194,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#0DFFFFFF",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row07.Status]='Mismatch','#33E74C3C','#0DFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row07Icon",
+          "Left": 10,
+          "Top": 194,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row07.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row07.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row07.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row07.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row07.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -938,10 +1749,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row07Label",
-          "Left": 8,
-          "Top": 196,
+          "Left": 36,
+          "Top": 194,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -961,20 +1772,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row07.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row07Required",
-          "Left": 162,
-          "Top": 196,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 194,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -994,20 +1812,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row07.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row07Current",
-          "Left": 386,
-          "Top": 196,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 194,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1027,47 +1852,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row07Status",
-          "Left": 606,
-          "Top": 196,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row07.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row07.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row07.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row07.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row07.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row07.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row07Status",
+          "Left": 618,
+          "Top": 194,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row07.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row07.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row07.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row07.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row07.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row07.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row08Background",
+          "Left": 4,
+          "Top": 214,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#00000000",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row08.Status]='Mismatch','#33E74C3C','#00000000')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row08Icon",
+          "Left": 10,
+          "Top": 214,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row08.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row08.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row08.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row08.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row08.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -1077,10 +1975,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row08Label",
-          "Left": 8,
-          "Top": 218,
+          "Left": 36,
+          "Top": 214,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1100,20 +1998,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row08.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row08Required",
-          "Left": 162,
-          "Top": 218,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 214,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1133,20 +2038,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row08.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row08Current",
-          "Left": 386,
-          "Top": 218,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 214,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1166,47 +2078,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row08Status",
-          "Left": 606,
-          "Top": 218,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row08.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row08.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row08.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row08.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row08.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row08.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row08Status",
+          "Left": 618,
+          "Top": 214,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row08.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row08.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row08.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row08.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row08.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row08.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row09Background",
+          "Left": 4,
+          "Top": 234,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#0DFFFFFF",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row09.Status]='Mismatch','#33E74C3C','#0DFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row09Icon",
+          "Left": 10,
+          "Top": 234,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row09.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row09.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row09.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row09.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row09.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -1216,10 +2201,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row09Label",
-          "Left": 8,
-          "Top": 240,
+          "Left": 36,
+          "Top": 234,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1239,20 +2224,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row09.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row09Required",
-          "Left": 162,
-          "Top": 240,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 234,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1272,20 +2264,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row09.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row09Current",
-          "Left": 386,
-          "Top": 240,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 234,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1305,47 +2304,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row09Status",
-          "Left": 606,
-          "Top": 240,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row09.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row09.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row09.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row09.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row09.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row09.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row09Status",
+          "Left": 618,
+          "Top": 234,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row09.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row09.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row09.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row09.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row09.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row09.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row10Background",
+          "Left": 4,
+          "Top": 254,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#00000000",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row10.Status]='Mismatch','#33E74C3C','#00000000')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row10Icon",
+          "Left": 10,
+          "Top": 254,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row10.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row10.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row10.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row10.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row10.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -1355,10 +2427,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row10Label",
-          "Left": 8,
-          "Top": 262,
+          "Left": 36,
+          "Top": 254,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1378,20 +2450,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row10.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row10Required",
-          "Left": 162,
-          "Top": 262,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 254,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1411,20 +2490,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row10.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row10Current",
-          "Left": 386,
-          "Top": 262,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 254,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1444,47 +2530,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row10Status",
-          "Left": 606,
-          "Top": 262,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row10.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row10.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row10.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row10.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row10.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row10.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row10Status",
+          "Left": 618,
+          "Top": 254,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row10.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row10.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row10.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row10.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row10.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row10.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row11Background",
+          "Left": 4,
+          "Top": 274,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#0DFFFFFF",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row11.Status]='Mismatch','#33E74C3C','#0DFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row11Icon",
+          "Left": 10,
+          "Top": 274,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row11.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row11.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row11.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row11.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row11.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -1494,10 +2653,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row11Label",
-          "Left": 8,
-          "Top": 284,
+          "Left": 36,
+          "Top": 274,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1517,20 +2676,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row11.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row11Required",
-          "Left": 162,
-          "Top": 284,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 274,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1550,20 +2716,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row11.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row11Current",
-          "Left": 386,
-          "Top": 284,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 274,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1583,47 +2756,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row11Status",
-          "Left": 606,
-          "Top": 284,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row11.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row11.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row11.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row11.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row11.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row11.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row11Status",
+          "Left": 618,
+          "Top": 274,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row11.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row11.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row11.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row11.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row11.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row11.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row12Background",
+          "Left": 4,
+          "Top": 294,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#00000000",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row12.Status]='Mismatch','#33E74C3C','#00000000')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row12Icon",
+          "Left": 10,
+          "Top": 294,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row12.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row12.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row12.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row12.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row12.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -1633,10 +2879,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row12Label",
-          "Left": 8,
-          "Top": 306,
+          "Left": 36,
+          "Top": 294,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1656,20 +2902,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row12.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row12Required",
-          "Left": 162,
-          "Top": 306,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 294,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1689,20 +2942,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row12.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row12Current",
-          "Left": 386,
-          "Top": 306,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 294,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1722,47 +2982,120 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row12Status",
-          "Left": 606,
-          "Top": 306,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row12.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row12.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row12.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row12.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row12.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row12.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row12Status",
+          "Left": 618,
+          "Top": 294,
+          "Width": 94,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row12.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row12.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row12.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row12.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row12.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row12.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "Row13Background",
+          "Left": 4,
+          "Top": 314,
+          "Width": 712,
+          "Height": 20,
+          "Visible": true,
+          "BackgroundColor": "#0DFFFFFF",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row13.Status]='Mismatch','#33E74C3C','#0DFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "BackgroundColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Row13Icon",
+          "Left": 10,
+          "Top": 314,
+          "Width": 24,
+          "Height": 20,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 15,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 1,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row13.Icon]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row13.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row13.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row13.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row13.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -1772,10 +3105,10 @@
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row13Label",
-          "Left": 8,
-          "Top": 328,
+          "Left": 36,
+          "Top": 314,
           "Width": 150,
-          "Height": 22,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1795,20 +3128,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row13.Status]='NotApplicable','#FF7F8C8D','#FFFFFFFF')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row13Required",
-          "Left": 162,
-          "Top": 328,
-          "Width": 220,
-          "Height": 22,
+          "Left": 190,
+          "Top": 314,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1828,20 +3168,27 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row13.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Row13Current",
-          "Left": 386,
-          "Top": 328,
-          "Width": 216,
-          "Height": 22,
+          "Left": 404,
+          "Top": 314,
+          "Width": 210,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
@@ -1861,47 +3208,14 @@
             },
             "Visible": {
               "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Visible"
-            }
-          }
-        },
-        {
-          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Row13Status",
-          "Left": 606,
-          "Top": 328,
-          "Width": 108,
-          "Height": 22,
-          "Visible": true,
-          "Text": "",
-          "Font": "Roboto",
-          "FontSize": 14,
-          "FontWeight": "Bold",
-          "TextColor": "#FFFFFFFF",
-          "BackgroundColor": "#00FFFFFF",
-          "HorizontalAlignment": 0,
-          "VerticalAlignment": 1,
-          "Bindings": {
-            "Text": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Status]"
-              },
-              "Mode": 2,
-              "TargetPropertyName": "Text"
-            },
-            "Visible": {
-              "Formula": {
-                "Expression": "[FactorySeatPlugin.Row13.Visible]"
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
               },
               "Mode": 2,
               "TargetPropertyName": "Visible"
             },
             "TextColor": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Row13.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row13.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row13.Status]='NotApplicable','#FF95A5A6','#FFF1C40F')))"
+                "Expression": "if([FactorySeatPlugin.Row13.Status]='Mismatch','#FFFF8A80',if([FactorySeatPlugin.Row13.Status]='NotApplicable','#FF7F8C8D','#FFECF0F1'))"
               },
               "Mode": 2,
               "TargetPropertyName": "TextColor"
@@ -1910,17 +3224,117 @@
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Sources",
-          "Left": 8,
-          "Top": 354,
-          "Width": 704,
-          "Height": 18,
+          "Name": "Row13Status",
+          "Left": 618,
+          "Top": 314,
+          "Width": 94,
+          "Height": 20,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
           "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFF1C40F",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 1,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Row13.StatusText]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.ShowOverlay],[FactorySeatPlugin.Row13.Visible],false)"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Row13.Status]='Match','#FF2ECC71',if([FactorySeatPlugin.Row13.Status]='Mismatch','#FFE74C3C',if([FactorySeatPlugin.Row13.Status]='NotApplicable','#FF7F8C8D',if([FactorySeatPlugin.Row13.Status]='Manual','#FF5DADE2','#FFF1C40F'))))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Hints",
+          "Left": 12,
+          "Top": 336,
+          "Width": 696,
+          "Height": 28,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 12,
+          "FontWeight": "Bold",
+          "TextColor": "#FFFF8A80",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 0,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Hints]='',[FactorySeatPlugin.ManualCheck],'To do: '+[FactorySeatPlugin.Hints])"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Hints]='','#FFF1C40F',if([FactorySeatPlugin.ReadyToRace],'#FF5DADE2','#FFFF8A80'))"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          },
+          "TextWrapping": 2
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Name": "FooterRule",
+          "Left": 8,
+          "Top": 366,
+          "Width": 704,
+          "Height": 1,
+          "Visible": true,
+          "BackgroundColor": "#FF2A313B",
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Sources",
+          "Left": 12,
+          "Top": 368,
+          "Width": 696,
+          "Height": 14,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 11,
           "FontWeight": "Normal",
-          "TextColor": "#FF95A5A6",
+          "TextColor": "#FF7F8C8D",
           "BackgroundColor": "#00FFFFFF",
           "HorizontalAlignment": 0,
           "VerticalAlignment": 1,
@@ -1931,20 +3345,27 @@
               },
               "Mode": 2,
               "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           }
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Diagnostics",
-          "Left": 8,
-          "Top": 372,
-          "Width": 704,
-          "Height": 32,
+          "Left": 12,
+          "Top": 382,
+          "Width": 696,
+          "Height": 24,
           "Visible": true,
           "Text": "",
           "Font": "Roboto",
-          "FontSize": 12,
+          "FontSize": 11,
           "FontWeight": "Normal",
           "TextColor": "#FFF1C40F",
           "BackgroundColor": "#00FFFFFF",
@@ -1957,6 +3378,13 @@
               },
               "Mode": 2,
               "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
             }
           },
           "TextWrapping": 2

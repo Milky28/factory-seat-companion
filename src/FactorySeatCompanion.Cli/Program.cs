@@ -113,9 +113,12 @@ static void Render(ValidationReport report, LmuScreen screen)
         {
             CheckStatus.Match => ConsoleColor.Green,
             CheckStatus.Mismatch => ConsoleColor.Red,
+            CheckStatus.NotApplicable => ConsoleColor.DarkGray,
+            CheckStatus.Manual => ConsoleColor.Cyan,
             _ => ConsoleColor.Yellow
         };
-        Console.WriteLine($"{check.Status,-13} {check.Label,-22} required={check.Required} | LMU={check.Current}");
+        Console.WriteLine($"{SettingCheck.DisplayStatus(check.Status),-13} {check.Label,-22} required={check.Required} | LMU={check.Current}");
+        if (check.Hint is not null) Console.WriteLine($"              Fix: {check.Hint}");
         if (check.Reason is not null) Console.WriteLine($"              {check.Reason}");
         if (!Console.IsOutputRedirected) Console.ResetColor();
     }

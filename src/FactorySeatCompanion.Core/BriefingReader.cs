@@ -99,6 +99,8 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
             Guest = ReadBool(JsonRead.Property(round, "guest")),
             TrackFolder = ReadString(JsonRead.Property(track, "folder")),
             LayoutFile = ReadString(JsonRead.Property(track, "layoutFile")),
+            TrackName = ReadString(JsonRead.Property(track, "name")),
+            LayoutName = ReadString(JsonRead.Property(track, "layoutName")),
             RaceMinutes = ReadDouble(JsonRead.Property(settings, "raceMinutes")),
             // Factory Seat uses LMU's factors: 1 is Real/Normal, otherwise xN.
             FuelMultiplier = ReadDouble(JsonRead.Property(settings, "fuelUsage")),
@@ -114,6 +116,7 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
             Car = car is { ValueKind: JsonValueKind.Object } ? new CarRequirement
             {
                 Folder = ReadString(JsonRead.Property(car, "folder")),
+                Name = FirstString(JsonRead.Property(car, "carTypes")) ?? ReadString(JsonRead.Property(car, "name")),
                 Class = ReadString(JsonRead.Property(car, "class")),
                 Number = JsonRead.Text(number),
                 AnyNumber = number?.ValueKind switch
@@ -130,6 +133,8 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
 
     private static string? ReadString(JsonElement? value) =>
         value?.ValueKind == JsonValueKind.String ? value.Value.GetString() : null;
+    private static string? FirstString(JsonElement? value) =>
+        value?.ValueKind == JsonValueKind.Array && value.Value.GetArrayLength() > 0 ? ReadString(value.Value[0]) : null;
     private static bool? ReadBool(JsonElement? value) => value?.ValueKind switch
     {
         JsonValueKind.True => true,
