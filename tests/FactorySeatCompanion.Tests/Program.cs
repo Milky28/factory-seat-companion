@@ -499,6 +499,23 @@ Test("Mismatched rows carry a one-line fix hint in LMU's wording", () =>
     // Not current sources give Unknown rows, never hints.
     Assert(Report(live with { FuelMultiplier = 2, ObservedAt = now.AddMinutes(-1) }).Checks.All(c => c.Hint is null));
 });
+Test("Rows show briefing names, not identifiers", () =>
+{
+    var report = Report();
+    SettingCheck Row(ValidationReport r, string id) => r.Checks.Single(c => c.Id == id);
+    Assert(Row(report, "circuit").Required == "Bahrain International Circuit" && Row(report, "circuit").Current == "Bahrain International Circuit");
+    Assert(Row(report, "layout").Required == "Endurance Circuit" && Row(report, "carModel").Current == "BMW M4 LMGT3");
+    Assert(Row(report, "carClass").Current == "GT3", Row(report, "carClass").Current);
+    // A mismatch keeps LMU's own identifier so the driver sees what is actually selected.
+    var wrongCar = Report(live with { CarFolder = "Ford_Mustang_GT3_2024" });
+    Assert(Row(wrongCar, "carModel").Current == "Ford_Mustang_GT3_2024");
+    var noNames = Report(requirement: briefing.Briefing! with { TrackName = null });
+    Assert(Row(noNames, "circuit").Required == "BahrainWEC_2023");
+    // Unmapped layouts still give the identifiers needed to add a mapping.
+    var unmapped = Report(live with { SceneDescription = "BAHRAINWEC_PADDOCK" });
+    Assert(unmapped.Diagnostics.Any(d => d.Contains("trackFolder BahrainWEC_2023") && d.Contains("BAHRAINWEC_PADDOCK")));
+    Assert(!Report().Diagnostics.Any(d => d.Contains("No layout mapping")));
+});
 Test("Dashboard shows NotApplicable as Any and lists fix hints", () =>
 {
     var any = Dash(Report(requirement: briefing.Briefing! with { Car = briefing.Briefing!.Car! with { AnyNumber = true, Team = null } }));

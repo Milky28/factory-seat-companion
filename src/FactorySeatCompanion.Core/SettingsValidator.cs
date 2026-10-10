@@ -9,16 +9,19 @@ public sealed class SettingsValidator(CompanionOptions options)
         var b = read.Briefing;
         var car = b?.Car;
         var checks = new List<SettingCheck>();
+        string? mappingHelp = null;
         var lmuStatus = live.Status;
         if (now - live.ObservedAt > TimeSpan.FromSeconds(options.SnapshotMaxAgeSeconds) || live.ObservedAt > now.AddSeconds(1))
             lmuStatus = SourceStatus.Stale;
         bool valid = read.Status == SourceStatus.Available && lmuStatus == SourceStatus.Available;
         void Add(string id, string label, string? required, string? current, bool? matches, bool notApplicable = false,
-            string? reason = null, string? hint = null)
+            string? reason = null, string? hint = null, string? name = null)
         {
             var status = !valid ? CheckStatus.Unknown : notApplicable ? CheckStatus.NotApplicable :
                 matches is null ? CheckStatus.Unknown : matches.Value ? CheckStatus.Match : CheckStatus.Mismatch;
-            checks.Add(new(id, label, required ?? "Unknown", current ?? "Unknown", status,
+            // Show the briefing's display name rather than an identifier; LMU's side shares it once matched.
+            var shown = Present(name) && required is not null ? name : required;
+            checks.Add(new(id, label, shown ?? "Unknown", (status == CheckStatus.Match ? shown : current) ?? "Unknown", status,
                 !valid ? $"Sources not current: briefing={read.Status}, LMU={lmuStatus}." : reason,
                 status == CheckStatus.Mismatch ? hint : null));
         }
@@ -37,7 +40,7 @@ public sealed class SettingsValidator(CompanionOptions options)
             value == 1 ? one : value == 0 ? "Off" : "X" + Display(value);
 
         Add("circuit", "Circuit", b?.TrackFolder, live.TrackFolder, Same(b?.TrackFolder, live.TrackFolder),
-            hint: $"Select {b?.TrackName ?? b?.TrackFolder}");
+            hint: $"Select {b?.TrackName ?? b?.TrackFolder}", name: b?.TrackName);
         var layouts = options.LayoutMappings.Where(m => Same(m.TrackFolder, live.TrackFolder) == true &&
             Same(m.SceneDescription, live.SceneDescription) == true).ToArray();
         var mappedLayout = layouts.Length == 1 ? layouts[0].LayoutFile : null;
@@ -45,11 +48,15 @@ public sealed class SettingsValidator(CompanionOptions options)
             Same(b?.TrackFolder, live.TrackFolder) == false ? false : Same(b?.LayoutFile, mappedLayout);
         Add("layout", "Exact layout", b?.LayoutFile, mappedLayout ?? live.SceneDescription, layoutMatch,
             reason: mappedLayout is null ? "No unique cmpName + sceneDesc mapping. Layout display names are not used." : null,
-            hint: $"Select the {b?.LayoutName ?? b?.LayoutFile} layout");
+            hint: $"Select the {b?.LayoutName ?? b?.LayoutFile} layout", name: b?.LayoutName);
+        // Layouts need a mapping, which takes LMU's identifiers; the rows show names, so list them here.
+        if (valid && mappedLayout is null && Present(live.TrackFolder))
+            mappingHelp = $"No layout mapping for trackFolder {live.TrackFolder}, sceneDescription {live.SceneDescription ?? "Unknown"}.";
         Add("carModel", "Car model", car?.Folder, live.CarFolder, Same(car?.Folder, live.CarFolder),
-            hint: $"Select the {car?.Name ?? car?.Folder}");
+            hint: $"Select the {car?.Name ?? car?.Folder}", name: car?.Name);
         bool? classMatch = Present(car?.Class) && live.Classes is { Length: > 0 }
             ? live.Classes.Contains(car!.Class!.Trim(), StringComparer.OrdinalIgnoreCase) : null;
+        // LMU lists the car's own id and series beside its class; a match shows just the class.
         Add("carClass", "Car class", car?.Class, live.Classes is null ? null : string.Join(", ", live.Classes), classMatch,
             hint: $"Select a {car?.Class} car");
 
@@ -83,6 +90,7 @@ public sealed class SettingsValidator(CompanionOptions options)
         bool metadataValid = Present(b?.CareerName) && Present(b?.EventName) && b?.RoundNumber > 0;
         bool ready = valid && metadataValid && checks.All(c => c.Status is CheckStatus.Match or CheckStatus.NotApplicable);
         var diagnostics = live.Diagnostics.Concat([read.Diagnostic]).ToList();
+        if (mappingHelp is not null) diagnostics.Add(mappingHelp);
         if (!metadataValid) diagnostics.Add("Briefing career/event/round metadata missing or invalid.");
         return new(b?.CareerName ?? "Unknown career", b?.EventName ?? "Unknown event", b?.RoundNumber, ready,
             ready ? "READY TO RACE" : checks.Any(c => c.Status == CheckStatus.Mismatch) ? "SETUP MISMATCH" : "NOT VERIFIED",
