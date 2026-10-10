@@ -69,4 +69,4 @@ Steps 1, 2 and 4 passed in fixture mode on 2026-10-09; 3 and 5 are outstanding.
 2. With `FixturesPath` set to `fixtures/lmu` and a fresh copy of the provisional briefing, the overlay shows READY TO RACE and Mode Fixture. Editing a fixture value turns that row red within a few seconds.
 3. Kill the CLI process: the overlay drops to NOT VERIFIED within `ReportMaxAgeSeconds` and recovers after the restart.
 4. Dash Studio imports the `.djson` (it was written by hand from the Dash Studio format and may need fixing on import). Check text sizes and the overlay size.
-5. Live: LMU in windowed or borderless mode, overlay visible over the race setup menus, including while SimHub waits for telemetry. Then repeat the live checks in the [README](../README.md).
+5. Live: LMU in windowed or borderless mode, overlay visible over the race setup menus, including while SimHub waits for telemetry. Then repeat the live checks in [development](development.md#test-against-a-running-lmu).
