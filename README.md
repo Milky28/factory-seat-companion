@@ -1,6 +1,6 @@
 # Factory Seat Companion
 
-A SimHub overlay for **Le Mans Ultimate** that tells you, before you start a race, whether LMU's race setup matches the round your **Factory Seat** career expects. It reads the career's next round, reads LMU's current menu settings, and shows a checklist with one line per setting and a banner that reads **READY TO RACE** only when everything lines up.
+A SimHub overlay for **Le Mans Ultimate** that tells you, before you start a race, whether LMU's race setup matches the round your [**Factory Seat**](https://github.com/factoryseatlmuapp/factory-seat) career expects. It reads the career's next round, reads LMU's current menu settings, and shows a checklist with one line per setting and a banner that reads **READY TO RACE** only when everything lines up.
 
 ![The overlay showing READY TO RACE: every row matches the round](docs/images/overlay-ready-to-race.png)
 
@@ -23,7 +23,7 @@ The rest of this page explains each step and how to read the overlay.
 - Windows 10 or 11 (64-bit).
 - **Le Mans Ultimate** in windowed or borderless mode. SimHub overlays cannot draw over exclusive fullscreen.
 - **SimHub** (tested with 9.13.2).
-- **Factory Seat 1.1 or later**, which writes the open career's next round to `%AppData%\LmuCareer\briefing.json`. Earlier versions don't write this file, so the overlay stays at NOT VERIFIED. The format is described in [docs/briefing.md](docs/briefing.md).
+- [**Factory Seat**](https://github.com/factoryseatlmuapp/factory-seat) **1.1 or later**, which writes the open career's next round to `%AppData%\LmuCareer\briefing.json`. Earlier versions don't write this file, so the overlay stays at NOT VERIFIED. The format is described in [docs/briefing.md](docs/briefing.md).
 
 You don't need .NET or any developer tools: the installer brings everything the companion needs.
 
