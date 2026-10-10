@@ -27,7 +27,8 @@ Full instructions and troubleshooting are in the [README](https://github.com/Mil
 
 ## Known limits
 
-- **Race duration in "% Track Time" mode** is a manual check: LMU doesn't report the menu's race length in that mode. Set the finish to Time to have it compared.
-- **Layouts need a mapping.** Bahrain (Endurance, Outer) and Lusail ship mapped; other layouts show Unknown until a mapping is added (see the README).
+- **Race duration in "% Track Time" mode** is a manual check until you change the Race Time once and back (for example 30 to 45 and back to 30 mins). LMU then reports it and the row is compared normally.
+- **Main menu and race setup look the same to LMU's API**, so the overlay also shows on the main menu. Hide it there with the toggle action.
+- **Layouts added after October 2026** show Unknown until a mapping is added (see the README). All 38 current layouts are mapped.
 - **Custom teams** can't be confirmed through LMU's API, so such rounds stay NOT VERIFIED.
 - LMU's local API is unofficial; a game update can break checks, which then show Unknown rather than a false match.
