@@ -65,6 +65,9 @@ Test("12/24-hour start-time normalization", () =>
     Assert(Normalization.Time("12:00 PM") == "12:00");
     Assert(Normalization.Time("1:05 PM") == "13:05");
     Assert(Normalization.Time("25:15") is null);
+    Assert(Normalization.Time("Default ( 11:00 AM )") == "11:00");
+    Assert(Normalization.Time("default (1:05 PM)") == "13:05");
+    Assert(Normalization.Time("Default") is null && Normalization.Time("Default ( noon )") is null);
 });
 Test("Numeric labels normalize without interpreting percent/enum", () =>
 {
@@ -678,6 +681,13 @@ Test("Installed player config maps every Factory Seat layout exactly once", () =
     var example = JsonSerializer.Deserialize<CompanionOptions>(
         File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "config", "companion.example.json")), JsonDefaults.Options)!;
     Assert(example.LayoutMappings.SequenceEqual(player.LayoutMappings), "example and player layout mappings differ");
+});
+Test("LMU's default start time is compared as the time it shows", () =>
+{
+    var json = Change(sessions, n => n["SESSSET_race_starting_time"]!["stringValue"] = "Default ( 11:15 AM )");
+    var snapshot = LmuJsonParser.Parse(json, durations, setup, now);
+    Assert(snapshot.StartTime == "11:15" && !snapshot.Diagnostics.Any(d => d.Contains("start time")), snapshot.StartTime ?? "(null)");
+    Status(Report(snapshot), "startTime", CheckStatus.Match);
 });
 Test("Player config matches layouts that share a layoutFile name across tracks", () =>
 {
