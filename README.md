@@ -89,7 +89,7 @@ Next to the banner is the career, event and round, then one row per check showin
 | ○ amber | Unknown | The value couldn't be read or confirmed. This blocks READY TO RACE. |
 | – grey | Any | The round doesn't restrict this setting, such as any car number. |
 
-If LMU can't be read (for example after a game update breaks its API), every row shows ○ with the round's value still listed, so the overlay works as a plain checklist of settings to set by hand.
+If LMU can't be read (for example after a game update breaks its API), every row shows ○ with the round's value still listed, and an amber note under the rows says to check each setting in LMU's menu by hand. The overlay then works as a plain checklist.
 
 The footer shows where the data comes from. **Briefing** and **LMU** say whether each source is readable (`Available`, `Unavailable`, `Stale`, `Invalid` or `UnsafeState`). **Bridge** says whether the plugin's companion program is running. Any problem the checker found appears as a message at the bottom.
 

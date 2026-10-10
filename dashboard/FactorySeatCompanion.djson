@@ -3189,10 +3189,17 @@
           "Bindings": {
             "Text": {
               "Formula": {
-                "Expression": "if([FactorySeatPlugin.Hints]='','','To fix: '+[FactorySeatPlugin.Hints])"
+                "Expression": "if([FactorySeatPlugin.Hints]='',[FactorySeatPlugin.ManualCheck],'To fix: '+[FactorySeatPlugin.Hints])"
               },
               "Mode": 2,
               "TargetPropertyName": "Text"
+            },
+            "TextColor": {
+              "Formula": {
+                "Expression": "if([FactorySeatPlugin.Hints]='','#FFF1C40F','#FFFF8A80')"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "TextColor"
             }
           },
           "TextWrapping": 2

@@ -39,6 +39,7 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
         this.AttachDelegate("BridgeStatus", () => State().BridgeStatus);
         this.AttachDelegate("Diagnostics", () => State().Diagnostics);
         this.AttachDelegate("Hints", () => State().Hints);
+        this.AttachDelegate("ManualCheck", () => State().ManualCheck);
         for (int i = 0; i < DashboardState.RowSlots; i++)
         {
             int slot = i;

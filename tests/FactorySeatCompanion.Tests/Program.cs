@@ -495,6 +495,11 @@ Test("Dashboard shows NotApplicable as Any and lists fix hints", () =>
     // Stale or unreadable LMU still lists every required setting, each with an open circle.
     Assert(stale.Hints == "" && stale.Rows.All(r => r.Hint == "") &&
         stale.Rows.Where(r => r.Visible).All(r => r.Icon == "\u25CB" && r.Required != ""));
+    Assert(stale.ManualCheck == DashboardState.ManualCheckText && mismatch.ManualCheck == "" && any.ManualCheck == "");
+    var offline = Dash(Report(live with { Status = SourceStatus.Unavailable }));
+    Assert(offline.ManualCheck.Contains("by hand") && offline.Rows.Where(r => r.Visible).All(r => r.Icon == "\u25CB"));
+    var noBriefing = Dash(Report() with { BriefingStatus = SourceStatus.Stale, LmuStatus = SourceStatus.Unavailable });
+    Assert(noBriefing.ManualCheck == "");
 });
 Test("Stale or future report is never ready", () =>
 {
