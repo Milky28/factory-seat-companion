@@ -58,6 +58,8 @@ public sealed record LmuSnapshot
     public double? TireMultiplier { get; init; }
     public double? TimeScale { get; init; }
     public string? StartTime { get; init; }
+    // From the navigation reads of the same poll; decides when the overlay shows, never readiness.
+    public LmuScreen Screen { get; init; } = LmuScreen.Unknown;
     public string[] Diagnostics { get; init; } = [];
 }
 

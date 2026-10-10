@@ -18,6 +18,7 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
 
     private PluginSettings settings = new PluginSettings();
     private CompanionBridge? bridge;
+    private readonly OverlayVisibility visibility = new OverlayVisibility();
     private Tuple<DateTimeOffset, DashboardState>? cached;
 
     public PluginManager PluginManager { get; set; } = null!;
@@ -38,6 +39,10 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
         this.AttachDelegate("ReportAgeSeconds", () => State().ReportAgeSeconds);
         this.AttachDelegate("BridgeStatus", () => State().BridgeStatus);
         this.AttachDelegate("Diagnostics", () => State().Diagnostics);
+        this.AttachDelegate("Screen", () => { State(); return visibility.Screen; });
+        this.AttachDelegate("ShowOverlay", () => { State(); return visibility.Visible; });
+        // Bind to a key or wheel button in SimHub's Controls and events to hide or show the overlay.
+        this.AddAction("ToggleOverlay", (a, b) => visibility.Toggle());
         for (int i = 0; i < DashboardState.RowSlots; i++)
         {
             int slot = i;
@@ -70,7 +75,9 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
         var current = Volatile.Read(ref cached);
         if (current != null && now - current.Item1 < RefreshInterval && now >= current.Item1) return current.Item2;
         var maxAge = TimeSpan.FromSeconds(settings.ReportMaxAgeSeconds > 0 ? settings.ReportMaxAgeSeconds : 10);
-        var state = DashboardState.Create(bridge?.Latest, now, maxAge, bridge?.Status ?? "Not started");
+        var latest = bridge?.Latest;
+        var state = DashboardState.Create(latest, now, maxAge, bridge?.Status ?? "Not started");
+        visibility.Observe(OverlayVisibility.ScreenOf(latest, now, maxAge));
         Volatile.Write(ref cached, Tuple.Create(now, state));
         return state;
     }
