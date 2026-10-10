@@ -67,9 +67,12 @@ public sealed class SettingsValidator(CompanionOptions options)
             ? CleanNumber(car!.Number!) == CleanNumber(live.Number!) : null;
         Add("carNumber", "Car number", unrestrictedNumber ? "Any number" : car?.Number,
             live.Number, numberMatch, unrestrictedNumber, hint: $"Select car #{CleanNumber(car?.Number ?? "")}");
-        // Factory Seat names a team only when the round fixes one.
-        Add("team", "Team", car is null ? null : car.Team ?? "Any team", live.Team,
-            Same(car?.Team, live.Team), car is not null && car.Team is null, hint: $"Select the {car?.Team} livery");
+        // Factory Seat names a team only when the round fixes one. A Race Control custom team's name
+        // is not in LMU's API (the car reads as e.g. "Lexus Custom Team 2026"), so it is left to the
+        // custom team identity row, like the number.
+        bool anyTeam = car is not null && (car.Team is null || car.CustomTeam == true);
+        Add("team", "Team", car is null ? null : anyTeam ? "Any team" : car.Team, live.Team,
+            Same(car?.Team, live.Team), anyTeam, hint: $"Select the {car?.Team} livery");
         if (car?.CustomTeam != false)
             Add("customTeam", "Custom team identity", car?.CustomTeam == true ? "Race Control custom team" : null,
                 null, null, reason: "REST custom-team marker has not been established; matching a team name is insufficient.");

@@ -728,6 +728,16 @@ Test("Player config matches layouts that share a layoutFile name across tracks",
     Assert(!Run("LongBeach_2026", "LONGBEACH", "layoutLongBeach").Diagnostics.Any(d => d.Contains("No layout mapping")));
 });
 
+Test("Custom team round shows Team as Any, not a mismatch against LMU's car name", () =>
+{
+    var b = briefing.Briefing! with { Car = briefing.Briefing!.Car! with { Team = "Milky Racing", CustomTeam = true } };
+    var r = Report(live with { Team = "Lexus Custom Team 2026", LiveryName = "Lexus Custom Team 2026 #397" }, b);
+    Status(r, "team", CheckStatus.NotApplicable);
+    var team = r.Checks.Single(c => c.Id == "team");
+    Assert(team.Required == "Any team" && team.Hint is null, team.Required);
+    Assert(!r.Checks.Any(c => c.Status == CheckStatus.Mismatch));
+    Assert(Dash(r).OverallStatus == "NOT VERIFIED", Dash(r).OverallStatus);
+});
 int failures = 0;
 foreach (var test in tests)
 {
