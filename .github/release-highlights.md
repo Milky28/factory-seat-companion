@@ -1,4 +1,3 @@
-- **Every layout is checked.** The installed settings now map all 38 layouts on LMU's 18 tracks, so Exact layout no longer shows Unknown with "No layout mapping" outside Bahrain and Lusail.
-- **LMU's default start time is read.** "Default ( 11:00 AM )" is compared as 11:00 instead of showing Unknown.
-- **The overlay stays hidden until LMU is running.**
-- **Clearer race duration hint** in "% Track Time" mode: change the race time once and back so LMU confirms it.
+- **Custom team rounds no longer show SETUP MISMATCH.** LMU reports a Race Control car by its generic name, such as "Lexus Custom Team 2026", so the Team row now shows Any, like Car number, instead of asking for a livery that doesn't exist. These rounds read NOT VERIFIED.
+- **All 38 layout mappings confirmed.** Factory Seat's owner captured every layout from LMU's track picker independently, and the list matches the installed settings exactly.
+- Includes everything in 0.1.0-beta.2: every layout checked, LMU's default start time read, the overlay hidden until LMU is running, and the clearer race duration hint.
