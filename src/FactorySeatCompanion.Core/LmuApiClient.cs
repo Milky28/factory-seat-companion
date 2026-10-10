@@ -55,24 +55,30 @@ public sealed class LmuApiClient : ILmuSource
                 return null;
             }
         }
+        string? navigationJson = null;
+        async Task<string?> Navigation() => navigationJson = await Get("navigation/state");
         LmuSnapshot Blocked(SourceStatus status, string diagnostic) => new()
         {
-            ObservedAt = started, Status = status, Diagnostics = diagnostics.Append(diagnostic).ToArray()
+            ObservedAt = started, Status = status, Screen = LmuScreenClassifier.Classify(navigationJson),
+            Diagnostics = diagnostics.Append(diagnostic).ToArray()
         };
-        var navigationJson = await Get("navigation/state");
+        await Navigation();
         var before = NavigationPolicy.Evaluate(navigationJson, options);
         if (!before.Safe) return Blocked(navigationJson is null ? SourceStatus.Unavailable : SourceStatus.UnsafeState, before.Diagnostic);
 
         var sessions = await Get("rest/sessions/");
         var durations = await Get("rest/sessions/GetSessionsInfoForEvent");
         // Recheck directly before garage access. State changes revoke the whole observation.
-        var gate = NavigationPolicy.Evaluate(await Get("navigation/state"), options);
+        var gate = NavigationPolicy.Evaluate(await Navigation(), options);
         if (!gate.Safe || gate.State != before.State) return Blocked(SourceStatus.UnsafeState, "Navigation changed before garage access.");
         var setup = await Get("rest/garage/UIScreen/SessionSetup");
-        var after = NavigationPolicy.Evaluate(await Get("navigation/state"), options);
+        var after = NavigationPolicy.Evaluate(await Navigation(), options);
         if (!after.Safe || after.State != before.State) return Blocked(SourceStatus.UnsafeState, "Navigation changed during polling; values discarded.");
         var snapshot = LmuJsonParser.Parse(sessions, durations, setup, started);
-        return snapshot with { Diagnostics = snapshot.Diagnostics.Concat(diagnostics).ToArray() };
+        return snapshot with
+        {
+            Screen = LmuScreenClassifier.Classify(navigationJson), Diagnostics = snapshot.Diagnostics.Concat(diagnostics).ToArray()
+        };
     }
 }
 
@@ -93,6 +99,7 @@ public sealed class FixtureLmuSource(string directory) : ILmuSource
         }
         var snapshot = LmuJsonParser.Parse(await Read("sessions.json"), await Read("durations.json"),
             await Read("setup.json"), DateTimeOffset.UtcNow);
-        return snapshot with { Diagnostics = snapshot.Diagnostics.Concat(diagnostics).ToArray() };
+        // Fixtures stand for the race setup menus, so the overlay shows as it would there.
+        return snapshot with { Screen = LmuScreen.Menu, Diagnostics = snapshot.Diagnostics.Concat(diagnostics).ToArray() };
     }
 }

@@ -5,6 +5,7 @@
     <!-- SimHub-free plugin files; the plugin project itself needs a SimHub install to build. -->
     <Compile Include="../../src/FactorySeatCompanion.SimHub/CompanionReport.cs" Link="SimHub/CompanionReport.cs" />
     <Compile Include="../../src/FactorySeatCompanion.SimHub/DashboardState.cs" Link="SimHub/DashboardState.cs" />
+    <Compile Include="../../src/FactorySeatCompanion.SimHub/OverlayVisibility.cs" Link="SimHub/OverlayVisibility.cs" />
     <Compile Include="../../src/FactorySeatCompanion.SimHub/WindowsCommandLine.cs" Link="SimHub/WindowsCommandLine.cs" />
     <Compile Include="../../src/FactorySeatCompanion.SimHub/ConfigLocator.cs" Link="SimHub/ConfigLocator.cs" />
     <None Include="../../config/companion.player.json" Link="config/companion.player.json" CopyToOutputDirectory="PreserveNewest" />

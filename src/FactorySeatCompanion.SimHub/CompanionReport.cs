@@ -8,6 +8,8 @@ namespace FactorySeatCompanion.SimHub;
 public sealed class CompanionMessage
 {
     public string Mode { get; set; } = "";
+    // Menu, Loading, InSession or Unknown; see LmuScreenClassifier in the core.
+    public string Screen { get; set; } = "";
     public CompanionReport? Report { get; set; }
 }
 
