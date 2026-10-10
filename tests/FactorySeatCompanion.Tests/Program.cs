@@ -300,6 +300,26 @@ Test("Live navigation shape: object state and loadingStatus.loading", () =>
     Assert(!NavigationPolicy.Evaluate(Change(liveNav, n => n["loadingStatus"]!["loading"] = 1), gameState).Safe);
     Assert(!NavigationPolicy.Evaluate(Change(liveNav, n => n["state"]!["gameState"] = "GSTATE_DYN"), gameState).Safe);
 });
+Test("Screen comes from live navigation values", () =>
+{
+    // Values captured on 2026-10-10; the main menu and race setup are both GSTATE_SETUP / NAV_MAIN_MENU.
+    var liveNav = Fixture("lmu/navigation.live-shape.synthetic.json");
+    string Nav(string game, string navigationState, bool loading = false) => Change(liveNav, n =>
+    {
+        n["state"]!["gameState"] = game; n["state"]!["navigationState"] = navigationState; n["loadingStatus"]!["loading"] = loading;
+    });
+    Assert(LmuScreenClassifier.Classify(liveNav) == LmuScreen.Menu);
+    Assert(LmuScreenClassifier.Classify(Nav("GSTATE_SETUP", "NAV_MAIN_MENU", loading: true)) == LmuScreen.Loading);
+    Assert(LmuScreenClassifier.Classify(Nav("GSTATE_INIT", "NAV_EVENT")) == LmuScreen.Loading);
+    Assert(LmuScreenClassifier.Classify(Nav("GSTATE_RESTART", "NAV_EVENT")) == LmuScreen.Loading);
+    Assert(LmuScreenClassifier.Classify(Nav("GSTATE_DYN", "NAV_EVENT")) == LmuScreen.InSession);
+    Assert(LmuScreenClassifier.Classify(Nav("GSTATE_DYN", "NAV_REALTIME")) == LmuScreen.InSession);
+    Assert(LmuScreenClassifier.Classify(Nav("GSTATE_POST", "NAV_MAIN_MENU")) == LmuScreen.InSession);
+    Assert(LmuScreenClassifier.Classify(Nav("GSTATE_SOMETHING", "NAV_ELSEWHERE")) == LmuScreen.Unknown);
+    Assert(LmuScreenClassifier.Classify(null) == LmuScreen.Unknown);
+    Assert(LmuScreenClassifier.Classify("not JSON") == LmuScreen.Unknown);
+    Assert(LmuScreenClassifier.Classify(navigation) == LmuScreen.Unknown);
+});
 Test("JSON-pointer nested state supported", () =>
     Assert(NavigationPolicy.Evaluate("{\"navigation\":{\"route\":\"SYNTHETIC_SETUP_ONLY\"}}", options with { NavigationStatePointer = "/navigation/route" }).Safe));
 Test("Polling configuration rejects unsafe bounds", () =>
@@ -480,6 +500,36 @@ Test("Dashboard does not trust a ready flag over row statuses", () =>
     message = Bridge(Report());
     for (int i = 0; i < 3; i++) message.Report!.Checks.Add(message.Report.Checks[0]);
     Assert(!DashboardState.Create(message, message.Report!.ObservedAt, TimeSpan.FromSeconds(10), "Running").ReadyToRace);
+});
+Test("Bridge carries the screen; only a fresh report vouches for it", () =>
+{
+    var line = JsonSerializer.Serialize(new { mode = "Live", screen = LmuScreen.InSession, report = Report() }, jsonl);
+    var message = JsonSerializer.Deserialize<CompanionMessage>(line, JsonDefaults.Options)!;
+    var observed = message.Report!.ObservedAt;
+    Assert(OverlayVisibility.ScreenOf(message, observed, TimeSpan.FromSeconds(10)) == "InSession");
+    Assert(OverlayVisibility.ScreenOf(message, observed.AddSeconds(11), TimeSpan.FromSeconds(10)) == "Unknown");
+    Assert(OverlayVisibility.ScreenOf(Bridge(Report()), observed, TimeSpan.FromSeconds(10)) == "Unknown");
+    Assert(OverlayVisibility.ScreenOf(null, observed, TimeSpan.FromSeconds(10)) == "Unknown");
+});
+Test("Overlay shows in menus, hides in sessions, and a dismissal lasts until the next session", () =>
+{
+    var overlay = new OverlayVisibility();
+    Assert(overlay.Visible, "unknown screen shows the checklist");
+    overlay.Observe("Menu");
+    Assert(overlay.Visible);
+    overlay.Toggle();
+    Assert(!overlay.Visible, "dismissed on the menu");
+    overlay.Observe("Unknown");
+    overlay.Observe("Menu");
+    Assert(!overlay.Visible, "a brief unknown read does not undo a dismissal");
+    overlay.Observe("Loading");
+    Assert(!overlay.Visible);
+    overlay.Observe("InSession");
+    Assert(!overlay.Visible);
+    overlay.Toggle();
+    Assert(overlay.Visible, "the action can show it in a session");
+    overlay.Observe("Menu");
+    Assert(overlay.Visible && overlay.Screen == "Menu", "back in the menus it shows again");
 });
 Test("Plugin command line quoting", () =>
 {
