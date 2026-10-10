@@ -65,6 +65,9 @@ Test("12/24-hour start-time normalization", () =>
     Assert(Normalization.Time("12:00 PM") == "12:00");
     Assert(Normalization.Time("1:05 PM") == "13:05");
     Assert(Normalization.Time("25:15") is null);
+    Assert(Normalization.Time("Default ( 11:00 AM )") == "11:00");
+    Assert(Normalization.Time("default (1:05 PM)") == "13:05");
+    Assert(Normalization.Time("Default") is null && Normalization.Time("Default ( noon )") is null);
 });
 Test("Numeric labels normalize without interpreting percent/enum", () =>
 {
@@ -530,8 +533,8 @@ Test("Rows show briefing names, not identifiers", () =>
     var noNames = Report(requirement: briefing.Briefing! with { TrackName = null });
     Assert(Row(noNames, "circuit").Required == "BahrainWEC_2023");
     // Unmapped layouts still give the identifiers needed to add a mapping.
-    var unmapped = Report(live with { SceneDescription = "BAHRAINWEC_PADDOCK" });
-    Assert(unmapped.Diagnostics.Any(d => d.Contains("trackFolder BahrainWEC_2023") && d.Contains("BAHRAINWEC_PADDOCK")));
+    var unmapped = Report(live with { SceneDescription = "BAHRAIN_NEW_LAYOUT" });
+    Assert(unmapped.Diagnostics.Any(d => d.Contains("trackFolder BahrainWEC_2023") && d.Contains("BAHRAIN_NEW_LAYOUT")));
     Assert(!Report().Diagnostics.Any(d => d.Contains("No layout mapping")));
 });
 Test("Dashboard shows NotApplicable as Any and lists fix hints", () =>
@@ -663,6 +666,66 @@ Test("Installed player config allows only the menu state", () =>
     Assert(NavigationPolicy.Evaluate(Fixture("lmu/navigation.live-shape.synthetic.json"), player).Safe);
     Assert(!NavigationPolicy.Evaluate(Change(Fixture("lmu/navigation.live-shape.synthetic.json"),
         n => n["state"]!["gameState"] = "GSTATE_DYN"), player).Safe);
+});
+
+Test("Installed player config maps every Factory Seat layout exactly once", () =>
+{
+    var path = Path.Combine(AppContext.BaseDirectory, "config", "companion.player.json");
+    var player = JsonSerializer.Deserialize<CompanionOptions>(File.ReadAllText(path), JsonDefaults.Options)!;
+    player.Validate();
+    // Factory Seat's catalog layouts (src/LmuCareer.Core/Content/catalog.json) for every LMU track.
+    var catalog = new Dictionary<string, string[]>
+    {
+        ["LeMans_2023"] = ["layoutLeMans", "layoutMulsanne"],
+        ["Spa_2023"] = ["layoutSpa", "layoutSpaELMS", "layoutSpaEnd"],
+        ["Monza_2023"] = ["layoutMonza", "layoutGrande"],
+        ["Sebring_2023"] = ["layoutSebring", "layoutSchool"],
+        ["BahrainWEC_2023"] = ["layoutBahrain", "layoutEndurance", "layoutOuter", "layoutPaddock"],
+        ["PortimaoWEC_2023"] = ["layoutPortimao", "layoutPortimaoELMS"],
+        ["FujiWEC_2023"] = ["layoutFuji", "layoutFujiCl"],
+        ["ImolaWEC_2024"] = ["layoutImola", "layoutImolaELMS"],
+        ["CotAWEC_2024"] = ["layoutCota", "layoutNational"],
+        ["Interlagos_2024"] = ["layoutInterlagos"],
+        ["Qatar_2024"] = ["layoutQatar", "layoutQatarShort"],
+        ["Silverstone_2025"] = ["layoutELMS", "layoutWEC", "layoutInternational", "layoutNational"],
+        ["PaulRicard_2025"] = ["layoutELMS", "layout1A", "layout1AV2", "layout1AV2Short", "layout3A"],
+        ["Barcelona_2025"] = ["layoutELMS"],
+        ["Daytona_2026"] = ["layoutDaytona"],
+        ["LagunaSeca_2026"] = ["layoutLaguna"],
+        ["RoadAtlanta_2026"] = ["layoutRoadAtlanta"],
+        ["LongBeach_2026"] = ["layoutLongBeach"],
+    };
+    var expected = catalog.SelectMany(t => t.Value.Select(l => $"{t.Key}/{l}")).OrderBy(x => x).ToArray();
+    var mapped = player.LayoutMappings.Select(m => $"{m.TrackFolder}/{m.LayoutFile}").OrderBy(x => x).ToArray();
+    Assert(mapped.SequenceEqual(expected), string.Join(", ", mapped.Except(expected).Concat(expected.Except(mapped))));
+    // Each LMU scene resolves to one layout, so the validator never sees an ambiguous mapping.
+    var scenes = player.LayoutMappings.Select(m => m.SceneDescription.ToUpperInvariant()).ToArray();
+    Assert(scenes.Distinct().Count() == scenes.Length, "duplicate sceneDescription");
+    var example = JsonSerializer.Deserialize<CompanionOptions>(
+        File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "config", "companion.example.json")), JsonDefaults.Options)!;
+    Assert(example.LayoutMappings.SequenceEqual(player.LayoutMappings), "example and player layout mappings differ");
+});
+Test("LMU's default start time is compared as the time it shows", () =>
+{
+    var json = Change(sessions, n => n["SESSSET_race_starting_time"]!["stringValue"] = "Default ( 11:15 AM )");
+    var snapshot = LmuJsonParser.Parse(json, durations, setup, now);
+    Assert(snapshot.StartTime == "11:15" && !snapshot.Diagnostics.Any(d => d.Contains("start time")), snapshot.StartTime ?? "(null)");
+    Status(Report(snapshot), "startTime", CheckStatus.Match);
+});
+Test("Player config matches layouts that share a layoutFile name across tracks", () =>
+{
+    var path = Path.Combine(AppContext.BaseDirectory, "config", "companion.player.json");
+    var player = JsonSerializer.Deserialize<CompanionOptions>(File.ReadAllText(path), JsonDefaults.Options)!;
+    var v = new SettingsValidator(player);
+    ValidationReport Run(string folder, string scene, string layout) => v.Validate(
+        briefing with { Briefing = briefing.Briefing! with { TrackFolder = folder, LayoutFile = layout } },
+        live with { TrackFolder = folder, SceneDescription = scene }, now);
+    Status(Run("RoadAtlanta_2026", "ROADATLANTA", "layoutRoadAtlanta"), "layout", CheckStatus.Match);
+    Status(Run("Silverstone_2025", "SILVERSTONEELMS", "layoutELMS"), "layout", CheckStatus.Match);
+    Status(Run("PaulRicard_2025", "PAULRICARDELMS", "layoutELMS"), "layout", CheckStatus.Match);
+    Status(Run("Silverstone_2025", "SILVERSTONE_NATIONAL", "layoutELMS"), "layout", CheckStatus.Mismatch);
+    Status(Run("CotAWEC_2024", "COTAWEC_NATIONAL", "layoutNational"), "layout", CheckStatus.Match);
+    Assert(!Run("LongBeach_2026", "LONGBEACH", "layoutLongBeach").Diagnostics.Any(d => d.Contains("No layout mapping")));
 });
 
 int failures = 0;

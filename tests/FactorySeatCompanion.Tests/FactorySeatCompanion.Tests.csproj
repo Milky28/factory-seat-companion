@@ -9,6 +9,7 @@
     <Compile Include="../../src/FactorySeatCompanion.SimHub/WindowsCommandLine.cs" Link="SimHub/WindowsCommandLine.cs" />
     <Compile Include="../../src/FactorySeatCompanion.SimHub/ConfigLocator.cs" Link="SimHub/ConfigLocator.cs" />
     <None Include="../../config/companion.player.json" Link="config/companion.player.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../config/companion.example.json" Link="config/companion.example.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../fixtures/**" Link="fixtures/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

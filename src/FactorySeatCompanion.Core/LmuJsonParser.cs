@@ -77,6 +77,9 @@ public static class Normalization
     public static string? Time(string? text)
     {
         string[] formats = ["H:mm", "HH:mm", "h:mm tt", "hh:mm tt"];
+        // LMU shows its track default as "Default ( 11:00 AM )"; that is the time it will use.
+        var wrapped = text is null ? null : Regex.Match(text.Trim(), @"^Default\s*\(\s*(.+?)\s*\)$", RegexOptions.IgnoreCase);
+        if (wrapped is { Success: true }) text = wrapped.Groups[1].Value;
         return DateTime.TryParseExact(text?.Trim().ToUpperInvariant(), formats, Invariant,
             DateTimeStyles.None, out var time) ? time.ToString("HH:mm", Invariant) : null;
     }
