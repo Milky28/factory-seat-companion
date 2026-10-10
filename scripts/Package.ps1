@@ -1,5 +1,5 @@
 # Builds the player download (zip) and installer (exe) into artifacts/.
-# Needs what Build-Plugin.ps1 needs, plus Inno Setup 6 for the installer (skip it with -NoInstaller).
+# Needs what Build-Plugin.ps1 needs, plus Inno Setup 6 (machine-wide or winget per-user) for the installer (skip it with -NoInstaller).
 param(
     [string]$SimHubPath = $(if ($env:SIMHUB_INSTALL_PATH) { $env:SIMHUB_INSTALL_PATH } else { 'C:\Program Files (x86)\SimHub\' }),
     [string]$Version = '0.1.0-dev',
@@ -26,8 +26,12 @@ try {
 
     if (-not $NoInstaller) {
         $iscc = (Get-Command iscc.exe -ErrorAction SilentlyContinue).Source
-        if (-not $iscc) { $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
-        if (-not (Test-Path $iscc)) { throw 'Inno Setup 6 (ISCC.exe) not found. Install it or pass -NoInstaller.' }
+        if (-not $iscc) {
+            # Machine-wide install, or winget's per-user install.
+            $iscc = @("${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe") |
+                Where-Object { Test-Path $_ } | Select-Object -First 1
+        }
+        if (-not $iscc) { throw 'Inno Setup 6 (ISCC.exe) not found. Install it or pass -NoInstaller.' }
         $numeric = ([regex]::Match($Version, '^\d+(\.\d+){0,3}').Value + '.0.0.0').Split('.')[0..3] -join '.'
         & $iscc "/DAppVersion=$Version" "/DNumericVersion=$numeric" "/DSourceDir=$(Resolve-Path $files)" "/DOutputDir=$(Resolve-Path 'artifacts')" 'installer/FactorySeatCompanion.iss'
         if ($LASTEXITCODE -ne 0) { throw 'Installer build failed.' }
