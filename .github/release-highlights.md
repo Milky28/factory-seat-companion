@@ -1,7 +1,4 @@
-This is the first public beta.
-
-- **Pre-race checklist overlay** for SimHub: circuit and exact layout, car model, class, number and team, race duration, fuel, tyre wear, time scale and start time, each marked ✓ match, ✗ mismatch, – any, ☐ check or ○ unknown.
-- **To do hints** in LMU's own wording for every mismatch, such as "Set Tyre Wear to X3".
-- **Shows only in LMU's menus** and hides while loading or driving, with a SimHub action to toggle it.
-- **Windows installer and zip**: no building from source, no settings files to edit.
-- Reads Factory Seat's `briefing.json` round briefing.
+- **Every layout is checked.** The installed settings now map all 38 layouts on LMU's 18 tracks, so Exact layout no longer shows Unknown with "No layout mapping" outside Bahrain and Lusail.
+- **LMU's default start time is read.** "Default ( 11:00 AM )" is compared as 11:00 instead of showing Unknown.
+- **The overlay stays hidden until LMU is running.**
+- **Clearer race duration hint** in "% Track Time" mode: change the race time once and back so LMU confirms it.
