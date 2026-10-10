@@ -37,7 +37,7 @@ All are prefixed `FactorySeatPlugin.`
 | `Diagnostics` | Report diagnostics joined with ` \| `. |
 | `Hints` | Fix hints of every row that has one, joined with ` · `. Empty when nothing mismatches or the report is stale. |
 | `ManualCheck` | A note to check each setting by hand, set when the briefing is available but LMU's settings can't be read or the report is stale. Otherwise empty. |
-| `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Icon`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any`; `Icon` is ✓, ✗, – (Any) or ○ (Unknown); `Hint` is set on a fresh `Mismatch` row, and on an `Unknown` Race duration row when LMU's race finish isn't Time. |
+| `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Icon`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any` and `Manual` as `Check`; `Icon` is ✓, ✗, – (Any), ☐ (Check) or ○ (Unknown); `Hint` is set on a fresh `Mismatch` or `Manual` row. `Manual` rows (Race duration) don't block READY TO RACE. |
 
 ## When the overlay shows
 

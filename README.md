@@ -12,7 +12,7 @@ It only reads. It never changes LMU's settings, never writes to Factory Seat or 
 | --- | --- |
 | Circuit and exact layout | The round's track and layout |
 | Car model, class, number and team | The round's car (number and team only when the round sets them) |
-| Race duration | The round's race length, when LMU's finish criteria is **Time** |
+| Race duration | Not compared: shown as a reminder of the round's race length to set by hand (see below) |
 | Fuel consumption, tyre wear, time scale | The round's multipliers |
 | Race start time | The round's start time, or LMU's default |
 
@@ -91,9 +91,10 @@ Next to the banner is the career, event and round, then one row per check showin
 | Mark | Status | Meaning |
 | --- | --- | --- |
 | ✓ green | Match | LMU has what the round requires. |
-| ✗ red | Mismatch | LMU has a different value. The row is highlighted, and a red **To fix:** line under the rows says what to change in LMU's words, such as "Set Tyre Wear to X3". |
+| ✗ red | Mismatch | LMU has a different value. The row is highlighted, and a **To do:** line under the rows says what to change in LMU's words, such as "Set Tyre Wear to X3". |
 | ○ amber | Unknown | The value couldn't be read or confirmed. This blocks READY TO RACE. |
 | – grey | Any | The round doesn't restrict this setting, such as any car number. |
+| ☐ blue | Check | The companion can't read this from LMU, so set it by hand. It doesn't block READY TO RACE. |
 
 If LMU can't be read (for example after a game update breaks its API), every row shows ○ with the round's value still listed, and an amber note under the rows says to check each setting in LMU's menu by hand. The overlay then works as a plain checklist.
 
@@ -109,7 +110,7 @@ Common reasons for NOT VERIFIED:
 
 ## Known limits
 
-- **Race duration in "% Track Time" mode** stays Unknown. LMU's API doesn't report the menu's race length in that mode. The overlay's **To fix:** line says to set the race finish to **Time**, which lets it be checked.
+- **Race duration is checked by hand.** LMU applies the menu's Race Time only when the session starts, so on the race setup screen its API still reports the previous session's length. The row always shows ☐ Check, and the **To do:** line reminds you to set the Race Time, for example "Set Race Time to 0 hrs 30 mins".
 - **Layouts need a mapping.** LMU and Factory Seat name layouts differently, and only Bahrain (Endurance and Outer) and Lusail ship in the example settings. Any other layout shows Unknown. To add one, select the layout in LMU: the message at the bottom of the overlay then reads "No layout mapping for trackFolder …, sceneDescription …". Add both values with the round's `layoutFile` (from `briefing.json`) to `layoutMappings` in your settings file and restart SimHub.
 - **Custom teams** can't be confirmed through LMU's API, so a round with a Race Control custom team always stays NOT VERIFIED.
 - **Main menu and race setup look the same to the API.** With `GSTATE_SETUP` allowed, checks also run on LMU's main menu, and the overlay shows there too. That's harmless because LMU's own menus read the same data there. Use the toggle in [When the overlay shows](#when-the-overlay-shows) to hide it.

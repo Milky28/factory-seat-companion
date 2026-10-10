@@ -15,15 +15,15 @@ public sealed class SettingsValidator(CompanionOptions options)
             lmuStatus = SourceStatus.Stale;
         bool valid = read.Status == SourceStatus.Available && lmuStatus == SourceStatus.Available;
         void Add(string id, string label, string? required, string? current, bool? matches, bool notApplicable = false,
-            string? reason = null, string? hint = null, string? name = null)
+            string? reason = null, string? hint = null, string? name = null, bool manual = false)
         {
-            var status = !valid ? CheckStatus.Unknown : notApplicable ? CheckStatus.NotApplicable :
+            var status = !valid ? CheckStatus.Unknown : notApplicable ? CheckStatus.NotApplicable : manual ? CheckStatus.Manual :
                 matches is null ? CheckStatus.Unknown : matches.Value ? CheckStatus.Match : CheckStatus.Mismatch;
             // Show the briefing's display name rather than an identifier; LMU's side shares it once matched.
             var shown = Present(name) && required is not null ? name : required;
             checks.Add(new(id, label, shown ?? "Unknown", (status == CheckStatus.Match ? shown : current) ?? "Unknown", status,
                 !valid ? $"Sources not current: briefing={read.Status}, LMU={lmuStatus}." : reason,
-                status == CheckStatus.Mismatch ? hint : null));
+                status is CheckStatus.Mismatch or CheckStatus.Manual ? hint : null));
         }
         static bool Present(string? s) => !string.IsNullOrWhiteSpace(s);
         static bool? Same(string? a, string? c) => Present(a) && Present(c)
@@ -73,16 +73,16 @@ public sealed class SettingsValidator(CompanionOptions options)
         if (car?.CustomTeam != false)
             Add("customTeam", "Custom team identity", car?.CustomTeam == true ? "Race Control custom team" : null,
                 null, null, reason: "REST custom-team marker has not been established; matching a team name is insufficient.");
-        Number("duration", "Race duration (min)", b?.RaceMinutes, live.RaceMinutes,
-            $"Set Race Length to {Display(b?.RaceMinutes)} min", true);
-        // LMU only reports race minutes when the finish is set to Time, so say so instead of leaving a bare Unknown.
-        if (valid && live.RaceMinutes is null && Present(live.FinishCriteria) && b?.RaceMinutes is not null &&
-            !string.Equals(live.FinishCriteria!.Trim(), "Time", StringComparison.OrdinalIgnoreCase))
-            checks[^1] = checks[^1] with
-            {
-                Hint = $"Set Race Finish to Time, then Race Length to {Display(b.RaceMinutes)} min",
-                Reason = $"LMU's race finish is '{live.FinishCriteria}'; race length can only be checked when it is Time."
-            };
+        // LMU applies Race Time only when the session starts, so on race setup its API still holds the previous
+        // session's length (in both Time and % Track Time modes). The driver sets it by hand; it never blocks.
+        if (b?.RaceMinutes is { } minutes && double.IsFinite(minutes) && minutes > 0)
+        {
+            var total = (int)Math.Round(minutes);
+            Add("duration", "Race duration (min)", Display(minutes), "Set in menu", null, manual: true,
+                reason: "LMU reports race length only once the session starts.",
+                hint: $"Set Race Time to {total / 60} hrs {total % 60} mins");
+        }
+        else Add("duration", "Race duration (min)", null, null, null);
         Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier,
             $"Set Fuel Usage to {Factor(b?.FuelMultiplier, "Realistic")}");
         Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier,
@@ -96,7 +96,7 @@ public sealed class SettingsValidator(CompanionOptions options)
                 DateTime.ParseExact(startTime, "HH:mm", CultureInfo.InvariantCulture).ToString("h:mm tt", CultureInfo.InvariantCulture));
 
         bool metadataValid = Present(b?.CareerName) && Present(b?.EventName) && b?.RoundNumber > 0;
-        bool ready = valid && metadataValid && checks.All(c => c.Status is CheckStatus.Match or CheckStatus.NotApplicable);
+        bool ready = valid && metadataValid && checks.All(c => c.Status is CheckStatus.Match or CheckStatus.NotApplicable or CheckStatus.Manual);
         var diagnostics = live.Diagnostics.Concat([read.Diagnostic]).ToList();
         if (mappingHelp is not null) diagnostics.Add(mappingHelp);
         if (!metadataValid) diagnostics.Add("Briefing career/event/round metadata missing or invalid.");

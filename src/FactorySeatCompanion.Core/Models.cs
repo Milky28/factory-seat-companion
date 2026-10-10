@@ -3,7 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace FactorySeatCompanion.Core;
 
-public enum CheckStatus { Match, Mismatch, Unknown, NotApplicable }
+// Manual: the companion can't read this from LMU, so the driver checks it; it never blocks readiness.
+public enum CheckStatus { Match, Mismatch, Unknown, NotApplicable, Manual }
 public enum SourceStatus { Available, Unavailable, Invalid, Stale, UnsafeState }
 
 // Normalized requirements for the next round, read from Factory Seat's briefing.json.
@@ -59,8 +60,6 @@ public sealed record LmuSnapshot
     public string? Team { get; init; }
     public string? LiveryName { get; init; }
     public double? RaceMinutes { get; init; }
-    // LMU's race finish setting, e.g. "Time" or "% Track Time"; RaceMinutes is known only for "Time".
-    public string? FinishCriteria { get; init; }
     public double? FuelMultiplier { get; init; }
     public double? TireMultiplier { get; init; }
     public double? TimeScale { get; init; }
@@ -70,13 +69,18 @@ public sealed record LmuSnapshot
     public string[] Diagnostics { get; init; } = [];
 }
 
-// Hint: one line telling the driver what to change in LMU; set on Mismatch rows, and on an Unknown
-// row only when an LMU setting is what keeps it from being checked.
+// Hint: one line telling the driver what to change in LMU; set on Mismatch and Manual rows.
 public sealed record SettingCheck(string Id, string Label, string Required, string Current,
     CheckStatus Status, string? Reason = null, string? Hint = null)
 {
-    // NotApplicable rows are shown as "Any", the briefing's own wording. JSON keeps the enum name.
-    public static string DisplayStatus(CheckStatus status) => status == CheckStatus.NotApplicable ? "Any" : status.ToString();
+    // NotApplicable rows are shown as "Any", the briefing's own wording, and Manual rows as "Check".
+    // JSON keeps the enum names.
+    public static string DisplayStatus(CheckStatus status) => status switch
+    {
+        CheckStatus.NotApplicable => "Any",
+        CheckStatus.Manual => "Check",
+        _ => status.ToString()
+    };
 }
 public sealed record ValidationReport(string Career, string Event, int? Round, bool ReadyToRace,
     string OverallStatus, SourceStatus BriefingStatus, SourceStatus LmuStatus,

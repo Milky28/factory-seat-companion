@@ -44,7 +44,7 @@ Test("Duration comes from RACE lengthTime, never percentage", () =>
 {
     Assert(live.RaceMinutes == 360);
     var parsed = LmuJsonParser.Parse(sessions, "{}", setup, now);
-    Assert(parsed.RaceMinutes is null && !Report(parsed).ReadyToRace);
+    Assert(parsed.RaceMinutes is null);
 });
 Test("Duration is unknown unless the finish criteria is Time", () =>
 {
@@ -52,10 +52,7 @@ Test("Duration is unknown unless the finish criteria is Time", () =>
     var percent = Change(sessions, n => n["SESSSET_Finish_Criteria"]!["stringValue"] = "% Track Time");
     var race = "{\"scheduledSessions\":[{\"name\":\"RACE\",\"lengthTime\":48}]}";
     var parsed = LmuJsonParser.Parse(percent, race, setup, now);
-    Assert(parsed.RaceMinutes is null && parsed.Diagnostics.Any(d => d.Contains("SESSSET_Finish_Criteria")));
-    Status(Report(parsed), "duration", CheckStatus.Unknown);
-    var duration = Report(parsed).Checks.Single(c => c.Id == "duration");
-    Assert(duration.Hint == "Set Race Finish to Time, then Race Length to 360 min", duration.Hint ?? "(none)");
+    Assert(parsed.RaceMinutes is null);
     var missing = Change(sessions, n => n.AsObject().Remove("SESSSET_Finish_Criteria"));
     Assert(LmuJsonParser.Parse(missing, durations, setup, now).RaceMinutes is null);
     var timed = Change(sessions, n => n["SESSSET_Finish_Criteria"]!["stringValue"] = " time ");
@@ -86,6 +83,20 @@ Test("currentValue alone remains unknown", () =>
     var json = Change(sessions, n => n["SESSSET_Fuel_Usage"]!.AsObject().Remove("stringValue"));
     Status(Report(LmuJsonParser.Parse(json, durations, setup, now)), "fuel", CheckStatus.Unknown);
 });
+Test("Race duration is a manual check that never blocks readiness", () =>
+{
+    // LMU applies Race Time only at session start, so its API holds the previous session's length on race setup.
+    foreach (var snapshot in new[] { live, live with { RaceMinutes = 48 }, live with { RaceMinutes = null } })
+    {
+        var report = Report(snapshot);
+        var duration = report.Checks.Single(c => c.Id == "duration");
+        Assert(report.ReadyToRace && duration.Status == CheckStatus.Manual && duration.Current == "Set in menu");
+        Assert(duration.Required == "360" && duration.Hint == "Set Race Time to 6 hrs 0 mins", duration.Hint ?? "(none)");
+    }
+    var thirty = Report(requirement: briefing.Briefing! with { RaceMinutes = 30 }).Checks.Single(c => c.Id == "duration");
+    Assert(thirty.Hint == "Set Race Time to 0 hrs 30 mins" && SettingCheck.DisplayStatus(thirty.Status) == "Check");
+    Status(Report(live with { ObservedAt = now.AddMinutes(-1) }), "duration", CheckStatus.Unknown);
+});
 Test("Missing requirements cannot default to matching", () =>
 {
     var r = Report(requirement: briefing.Briefing! with { RaceMinutes = null, FuelMultiplier = null, Car = null });
@@ -98,7 +109,8 @@ Test("Numeric tolerance and invalid values", () =>
     Status(Report(live with { FuelMultiplier = 1.01 }), "fuel", CheckStatus.Mismatch);
     Status(Report(live with { FuelMultiplier = double.NaN }), "fuel", CheckStatus.Unknown);
     Status(Report(live with { TimeScale = 0 }), "timeScale", CheckStatus.Unknown);
-    Status(Report(live with { RaceMinutes = 0 }), "duration", CheckStatus.Unknown);
+    Status(Report(live with { RaceMinutes = 0 }), "duration", CheckStatus.Manual);
+    Status(Report(requirement: briefing.Briefing! with { RaceMinutes = 0 }), "duration", CheckStatus.Unknown);
 });
 
 var missing = new (string Id, LmuSnapshot Snapshot)[]
@@ -106,7 +118,7 @@ var missing = new (string Id, LmuSnapshot Snapshot)[]
     ("circuit", live with { TrackFolder = null }), ("layout", live with { SceneDescription = null }),
     ("carModel", live with { CarFolder = null }), ("carClass", live with { Classes = null }),
     ("carNumber", live with { Number = null }), ("team", live with { Team = null }),
-    ("duration", live with { RaceMinutes = null }), ("fuel", live with { FuelMultiplier = null }),
+    ("fuel", live with { FuelMultiplier = null }),
     ("tyres", live with { TireMultiplier = null }), ("timeScale", live with { TimeScale = null }),
     ("startTime", live with { StartTime = null })
 };
@@ -121,7 +133,7 @@ var mismatches = new (string Id, LmuSnapshot Snapshot)[]
     ("carModel", live with { CarFolder = "BMW_M_Hybrid_V8_2023" }),
     ("carClass", live with { Classes = ["Hyper", "WEC2024"] }),
     ("carNumber", live with { Number = "32" }), ("team", live with { Team = "Other team" }),
-    ("duration", live with { RaceMinutes = 100 }), ("fuel", live with { FuelMultiplier = 2 }),
+    ("fuel", live with { FuelMultiplier = 2 }),
     ("tyres", live with { TireMultiplier = 1 }), ("timeScale", live with { TimeScale = 1 }),
     ("startTime", live with { StartTime = "13:15" })
 };
@@ -243,8 +255,8 @@ Test("Stale observation clears matches", () => Assert(!Report(live with { Observ
 Test("Endpoint failure clears only affected observations", () =>
 {
     var r = Report(LmuJsonParser.Parse("{", durations, setup, now));
-    // Duration needs SESSSET_Finish_Criteria from the sessions endpoint, so it is affected too.
-    Status(r, "fuel", CheckStatus.Unknown); Status(r, "duration", CheckStatus.Unknown); Status(r, "carModel", CheckStatus.Match);
+    // Duration is a manual check that doesn't read LMU, so a broken sessions endpoint leaves it alone.
+    Status(r, "fuel", CheckStatus.Unknown); Status(r, "duration", CheckStatus.Manual); Status(r, "carModel", CheckStatus.Match);
     Assert(!r.ReadyToRace);
 });
 Test("Duplicate RACE sessions are ambiguous", () =>
@@ -493,8 +505,8 @@ Test("Mismatched rows carry a one-line fix hint in LMU's wording", () =>
     Assert(Hint("circuit") == "Select Bahrain International Circuit", Hint("circuit"));
     Assert(Hint("layout") == "Select the Endurance Circuit layout", Hint("layout"));
     Assert(Hint("carModel") == "Select the BMW M4 LMGT3", Hint("carModel"));
-    Assert(report.Checks.Where(c => c.Status != CheckStatus.Mismatch).All(c => c.Hint is null));
-    Assert(Report().Checks.All(c => c.Hint is null));
+    Assert(report.Checks.Where(c => c.Status is not (CheckStatus.Mismatch or CheckStatus.Manual)).All(c => c.Hint is null));
+    Assert(Report().Checks.Where(c => c.Id != "duration").All(c => c.Hint is null));
     var normal = Report(requirement: briefing.Briefing! with { TimeScale = 1, TireMultiplier = 3 });
     Assert(normal.Checks.Single(c => c.Id == "timeScale").Hint == "Set Time Scale to Normal");
     Assert(normal.Checks.Single(c => c.Id == "tyres").Hint == "Set Tyre Wear to X3");
@@ -523,15 +535,15 @@ Test("Dashboard shows NotApplicable as Any and lists fix hints", () =>
     var any = Dash(Report(requirement: briefing.Briefing! with { Car = briefing.Briefing!.Car! with { AnyNumber = true, Team = null } }));
     var number = any.Rows.Single(r => r.Id == "carNumber");
     Assert(any.ReadyToRace && number.Status == "NotApplicable" && number.StatusText == "Any", number.StatusText);
-    Assert(any.Rows.Single(r => r.Id == "fuel").StatusText == "Match" && any.Hints == "");
+    Assert(any.Rows.Single(r => r.Id == "fuel").StatusText == "Match" && any.Hints == "Set Race Time to 6 hrs 0 mins", any.Hints);
     Assert(number.Icon == "\u2013" && any.Rows.Single(r => r.Id == "fuel").Icon == "\u2713" && DashboardRow.Hidden.Icon == "");
     Assert(SettingCheck.DisplayStatus(CheckStatus.NotApplicable) == "Any");
     var mismatch = Dash(Report(live with { FuelMultiplier = 2, TimeScale = 1 }));
     Assert(mismatch.Rows.Single(r => r.Id == "fuel").Hint == "Set Fuel Usage to Realistic");
     Assert(mismatch.Rows.Single(r => r.Id == "fuel").Icon == "\u2717");
-    var percent = Dash(Report(live with { RaceMinutes = null, FinishCriteria = "% Track Time" }));
-    Assert(percent.Rows.Single(r => r.Id == "duration").Icon == "\u25CB" && percent.Hints.StartsWith("Set Race Finish to Time"), percent.Hints);
-    Assert(mismatch.Hints == "Set Fuel Usage to Realistic \u00B7 Set Time Scale to X4", mismatch.Hints);
+    var manual = Dash(Report()).Rows.Single(r => r.Id == "duration");
+    Assert(Dash(Report()).ReadyToRace && manual.Icon == "\u2610" && manual.StatusText == "Check" && manual.Hint == "Set Race Time to 6 hrs 0 mins");
+    Assert(mismatch.Hints == "Set Race Time to 6 hrs 0 mins \u00B7 Set Fuel Usage to Realistic \u00B7 Set Time Scale to X4", mismatch.Hints);
     var stale = Dash(Report(live with { FuelMultiplier = 2 }), 11);
     // Stale or unreadable LMU still lists every required setting, each with an open circle.
     Assert(stale.Hints == "" && stale.Rows.All(r => r.Hint == "") &&

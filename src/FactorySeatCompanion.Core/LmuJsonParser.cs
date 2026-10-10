@@ -150,8 +150,6 @@ public static class LmuJsonParser
         // (Bahrain) or 24 (Road Atlanta). lengthTime matched the menu only when the criteria was "Time".
         var finishCriteria = Setting("SESSSET_Finish_Criteria")?.Trim();
         bool timedRace = string.Equals(finishCriteria, "Time", StringComparison.OrdinalIgnoreCase);
-        if (finishCriteria is not null && !timedRace)
-            diagnostics.Add($"SESSSET_Finish_Criteria '{finishCriteria[..Math.Min(finishCriteria.Length, 128)]}': RACE lengthTime is only minutes when it is 'Time'.");
         var scheduled = durations is null ? null : JsonRead.Property(durations.RootElement, "scheduledSessions");
         if (scheduled is { ValueKind: JsonValueKind.Array } array)
         {
@@ -187,7 +185,6 @@ public static class LmuJsonParser
             Team = JsonRead.Text(JsonRead.Property(car, "team")),
             LiveryName = JsonRead.Text(JsonRead.Property(car, "liveryName")),
             RaceMinutes = raceMinutes,
-            FinishCriteria = finishCriteria,
             FuelMultiplier = Multiplier("SESSSET_Fuel_Usage"),
             TireMultiplier = Multiplier("SESSSET_Tire_Wear"),
             TimeScale = Multiplier("SESSSET_race_timescale"),
