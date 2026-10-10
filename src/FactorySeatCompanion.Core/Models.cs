@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace FactorySeatCompanion.Core;
 
-// Manual: the companion can't read this from LMU, so the driver checks it; it never blocks readiness.
+// Manual: LMU doesn't report this value yet, so the driver checks it; it never blocks readiness.
 public enum CheckStatus { Match, Mismatch, Unknown, NotApplicable, Manual }
 public enum SourceStatus { Available, Unavailable, Invalid, Stale, UnsafeState }
 
@@ -23,6 +23,8 @@ public sealed record RoundRequirement
     public string? TrackName { get; init; }
     public string? LayoutName { get; init; }
     public double? RaceMinutes { get; init; }
+    // LMU's race finish setting, e.g. "Time" or "% Track Time"; RaceMinutes is read only for "Time".
+    public string? FinishCriteria { get; init; }
     public double? FuelMultiplier { get; init; }
     public double? TireMultiplier { get; init; }
     public double? TimeScale { get; init; }
@@ -60,6 +62,8 @@ public sealed record LmuSnapshot
     public string? Team { get; init; }
     public string? LiveryName { get; init; }
     public double? RaceMinutes { get; init; }
+    // LMU's race finish setting, e.g. "Time" or "% Track Time"; RaceMinutes is read only for "Time".
+    public string? FinishCriteria { get; init; }
     public double? FuelMultiplier { get; init; }
     public double? TireMultiplier { get; init; }
     public double? TimeScale { get; init; }

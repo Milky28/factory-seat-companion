@@ -73,16 +73,17 @@ public sealed class SettingsValidator(CompanionOptions options)
         if (car?.CustomTeam != false)
             Add("customTeam", "Custom team identity", car?.CustomTeam == true ? "Race Control custom team" : null,
                 null, null, reason: "REST custom-team marker has not been established; matching a team name is insufficient.");
-        // LMU applies Race Time only when the session starts, so on race setup its API still holds the previous
-        // session's length (in both Time and % Track Time modes). The driver sets it by hand; it never blocks.
-        if (b?.RaceMinutes is { } minutes && double.IsFinite(minutes) && minutes > 0)
-        {
-            var total = (int)Math.Round(minutes);
-            Add("duration", "Race duration (min)", Display(minutes), "Set in menu", null, manual: true,
-                reason: "LMU reports race length only once the session starts.",
-                hint: $"Set Race Time to {total / 60} hrs {total % 60} mins");
-        }
-        else Add("duration", "Race duration (min)", null, null, null);
+        // Race setup, live (2026-10-10): with finish criteria Time, RACE lengthTime tracks the menu's Race Time
+        // within a second. With "% Track Time" LMU stores a fraction of 24 h and minute-only changes never reach
+        // the API until the hours change or the session starts, so the driver checks it by hand; it never blocks.
+        string raceTime = b?.RaceMinutes is { } m && double.IsFinite(m) && m > 0
+            ? $"Set Race Time to {(int)Math.Round(m) / 60} hrs {(int)Math.Round(m) % 60} mins" : "";
+        if (string.Equals(live.FinishCriteria?.Trim(), "Time", StringComparison.OrdinalIgnoreCase) || raceTime.Length == 0)
+            Number("duration", "Race duration (min)", b?.RaceMinutes, live.RaceMinutes, raceTime, true);
+        else
+            Add("duration", "Race duration (min)", Display(b!.RaceMinutes), "Set in menu", null, manual: true,
+                reason: $"LMU's race finish is '{live.FinishCriteria ?? "unknown"}', so it doesn't report Race Time changes yet.",
+                hint: raceTime + " (change the hours once so LMU confirms it)");
         Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier,
             $"Set Fuel Usage to {Factor(b?.FuelMultiplier, "Realistic")}");
         Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier,
