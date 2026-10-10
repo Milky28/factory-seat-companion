@@ -50,6 +50,7 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
             this.AttachDelegate(prefix + "Current", () => State().Rows[slot].Current);
             this.AttachDelegate(prefix + "Status", () => State().Rows[slot].Status);
             this.AttachDelegate(prefix + "StatusText", () => State().Rows[slot].StatusText);
+            this.AttachDelegate(prefix + "Icon", () => State().Rows[slot].Icon);
             this.AttachDelegate(prefix + "Hint", () => State().Rows[slot].Hint);
             this.AttachDelegate(prefix + "Reason", () => State().Rows[slot].Reason);
         }

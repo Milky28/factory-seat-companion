@@ -25,6 +25,15 @@ public sealed class DashboardRow
     public string Reason { get; }
     // What the overlay prints: NotApplicable reads as "Any", the briefing's wording.
     public string StatusText => Status == "NotApplicable" ? "Any" : Status;
+    // Checklist mark: tick, cross, dash for Any, and an empty circle while the value is unknown,
+    // so the overlay still reads as a list of settings to set when LMU can't be read.
+    public string Icon => !Visible ? "" : Status switch
+    {
+        "Match" => "\u2713",
+        "Mismatch" => "\u2717",
+        "NotApplicable" => "\u2013",
+        _ => "\u25CB"
+    };
     // One line telling the driver what to change; empty unless the row is a fresh Mismatch.
     public string Hint { get; }
 }

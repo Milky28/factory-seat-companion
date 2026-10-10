@@ -485,12 +485,16 @@ Test("Dashboard shows NotApplicable as Any and lists fix hints", () =>
     var number = any.Rows.Single(r => r.Id == "carNumber");
     Assert(any.ReadyToRace && number.Status == "NotApplicable" && number.StatusText == "Any", number.StatusText);
     Assert(any.Rows.Single(r => r.Id == "fuel").StatusText == "Match" && any.Hints == "");
+    Assert(number.Icon == "\u2013" && any.Rows.Single(r => r.Id == "fuel").Icon == "\u2713" && DashboardRow.Hidden.Icon == "");
     Assert(SettingCheck.DisplayStatus(CheckStatus.NotApplicable) == "Any");
     var mismatch = Dash(Report(live with { FuelMultiplier = 2, TimeScale = 1 }));
     Assert(mismatch.Rows.Single(r => r.Id == "fuel").Hint == "Set Fuel Usage to Realistic");
+    Assert(mismatch.Rows.Single(r => r.Id == "fuel").Icon == "\u2717");
     Assert(mismatch.Hints == "Set Fuel Usage to Realistic \u00B7 Set Time Scale to X4", mismatch.Hints);
     var stale = Dash(Report(live with { FuelMultiplier = 2 }), 11);
-    Assert(stale.Hints == "" && stale.Rows.All(r => r.Hint == ""));
+    // Stale or unreadable LMU still lists every required setting, each with an open circle.
+    Assert(stale.Hints == "" && stale.Rows.All(r => r.Hint == "") &&
+        stale.Rows.Where(r => r.Visible).All(r => r.Icon == "\u25CB" && r.Required != ""));
 });
 Test("Stale or future report is never ready", () =>
 {

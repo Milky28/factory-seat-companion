@@ -80,14 +80,16 @@ The top banner sums everything up:
 | **SETUP MISMATCH** (red) | At least one LMU setting differs from the round. Fix the red rows. |
 | **NOT VERIFIED** (amber) | Something can't be confirmed: a row is unknown, LMU or the briefing isn't readable, or the data is out of date. |
 
-Under it is the career, event and round, then one row per check showing what the round requires and what LMU currently has. The row's colour is its status:
+Next to the banner is the career, event and round, then one row per check showing what the round needs and what LMU currently has. Each row starts with a mark and is coloured by its status:
 
-| Colour | Status | Meaning |
+| Mark | Status | Meaning |
 | --- | --- | --- |
-| Green | Match | LMU has what the round requires. |
-| Red | Mismatch | LMU has a different value. Change it in LMU's menu. |
-| Amber | Unknown | The value couldn't be read or confirmed. This blocks READY TO RACE. |
-| Grey | Not applicable | The round doesn't restrict this setting, such as any car number. |
+| ✓ green | Match | LMU has what the round requires. |
+| ✗ red | Mismatch | LMU has a different value. The row is highlighted, and a red **To fix:** line under the rows says what to change in LMU's words, such as "Set Tyre Wear to X3". |
+| ○ amber | Unknown | The value couldn't be read or confirmed. This blocks READY TO RACE. |
+| – grey | Any | The round doesn't restrict this setting, such as any car number. |
+
+If LMU can't be read (for example after a game update breaks its API), every row shows ○ with the round's value still listed, so the overlay works as a plain checklist of settings to set by hand.
 
 The footer shows where the data comes from. **Briefing** and **LMU** say whether each source is readable (`Available`, `Unavailable`, `Stale`, `Invalid` or `UnsafeState`). **Bridge** says whether the plugin's companion program is running. Any problem the checker found appears as a message at the bottom.
 
