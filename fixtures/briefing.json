@@ -1,0 +1,46 @@
+{
+  "format": "factory-seat-briefing",
+  "version": 1,
+  "app": "1.1.0",
+  "writtenAt": "2026-10-09T12:00:00Z",
+  "open": true,
+  "career": {
+    "id": "00000000-0000-0000-0000-000000000000",
+    "name": "Example GT3 career (synthetic fixture)",
+    "season": 1,
+    "carClass": "GT3",
+    "reputation": 0,
+    "team": "Team WRT",
+    "targetPosition": 6
+  },
+  "round": {
+    "number": 3,
+    "of": 8,
+    "state": "Armed",
+    "armedAt": "2026-10-09T11:00:00Z",
+    "guest": false,
+    "event": { "id": "bahrain-8h", "name": "Bahrain endurance test", "realHours": 8, "pointsWeight": 1 },
+    "track": {
+      "folder": "BahrainWEC_2023",
+      "name": "Bahrain International Circuit",
+      "layoutFile": "layoutEndurance",
+      "layoutName": "Endurance Circuit",
+      "trackCourse": "Bahrain International Circuit Endurance"
+    },
+    "car": {
+      "class": "GT3",
+      "folder": "BMW_M4_LMGT3_2023",
+      "carTypes": ["BMW M4 LMGT3"],
+      "name": "BMW M4",
+      "number": "31",
+      "customTeam": false,
+      "team": "Team WRT",
+      "liveryNumbers": ["31", "46"]
+    },
+    "settings": { "raceMinutes": 360, "fuelUsage": 1, "tyreWear": 2, "timeScale": 4, "startTime": "11:15" },
+    "pitPlan": { "stints": 6, "stintMinutes": 60, "stops": 5 }
+  },
+  "sponsors": [
+    { "name": "Example sponsor", "kind": "Podiums", "objective": "a podium", "status": "InProgress", "done": 0, "needed": 1, "reward": 3 }
+  ]
+}

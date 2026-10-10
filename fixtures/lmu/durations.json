@@ -1,0 +1,6 @@
+{
+  "scheduledSessions": [
+    { "name": "PRACTICE", "lengthTime": 20 },
+    { "name": "RACE", "lengthTime": 360 }
+  ]
+}

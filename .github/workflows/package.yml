@@ -1,0 +1,46 @@
+name: Player package
+
+# Builds the player zip and installer. Downloads are attached to each run as artifacts.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SIMHUB_VERSION: '9.13.2'
+
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Cache SimHub (build reference only, not packaged)
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/SimHub
+          key: simhub-${{ env.SIMHUB_VERSION }}
+      - name: Install SimHub for its plugin DLLs
+        timeout-minutes: 15
+        shell: pwsh
+        run: ./scripts/Get-SimHubSdk.ps1 -Version $env:SIMHUB_VERSION -Destination "$env:RUNNER_TEMP/SimHub"
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup --no-progress -y }
+      - name: Build download and installer
+        shell: pwsh
+        run: ./scripts/Package.ps1 -SimHubPath "$env:RUNNER_TEMP/SimHub" -Version "0.1.0-ci.${{ github.run_number }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FactorySeatCompanion-player
+          path: |
+            artifacts/FactorySeatCompanion-*.zip
+            artifacts/FactorySeatCompanion-Setup-*.exe
+          if-no-files-found: error

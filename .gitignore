@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+.dotnet-home/
+research/
+captures/
+demo/
+artifacts/
+*.user
+*.suo

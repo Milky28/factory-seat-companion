@@ -1,0 +1,19 @@
+{
+  "classesSelection": ["GT3"],
+  "fullGrid": [],
+  "trackInfo": {
+    "cmpName": "BahrainWEC_2023",
+    "sceneDesc": "BAHRAINWEC_ENDCE",
+    "layoutName": "Endurance Circuit",
+    "trackName": "Bahrain International Circuit"
+  },
+  "selectedCar": {
+    "manufacturer": "BMW",
+    "classes": "BMW_M4_LMGT3, GT3, WEC2024",
+    "number": 31,
+    "team": "Team WRT",
+    "vehFile": "C:\\LMU\\Installed\\Vehicles\\BMW_M4_LMGT3_2023\\1.0\\example31.veh",
+    "id": "synthetic-example31",
+    "liveryName": "Team WRT #31"
+  }
+}
