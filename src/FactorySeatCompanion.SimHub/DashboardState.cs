@@ -24,7 +24,9 @@ public sealed class DashboardRow
     public string Status { get; }
     public string Reason { get; }
     // What the overlay prints: NotApplicable reads as "Any", the briefing's wording.
-    public string StatusText => Status == "NotApplicable" ? "Any" : Status == "Manual" ? "Check" : Status;
+    // The custom team identity row can't be checked at all, so it says so rather than "Any".
+    public string StatusText => Status == "NotApplicable" ? (Id == "customTeam" ? "Not checkable" : "Any")
+        : Status == "Manual" ? "Check" : Status;
     // Checklist mark: tick, cross, dash for Any, a box for settings checked by hand, and an empty circle while
     // the value is unknown,
     // so the overlay still reads as a list of settings to set when LMU can't be read.
@@ -105,8 +107,9 @@ public sealed class DashboardState
             : fresh && report.OverallStatus == "SETUP MISMATCH" ? "SETUP MISMATCH" : "NOT VERIFIED";
         // The briefing gives the values to set, so the rows still help when LMU's side is unreadable or the report is old.
         bool manual = report.BriefingStatus == "Available" && (!fresh || report.LmuStatus != "Available") && checks.Count > 0;
+        // Factory Seat shows career names in capitals.
         string round = report.Round is int r ? "Round " + r.ToString(CultureInfo.InvariantCulture) : "Round ?";
-        return new DashboardState(ready, overall, $"{report.Career} / {report.Event} / {round}", message!.Mode,
+        return new DashboardState(ready, overall, $"{(report.Career ?? "").ToUpperInvariant()} / {report.Event} / {round}", message!.Mode,
             fresh ? report.BriefingStatus : "Stale", fresh ? report.LmuStatus : "Stale", age.TotalSeconds,
             bridgeStatus, string.Join(" | ", diagnostics), rows, manual ? ManualCheckText : "");
     }

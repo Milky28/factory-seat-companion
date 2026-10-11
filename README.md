@@ -65,7 +65,7 @@ In this example the round needs a 30-minute race and tyre wear 3, but LMU is set
 
 ### When the overlay shows
 
-The overlay shows while you're in LMU's menus and hides as soon as an event starts loading. It stays hidden in the garage, while driving, in the pause menu and in replays, and comes back when you return to the menus. LMU can't tell the companion whether you're on the main menu or on race setup, so it shows on both.
+The overlay shows while you're in LMU's menus and hides as soon as an event starts loading. While LMU is closed or still starting up, it stays hidden until the menus appear. It stays hidden in the garage, while driving, in the pause menu and in replays, and comes back when you return to the menus. LMU can't tell the companion whether you're on the main menu or on race setup, so it shows on both.
 
 To hide it on the main menu, bind a key or wheel button to it. In SimHub, open **Controls and events**, add a new mapping, press the button you want, and pick the action **FactorySeatPlugin.ToggleOverlay**. Pressing it hides the overlay until your next session, and pressing it again brings it back. The overlay stays hidden until LMU is running. If LMU is running but its data can't be read, the overlay stays up so you can still see which settings the round needs.
 
@@ -79,7 +79,7 @@ To hide it on the main menu, bind a key or wheel button to it. In SimHub, open *
 | Fuel consumption, tyre wear, time scale | The round's multipliers |
 | Race start time | The round's start time, or LMU's default |
 
-A "Custom team identity" row appears when the round uses a Race Control custom team.
+A "Custom team identity" row appears when the round uses a Race Control custom team. LMU can't confirm a custom team, so the row reads – Not checkable and doesn't hold back READY TO RACE.
 
 ## Reading the overlay
 
@@ -127,7 +127,7 @@ The installed settings let the checks run while you're in LMU's menus (`"safeSet
 
 - **Race duration in "% Track Time" mode is checked by hand.** When an event first loads, LMU may not report the Race Time until you change it or start the session. The row shows ☐ Check, and the **To do:** line reminds you to set the Race Time, for example "Set Race Time to 0 hrs 30 mins (change it once and back so LMU confirms it)". Changing the Race Time once (for example 30 to 45 and back to 30 mins) switches LMU to Time mode, and the row is then compared normally.
 - **Layouts added after October 2026 need a mapping.** Every layout in LMU and Factory Seat's catalog as of October 2026 is mapped (18 tracks, 38 layouts), each confirmed in LMU's track picker. A layout LMU adds later shows Unknown with "No layout mapping for trackFolder …, sceneDescription …" at the bottom of the overlay. Add both values with the round's `layoutFile` (from `briefing.json`) to `layoutMappings` in your own settings file (see [Settings](#settings)) and restart SimHub.
-- **Custom teams** can't be confirmed through LMU's API: it reports the car's generic name, such as "Lexus Custom Team 2026", not your team's. A round with a Race Control custom team shows Team and Car number as Any and always stays NOT VERIFIED.
+- **Custom teams** can't be confirmed through LMU's API: it reports the car's generic name, such as "Lexus Custom Team 2026", not your team's. On a Race Control custom team round, Team and Car number show Any and Custom team identity shows Not checkable, so READY TO RACE means every setting LMU can report matches. Check you picked your custom team's car yourself.
 - **Main menu and race setup look the same to the API.** With `GSTATE_SETUP` allowed, checks also run on LMU's main menu, and the overlay shows there too. That's harmless because LMU's own menus read the same data there. Use the toggle in [When the overlay shows](#when-the-overlay-shows) to hide it.
 - **Overlay size.** SimHub refuses to start overlays above an undocumented size, so the overlay is fixed at 720×406.
 - LMU's local API is unofficial and undocumented. A game update can change it and break checks, which show as Unknown rather than a false match.

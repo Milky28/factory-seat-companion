@@ -27,7 +27,7 @@ Fixture mode (`--fixtures`) skips the process check because it is synthetic end 
 | `round.car.class` | Car class | Whole class token in LMU's class list |
 | `round.car.number` | Car number | `null` means any livery (NotApplicable); `customTeam: true` also allows any number |
 | `round.car.team` | Team | Compared when set; `null` or empty is not compared. With `customTeam: true` it is not compared either (NotApplicable): LMU reports the generic car name, such as "Lexus Custom Team 2026" |
-| `round.car.customTeam` | Custom team identity | `true` adds a row that stays Unknown: REST has no proven custom-team marker |
+| `round.car.customTeam` | Custom team identity | `true` adds a row shown as Not checkable (NotApplicable): REST has no custom-team marker, so it doesn't block readiness. A missing value keeps the row Unknown |
 | `round.settings.raceMinutes` | Race duration | Compared when LMU's finish criteria is Time; otherwise a non-blocking manual check |
 | `round.settings.fuelUsage`, `tyreWear`, `timeScale` | Fuel, tyres, time scale | LMU factors: 1 is Real/Normal, otherwise xN |
 | `round.settings.startTime` | Race start time | `HH:mm`; `null` means LMU's default (NotApplicable) |
