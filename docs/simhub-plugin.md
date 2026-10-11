@@ -53,7 +53,7 @@ The CLI classifies each poll's `/navigation/state` (`LmuScreenClassifier` in the
 | LMU's process (`Le Mans Ultimate`) not running | | `NotRunning` (checked by the plugin every 2 s) |
 | LMU running but not reachable, anything else | | `Unknown` |
 
-LMU's menu is a self-contained web app that never reports its page, so nothing separates race setup from the main menu. `ShowOverlay` is true for `Menu` and `Unknown` (a stale report counts as `Unknown`, so the checklist stays up when the API breaks while LMU runs) and false for `Loading`, `InSession` and `NotRunning`. The `FactorySeatPlugin.ToggleOverlay` action flips that until LMU reaches a different known screen, so hiding it on the main menu lasts until the next session. Fixture mode reports `Menu` and skips the process check.
+LMU's menu is a self-contained web app that never reports its page, so nothing separates race setup from the main menu. `ShowOverlay` is true for `Menu`, and for `Unknown` only when the last known screen was `Menu` (a stale report counts as `Unknown`, so the checklist stays up when the API breaks in the menus). It is false for `Loading`, `InSession` and `NotRunning`, and while LMU starts up until its menus are first seen. The `FactorySeatPlugin.ToggleOverlay` action flips that until LMU reaches a different known screen, so hiding it on the main menu lasts until the next session. Fixture mode reports `Menu` and skips the process check.
 
 Replay can be told apart from driving with `GET /rest/replay/isActive`, but both hide the overlay, so the CLI doesn't call it.
 

@@ -602,7 +602,7 @@ Test("Bridge carries the screen; only a fresh report vouches for it", () =>
 Test("Overlay shows in menus, hides in sessions, and a dismissal lasts until the next session", () =>
 {
     var overlay = new OverlayVisibility();
-    Assert(overlay.Visible, "unknown screen shows the checklist");
+    Assert(!overlay.Visible, "hidden until LMU's menus are seen");
     overlay.Observe("Menu");
     Assert(overlay.Visible);
     overlay.Toggle();
@@ -627,11 +627,20 @@ Test("Overlay stays hidden while LMU isn't running; the toggle still works", () 
     overlay.Toggle();
     Assert(overlay.Visible, "the action can show it anyway");
     overlay.Observe("Unknown", lmuRunning: true);
-    Assert(overlay.Visible, "LMU running with its API not answering still shows the checklist");
+    Assert(!overlay.Visible, "LMU starting up, before its menus, stays hidden");
+    overlay.Observe("Loading", lmuRunning: true);
+    Assert(!overlay.Visible);
     overlay.Observe("Menu", lmuRunning: true);
-    Assert(overlay.Visible);
+    Assert(overlay.Visible, "shows once LMU reaches its menus");
+    overlay.Observe("Unknown", lmuRunning: true);
+    Assert(overlay.Visible, "the API breaking in the menus keeps the checklist up");
+    overlay.Observe("InSession", lmuRunning: true);
+    overlay.Observe("Unknown", lmuRunning: true);
+    Assert(!overlay.Visible, "an unknown read after a session stays hidden");
     overlay.Observe("Menu", lmuRunning: false);
     Assert(!overlay.Visible, "hidden again once LMU exits");
+    overlay.Observe("Unknown", lmuRunning: true);
+    Assert(!overlay.Visible, "hidden while LMU starts again");
 });
 Test("LMU process check is throttled", () =>
 {
@@ -749,6 +758,11 @@ Test("Custom team round shows Team as Any, not a mismatch against LMU's car name
     // A real mismatch or another unknown still decides the banner.
     Assert(Dash(Report(live with { FuelMultiplier = 2, Team = "Lexus Custom Team 2026" }, b)).OverallStatus == "SETUP MISMATCH");
     Assert(Dash(Report(live with { StartTime = null, Team = "Lexus Custom Team 2026" }, b)).OverallStatus == "NOT VERIFIED");
+});
+Test("Overlay headline shows the career name in capitals, as Factory Seat does", () =>
+{
+    var report = Report(requirement: briefing.Briefing! with { CareerName = "rags to riches" });
+    Assert(Dash(report).Headline.StartsWith("RAGS TO RICHES / "), Dash(report).Headline);
 });
 int failures = 0;
 foreach (var test in tests)

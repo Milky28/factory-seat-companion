@@ -107,8 +107,9 @@ public sealed class DashboardState
             : fresh && report.OverallStatus == "SETUP MISMATCH" ? "SETUP MISMATCH" : "NOT VERIFIED";
         // The briefing gives the values to set, so the rows still help when LMU's side is unreadable or the report is old.
         bool manual = report.BriefingStatus == "Available" && (!fresh || report.LmuStatus != "Available") && checks.Count > 0;
+        // Factory Seat shows career names in capitals.
         string round = report.Round is int r ? "Round " + r.ToString(CultureInfo.InvariantCulture) : "Round ?";
-        return new DashboardState(ready, overall, $"{report.Career} / {report.Event} / {round}", message!.Mode,
+        return new DashboardState(ready, overall, $"{(report.Career ?? "").ToUpperInvariant()} / {report.Event} / {round}", message!.Mode,
             fresh ? report.BriefingStatus : "Stale", fresh ? report.LmuStatus : "Stale", age.TotalSeconds,
             bridgeStatus, string.Join(" | ", diagnostics), rows, manual ? ManualCheckText : "");
     }

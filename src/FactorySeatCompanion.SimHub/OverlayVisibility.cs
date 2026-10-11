@@ -4,8 +4,9 @@ namespace FactorySeatCompanion.SimHub;
 
 // Decides FactorySeatPlugin.ShowOverlay. LMU reports the main menu and race setup identically, so the
 // overlay shows anywhere in the menus and hides from loading until the player is back in the menus.
-// It stays hidden while LMU's process isn't running (NotRunning). An unknown screen while LMU runs (API
-// not answering, a stale report) shows it, so the checklist stays up when the API breaks. The
+// It stays hidden while LMU's process isn't running (NotRunning) and while LMU starts up, until its menus
+// are first seen. An unknown screen after that (API not answering, a stale report) keeps it showing, so the
+// checklist stays up when the API breaks in the menus. The
 // ToggleOverlay action flips the default until LMU moves to another known screen, so a dismissal on the
 // main menu lasts until the next session.
 // Kept free of SimHub types so the tests can compile it under net8.0.
@@ -26,7 +27,7 @@ public sealed class OverlayVisibility
         {
             lock (gate)
             {
-                bool shown = screen != "Loading" && screen != "InSession" && screen != NotRunning;
+                bool shown = screen == "Menu" || (screen == Unknown && lastKnown == "Menu");
                 return toggled ? !shown : shown;
             }
         }
