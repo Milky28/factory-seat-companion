@@ -91,7 +91,7 @@ The top banner sums everything up:
 | **SETUP MISMATCH** (red) | At least one LMU setting differs from the round. Fix the red rows. |
 | **NOT VERIFIED** (amber) | Something can't be confirmed: a row is unknown, LMU or the briefing isn't readable, or the data is out of date. |
 
-Next to the banner is the career, event and round, then one row per check showing what the round needs and what LMU currently has. Each row starts with a mark and is coloured by its status:
+Next to the banner is the career (in capitals, as in Factory Seat), event and round, then one row per check showing what the round needs and what LMU currently has. Each row starts with a mark and is coloured by its status:
 
 | Mark | Status | Meaning |
 | --- | --- | --- |
@@ -99,6 +99,7 @@ Next to the banner is the career, event and round, then one row per check showin
 | ✗ red | Mismatch | LMU has a different value. The row is highlighted, and the **To do:** line says what to change, such as "Set Tyre Wear to X3". |
 | ○ amber | Unknown | The value couldn't be read or confirmed. This blocks READY TO RACE. |
 | – grey | Any | The round doesn't restrict this setting, such as any car number. |
+| – grey | Not checkable | LMU can't report this at all: the Race Control custom team. It doesn't block READY TO RACE. |
 | ☐ blue | Check | LMU isn't reporting this value yet, so set it by hand. It doesn't block READY TO RACE. |
 
 If LMU can't be read (for example after a game update breaks its API), every row shows ○ with the round's value still listed, and an amber note under the rows says to check each setting in LMU's menu by hand. The overlay then works as a plain checklist.
