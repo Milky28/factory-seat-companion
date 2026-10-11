@@ -1,3 +1,4 @@
-- **Custom team rounds no longer show SETUP MISMATCH.** LMU reports a Race Control car by its generic name, such as "Lexus Custom Team 2026", so the Team row now shows Any, like Car number, instead of asking for a livery that doesn't exist. These rounds read NOT VERIFIED.
-- **All 38 layout mappings confirmed.** Factory Seat's owner captured every layout from LMU's track picker independently, and the list matches the installed settings exactly.
-- Includes everything in 0.1.0-beta.2: every layout checked, LMU's default start time read, the overlay hidden until LMU is running, and the clearer race duration hint.
+- **Custom team rounds can be READY TO RACE.** LMU can't confirm a Race Control custom team, so the Custom team identity row now reads "Not checkable" and no longer holds the banner at amber when every other setting matches. A real mismatch still shows SETUP MISMATCH.
+- **The overlay waits for LMU's menus.** It stays hidden while LMU starts up and appears once the menus are on screen.
+- **Career names in capitals**, matching Factory Seat.
+- Includes everything in 0.1.0-beta.3: the custom team Team row fix, all 38 layouts mapped and confirmed, LMU's default start time read, and the clearer race duration hint.
