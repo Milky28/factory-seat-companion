@@ -73,9 +73,15 @@ public sealed class SettingsValidator(CompanionOptions options)
         bool anyTeam = car is not null && (car.Team is null || car.CustomTeam == true);
         Add("team", "Team", car is null ? null : anyTeam ? "Any team" : car.Team, live.Team,
             Same(car?.Team, live.Team), anyTeam, hint: $"Select the {car?.Team} livery");
-        if (car?.CustomTeam != false)
-            Add("customTeam", "Custom team identity", car?.CustomTeam == true ? "Race Control custom team" : null,
-                null, null, reason: "REST custom-team marker has not been established; matching a team name is insufficient.");
+        // LMU's API has no custom-team marker, so a custom team round can't be confirmed. It is shown as
+        // "Not checkable" rather than Unknown so a round where everything checkable matches reads READY TO RACE.
+        // A briefing that doesn't say whether the team is custom stays Unknown.
+        if (car?.CustomTeam == true)
+            Add("customTeam", "Custom team identity", "Race Control custom team", "Not checkable", null, true,
+                reason: "LMU's API has no custom-team marker; the custom team can't be confirmed.");
+        else if (car?.CustomTeam is null)
+            Add("customTeam", "Custom team identity", null, null, null,
+                reason: "REST custom-team marker has not been established; matching a team name is insufficient.");
         // Race setup, live (2026-10-10): with finish criteria Time, RACE lengthTime tracks the menu's Race Time
         // within a second. With "% Track Time" LMU stores a fraction of 24 h and minute-only changes never reach
         // the API until the hours change or the session starts, so the driver checks it by hand; it never blocks.

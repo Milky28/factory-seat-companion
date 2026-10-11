@@ -183,7 +183,11 @@ Test("Missing number field remains unknown", () =>
 Test("Custom team cannot be proved by matching team name", () =>
 {
     var b = briefing.Briefing! with { Car = briefing.Briefing!.Car! with { Number = null, CustomTeam = true } };
-    var r = Report(requirement: b); Assert(!r.ReadyToRace); Status(r, "customTeam", CheckStatus.Unknown);
+    var r = Report(requirement: b); Status(r, "customTeam", CheckStatus.NotApplicable);
+    Assert(r.Checks.Single(c => c.Id == "customTeam").Current == "Not checkable");
+    // A briefing that doesn't say whether the team is custom still blocks readiness.
+    var unknown = Report(requirement: b with { Car = b.Car! with { CustomTeam = null } });
+    Assert(!unknown.ReadyToRace); Status(unknown, "customTeam", CheckStatus.Unknown);
 });
 Test("Guest drive uses effective round car", () =>
 {
@@ -736,7 +740,15 @@ Test("Custom team round shows Team as Any, not a mismatch against LMU's car name
     var team = r.Checks.Single(c => c.Id == "team");
     Assert(team.Required == "Any team" && team.Hint is null, team.Required);
     Assert(!r.Checks.Any(c => c.Status == CheckStatus.Mismatch));
-    Assert(Dash(r).OverallStatus == "NOT VERIFIED", Dash(r).OverallStatus);
+    // Everything checkable matches, so the round is ready; the custom team row says it can't be checked.
+    var dash = Dash(r);
+    Assert(r.ReadyToRace && dash.ReadyToRace && dash.OverallStatus == "READY TO RACE", dash.OverallStatus);
+    var row = dash.Rows.Single(x => x.Id == "customTeam");
+    Assert(row.StatusText == "Not checkable" && row.Icon == "\u2013" && row.Hint == "", row.StatusText);
+    Assert(dash.Rows.Single(x => x.Id == "team").StatusText == "Any");
+    // A real mismatch or another unknown still decides the banner.
+    Assert(Dash(Report(live with { FuelMultiplier = 2, Team = "Lexus Custom Team 2026" }, b)).OverallStatus == "SETUP MISMATCH");
+    Assert(Dash(Report(live with { StartTime = null, Team = "Lexus Custom Team 2026" }, b)).OverallStatus == "NOT VERIFIED");
 });
 int failures = 0;
 foreach (var test in tests)
