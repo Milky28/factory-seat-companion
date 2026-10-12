@@ -17,7 +17,7 @@ Into the SimHub folder (found from SimHub's uninstall entry, else `C:\Program Fi
 | `FactorySeatCompanion\companion.json` | Ready config from `config/companion.player.json`: `/state/gameState` with `GSTATE_SETUP` allowed (the owner's 2026-10-09 decision) and the known layout mappings. |
 | `DashTemplates\FactorySeatCompanion\FactorySeatCompanion.djson` | The overlay. Any cached `.djson.metadata` is deleted so a new size takes effect. |
 
-Setup asks the player to exit SimHub first. Afterwards: start SimHub, enable Factory Seat Companion when asked, then start the overlay from Dash Studio's Overlays list. Uninstall from Windows' Installed apps removes these files only.
+Setup never touches `SimHub\OverlayLayouts`, so a saved layout's position and visibility (`AutoMode` in the `.olayout`) survive an update. SimHub's "overlays are forced visible" toggle is runtime state with no saved setting, so it resets on every SimHub restart, including the one an update needs. Setup asks the player to exit SimHub first. Afterwards: start SimHub, enable Factory Seat Companion when asked, then start the overlay from Dash Studio's Overlays list. Uninstall from Windows' Installed apps removes these files only.
 
 ## Configuration
 

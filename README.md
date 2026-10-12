@@ -49,7 +49,7 @@ Until a release is published, both are attached to each run of the [Player packa
 4. **Set the overlay to Manual visibility.** SimHub's default, "Automatic (Show when game is connected)", hides overlays in LMU's menus because LMU sends no car data there, so the checklist would never appear on race setup. Open **Dash Studio**, go to **Overlays**, open the layout settings, set **Layout automatic visibility** to **Manual** and click **Save layout**. If you start the overlay on its own rather than in a layout, set its visibility to **Manual** instead. The overlay still hides itself while you drive or load (see [When the overlay shows](#when-the-overlay-shows)).
 5. **Start the overlay.** In **Overlays**, start **FactorySeatCompanion** and move it where you want it over LMU's menus.
 
-**Updating:** exit SimHub and run the newer installer. Your own settings (see [Settings](#settings)) are kept.
+**Updating:** exit SimHub and run the newer installer. Your own settings (see [Settings](#settings)) are kept, and so are your overlay layouts and their visibility: the installer doesn't touch SimHub's `OverlayLayouts` folder. Forcing overlays visible in SimHub isn't saved, though, so it switches off whenever SimHub restarts, including for an update. If you rely on it, force them visible again after updating, or use a saved layout set to **Manual** (step 4), which is kept.
 
 **Uninstalling:** uninstall **Factory Seat Companion (SimHub plugin)** from Windows' **Installed apps**. Only the companion's files are removed.
 

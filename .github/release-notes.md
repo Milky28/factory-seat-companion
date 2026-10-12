@@ -18,6 +18,8 @@
 3. In **Dash Studio > Overlays**, set **Layout automatic visibility** to **Manual** and click **Save layout**. SimHub's default hides overlays in LMU's menus. The overlay still hides itself while you drive.
 4. Start the **FactorySeatCompanion** overlay, open your career in Factory Seat, and set up the race in LMU.
 
+**Updating from an earlier version:** exit SimHub and run the new installer. Your overlay layout and its Manual visibility are kept. Forcing overlays visible in SimHub isn't saved, so if you used that instead of step 3, do it again after SimHub restarts.
+
 Full instructions and troubleshooting are in the [README](https://github.com/Milky28/factory-seat-companion#readme).
 
 ## Requirements
