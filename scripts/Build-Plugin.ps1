@@ -18,7 +18,9 @@ try {
     $publish = @('publish', 'src/FactorySeatCompanion.Cli', '-c', 'Release', '-o', "$out/FactorySeatCompanion")
     if ($SelfContained) {
         # The runtime pack comes from nuget.org; the repo's NuGet.Config deliberately lists no sources.
-        $publish += @('-r', 'win-x64', '--self-contained', '-p:PublishSingleFile=true', '-p:EnableCompressionInSingleFile=true',
+        # No single-file compression: a compressed bundle looks packed to antivirus heuristics (Bkav and Zillya
+        # flagged 0.1.0 on VirusTotal), and the zip and installer compress the exe anyway.
+        $publish += @('-r', 'win-x64', '--self-contained', '-p:PublishSingleFile=true',
             '-p:IncludeNativeLibrariesForSelfExtract=true', '-p:DebugType=none', '--source', 'https://api.nuget.org/v3/index.json')
     }
     dotnet @publish
