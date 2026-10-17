@@ -2,7 +2,7 @@
   "Version": 2,
   "Id": "6f1d3c2e-5a7b-4c39-9e61-fa0c5e1b7d21",
   "BaseWidth": 720,
-  "BaseHeight": 406,
+  "BaseHeight": 436,
   "BackgroundColor": "#00000000",
   "IsOverlay": true,
   "EnableClickThroughOverlay": true,
@@ -25,7 +25,7 @@
           "Left": 0,
           "Top": 0,
           "Width": 720,
-          "Height": 406,
+          "Height": 436,
           "Visible": true,
           "BackgroundColor": "#F2101318",
           "Bindings": {
@@ -3264,9 +3264,43 @@
         },
         {
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-          "Name": "Hints",
+          "Name": "Stakes",
           "Left": 12,
           "Top": 336,
+          "Width": 696,
+          "Height": 28,
+          "Visible": true,
+          "Text": "",
+          "Font": "Roboto",
+          "FontSize": 11,
+          "FontWeight": "Normal",
+          "TextColor": "#FFD5D8DC",
+          "BackgroundColor": "#00FFFFFF",
+          "HorizontalAlignment": 0,
+          "VerticalAlignment": 0,
+          "Bindings": {
+            "Text": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.Stakes]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Text"
+            },
+            "Visible": {
+              "Formula": {
+                "Expression": "[FactorySeatPlugin.ShowOverlay]"
+              },
+              "Mode": 2,
+              "TargetPropertyName": "Visible"
+            }
+          },
+          "TextWrapping": 2
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+          "Name": "Hints",
+          "Left": 12,
+          "Top": 366,
           "Width": 696,
           "Height": 28,
           "Visible": true,
@@ -3307,7 +3341,7 @@
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
           "Name": "FooterRule",
           "Left": 8,
-          "Top": 366,
+          "Top": 396,
           "Width": 704,
           "Height": 1,
           "Visible": true,
@@ -3326,7 +3360,7 @@
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Sources",
           "Left": 12,
-          "Top": 368,
+          "Top": 398,
           "Width": 696,
           "Height": 14,
           "Visible": true,
@@ -3359,7 +3393,7 @@
           "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
           "Name": "Diagnostics",
           "Left": 12,
-          "Top": 382,
+          "Top": 412,
           "Width": 696,
           "Height": 24,
           "Visible": true,

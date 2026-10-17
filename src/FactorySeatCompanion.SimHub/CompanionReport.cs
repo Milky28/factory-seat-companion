@@ -25,6 +25,8 @@ public sealed class CompanionReport
     public DateTimeOffset ObservedAt { get; set; }
     public List<CompanionCheck> Checks { get; set; } = new List<CompanionCheck>();
     public List<string> Diagnostics { get; set; } = new List<string>();
+    // The briefing's stakes lines, most important first.
+    public List<string> Stakes { get; set; } = new List<string>();
 }
 
 public sealed class CompanionCheck

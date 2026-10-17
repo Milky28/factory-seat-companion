@@ -36,6 +36,7 @@ All are prefixed `FactorySeatPlugin.`
 | `BridgeStatus` | `Running`, or why the companion is not running. |
 | `Diagnostics` | Report diagnostics joined with ` \| `. |
 | `Hints` | Fix hints of every row that has one, joined with ` · `. Empty when nothing mismatches or the report is stale. |
+| `Stakes` | What's riding on the race: the first two of Factory Seat's stakes lines (1.2 and later), joined with ` · `. Empty for a guest drive or an older Factory Seat. |
 | `ManualCheck` | A note to check each setting by hand, set when the briefing is available but LMU's settings can't be read or the report is stale. Otherwise empty. |
 | `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Icon`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any` and `Manual` as `Check`; `Icon` is ✓, ✗, – (Any), ☐ (Check) or ○ (Unknown); `Hint` is set on a fresh `Mismatch` or `Manual` row. `Manual` rows (Race duration outside LMU's Time finish mode) don't block READY TO RACE. |
 
@@ -78,7 +79,7 @@ Needs Windows, SimHub, the .NET 8 SDK and the .NET Framework 4.8 Developer Pack.
 
 Then start SimHub and enable Factory Seat Companion when it asks about the new plugin. Dash Studio's Import button only takes packaged `.simhubdash` files, so copy `dashboard/FactorySeatCompanion.djson` to `SimHub\DashTemplates\FactorySeatCompanion\FactorySeatCompanion.djson` and start it from Dash Studio's Overlays list.
 
-SimHub refuses to start overlays above an undocumented pixel area ("This overlay is too large"). 900×580 was refused and 900×390 runs, so the overlay is 720×406. SimHub caches the size in a `.djson.metadata` file next to the dashboard; delete it after resizing.
+SimHub refuses to start overlays above an undocumented pixel area ("This overlay is too large"). 900×580 was refused and 900×390 runs, so the overlay is 720×436 (an area under the 900×390 that runs). SimHub caches the size in a `.djson.metadata` file next to the dashboard; delete it after resizing.
 
 The plugin saves its settings only when SimHub exits cleanly (tray icon, Exit). The file is `SimHub\PluginsData\Common\FactorySeatPlugin.GeneralSettings.json`.
 
