@@ -493,8 +493,9 @@ Test("Bridge line is single-line and round-trips rows", () =>
 });
 Test("All optional rows fit the dashboard slots", () =>
 {
-    var report = Report(requirement: briefing.Briefing! with { Car = briefing.Briefing!.Car! with { CustomTeam = true } });
-    Assert(report.Checks.Any(c => c.Id == "customTeam") && report.Checks.Count <= DashboardState.RowSlots, $"{report.Checks.Count} rows");
+    var report = Report(requirement: briefing.Briefing! with { Car = briefing.Briefing!.Car! with { CustomTeam = true }, AiStrengthStep = 3 });
+    Assert(report.Checks.Any(c => c.Id == "customTeam") && report.Checks.Any(c => c.Id == "aiStrength") &&
+        report.Checks.Count <= DashboardState.RowSlots, $"{report.Checks.Count} rows");
     Assert(Dash(report).Rows.Count(r => r.Visible) == report.Checks.Count);
 });
 Test("Dashboard mismatch is shown, not ready", () =>
@@ -763,6 +764,66 @@ Test("Overlay headline shows the career name in capitals, as Factory Seat does",
 {
     var report = Report(requirement: briefing.Briefing! with { CareerName = "rags to riches" });
     Assert(Dash(report).Headline.StartsWith("RAGS TO RICHES / "), Dash(report).Headline);
+});
+Test("Factory Seat 1.2 pace advice and stakes lines are read", () =>
+{
+    var json = Change(Fixture("briefing.spec-example.json"), n =>
+    {
+        var round = n["round"]!;
+        round["stakes"] = JsonNode.Parse("""{"position":1,"points":139.5,"ahead":null,"openBet":null, "behind":{"name":"Matt Bell","position":2,"gap":76.5,"finish":null,"settled":true}, "lines":["You're P1 in the championship with 139.5 points.","Matt Bell is 76.5 behind in P2.","Double points: 50 for a class win."]}""");
+        round["history"] = new JsonArray();
+        round["practice"] = JsonNode.Parse("""{"sessions":1,"laps":6,"bestLap":245.9572,"aiBestLap":249.2532,"aiBestDriver":"Richard Lietz", "gap":-3.296,"targetLap":null,"aiStrength":"TooEasy","aiStrengthStep":3}""");
+        round["pace"] = JsonNode.Parse("""{"advice":"TooEasy","step":3,"source":"Practice","gap":-3.296,"visits":0}""");
+    });
+    var parsed = FactorySeatBriefingReader.Parse(json, running);
+    Assert(parsed.Status == SourceStatus.Available, parsed.Diagnostic);
+    var r = parsed.Briefing!;
+    Assert(r.AiStrengthStep == 3 && r.AiStrengthSource == "Practice", $"{r.AiStrengthStep} {r.AiStrengthSource}");
+    Assert(r.Stakes.Count == 3 && r.Stakes[0].StartsWith("You're P1"));
+    // Track advice says how many races it comes from; practice alone still gives a step.
+    var track = FactorySeatBriefingReader.Parse(Change(json, n => n["round"]!["pace"] =
+        JsonNode.Parse("""{"advice":"BitHard","step":-1,"source":"Track","gap":0.8,"visits":2}""")), running).Briefing!;
+    Assert(track.AiStrengthStep == -1 && track.AiStrengthSource == "Track" && track.AiStrengthVisits == 2);
+    var practiceOnly = FactorySeatBriefingReader.Parse(Change(json, n => n["round"]!["pace"] = null), running).Briefing!;
+    Assert(practiceOnly.AiStrengthStep == 3 && practiceOnly.AiStrengthSource == "Practice");
+    // A guest drive has no stakes and a first race no pace: nothing is shown, nothing is blocked.
+    var none = FactorySeatBriefingReader.Parse(Change(json, n =>
+    {
+        n["round"]!["stakes"] = null; n["round"]!["pace"] = null; n["round"]!["practice"] = null;
+    }), running).Briefing!;
+    Assert(none.AiStrengthStep is null && none.Stakes.Count == 0);
+    var old = FactorySeatBriefingReader.Parse(Fixture("briefing.spec-example.json"), running).Briefing!;
+    Assert(old.AiStrengthStep is null && old.Stakes.Count == 0);
+});
+Test("AI Strength advice is a non-blocking manual row worded as a change", () =>
+{
+    Assert(!Report().Checks.Any(c => c.Id == "aiStrength"));
+    SettingCheck Row(int step, string? source = "Practice", int? visits = null) =>
+        Report(requirement: briefing.Briefing! with { AiStrengthStep = step, AiStrengthSource = source, AiStrengthVisits = visits })
+            .Checks.Single(c => c.Id == "aiStrength");
+    var raise = Row(3);
+    Assert(raise.Status == CheckStatus.Manual && raise.Required == "Raise 3%" && raise.Hint == "Raise AI Strength 3%", raise.Hint ?? "(none)");
+    Assert(raise.Reason!.Contains("this weekend's practice"), raise.Reason);
+    var lower = Row(-1, "Track", 2);
+    Assert(lower.Required == "Lower 1%" && lower.Hint == "Lower AI Strength 1%" && lower.Reason!.Contains("2 earlier races here"));
+    var keep = Row(0, "Season");
+    Assert(keep.Status == CheckStatus.Manual && keep.Required == "Keep as is" && keep.Hint is null && keep.Reason!.Contains("recent rounds"));
+    var report = Report(requirement: briefing.Briefing! with { AiStrengthStep = -3 });
+    Assert(report.ReadyToRace, "advice never blocks READY TO RACE");
+    var state = Dash(report);
+    Assert(state.ReadyToRace && state.Hints == "Lower AI Strength 3%", state.Hints);
+    Assert(state.Rows.Single(r => r.Id == "aiStrength").StatusText == "Check");
+    // Unreadable sources make it Unknown like every other row, with no hint.
+    Assert(Report(live with { Status = SourceStatus.Unavailable }, briefing.Briefing! with { AiStrengthStep = 3 })
+        .Checks.Single(c => c.Id == "aiStrength") is { Status: CheckStatus.Unknown, Hint: null });
+});
+Test("Overlay shows the first two stakes lines", () =>
+{
+    var report = Report(requirement: briefing.Briefing! with { Stakes = ["You're P3 with 40 points.", "A Driver is 4.5 ahead in P2.", "Double points."] });
+    Assert(report.Stakes.Count == 3);
+    var state = Dash(report);
+    Assert(state.Stakes == "You're P3 with 40 points. \u00B7 A Driver is 4.5 ahead in P2.", state.Stakes);
+    Assert(Dash(Report()).Stakes == "");
 });
 int failures = 0;
 foreach (var test in tests)

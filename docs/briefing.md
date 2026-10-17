@@ -31,5 +31,7 @@ Fixture mode (`--fixtures`) skips the process check because it is synthetic end 
 | `round.settings.raceMinutes` | Race duration | Compared when LMU's finish criteria is Time; otherwise a non-blocking manual check |
 | `round.settings.fuelUsage`, `tyreWear`, `timeScale` | Fuel, tyres, time scale | LMU factors: 1 is Real/Normal, otherwise xN |
 | `round.settings.startTime` | Race start time | `HH:mm`; `null` means LMU's default (NotApplicable) |
+| `round.pace.step`, else `round.practice.aiStrengthStep` (1.2) | AI Strength | Advice, shown as a manual row (Check) worded as a change, e.g. "Raise 3%", with a "Raise AI Strength 3%" hint; `0` reads "Keep as is". Factory Seat can't see LMU's slider and LMU doesn't report it, so it never blocks readiness. No row when neither is present |
+| `round.stakes.lines` (1.2) | Overlay stakes line | The first two lines, most important first; not a check |
 
 A missing field is never a default: it leaves its row Unknown and blocks readiness. `liveryNumbers`, `carTypes`, `pitPlan`, `sponsors` and `writtenAt` are read by nothing yet.

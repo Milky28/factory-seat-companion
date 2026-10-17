@@ -104,6 +104,22 @@ public sealed class SettingsValidator(CompanionOptions options)
             live.StartTime, b?.StartTimeDefault == false ? Same(startTime, Normalization.Time(live.StartTime)) : null,
             b?.StartTimeDefault == true, hint: startTime is null ? null : "Set Start Time to " +
                 DateTime.ParseExact(startTime, "HH:mm", CultureInfo.InvariantCulture).ToString("h:mm tt", CultureInfo.InvariantCulture));
+        // Factory Seat 1.2 advises an AI Strength change. It can't see LMU's slider and LMU doesn't report it,
+        // so this is a manual row worded as a change, never a value to set. No advice yet, no row.
+        if (b?.AiStrengthStep is int step)
+        {
+            string change = step > 0 ? $"Raise {step}%" : step < 0 ? $"Lower {-step}%" : "Keep as is";
+            string? from = b.AiStrengthSource switch
+            {
+                "Practice" => "this weekend's practice",
+                "Track" => b.AiStrengthVisits is > 0 and var v ? $"{v} earlier race{(v == 1 ? "" : "s")} here" : "earlier races here",
+                "Season" => "recent rounds",
+                _ => null
+            };
+            Add("aiStrength", "AI Strength", change, "Set in menu", null, manual: true,
+                reason: "Factory Seat's advice" + (from is null ? "" : $" from {from}") + "; LMU doesn't report AI Strength.",
+                hint: step == 0 ? null : $"{(step > 0 ? "Raise" : "Lower")} AI Strength {Math.Abs(step)}%");
+        }
 
         bool metadataValid = Present(b?.CareerName) && Present(b?.EventName) && b?.RoundNumber > 0;
         bool ready = valid && metadataValid && checks.All(c => c.Status is CheckStatus.Match or CheckStatus.NotApplicable or CheckStatus.Manual);
@@ -112,6 +128,6 @@ public sealed class SettingsValidator(CompanionOptions options)
         if (!metadataValid) diagnostics.Add("Briefing career/event/round metadata missing or invalid.");
         return new(b?.CareerName ?? "Unknown career", b?.EventName ?? "Unknown event", b?.RoundNumber, ready,
             ready ? "READY TO RACE" : checks.Any(c => c.Status == CheckStatus.Mismatch) ? "SETUP MISMATCH" : "NOT VERIFIED",
-            read.Status, lmuStatus, live.ObservedAt, checks, diagnostics);
+            read.Status, lmuStatus, live.ObservedAt, checks, diagnostics) { Stakes = b?.Stakes ?? [] };
     }
 }

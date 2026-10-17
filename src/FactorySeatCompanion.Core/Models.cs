@@ -32,6 +32,14 @@ public sealed record RoundRequirement
     // true: startTime was explicitly null, meaning LMU's default start time.
     public bool? StartTimeDefault { get; init; }
     public CarRequirement? Car { get; init; }
+    // Factory Seat 1.2 AI Strength advice, as points to move LMU's slider (3, 1, 0, -1, -3). Advice only:
+    // LMU doesn't report the slider, so it is a manual row. Null when Factory Seat has no advice yet.
+    public int? AiStrengthStep { get; init; }
+    // Where the advice comes from: Practice, Track (earlier races here) or Season.
+    public string? AiStrengthSource { get; init; }
+    public int? AiStrengthVisits { get; init; }
+    // Factory Seat 1.2 stakes.lines: what's riding on the race in English, most important first.
+    public IReadOnlyList<string> Stakes { get; init; } = [];
 }
 
 public sealed record CarRequirement
@@ -88,7 +96,11 @@ public sealed record SettingCheck(string Id, string Label, string Required, stri
 }
 public sealed record ValidationReport(string Career, string Event, int? Round, bool ReadyToRace,
     string OverallStatus, SourceStatus BriefingStatus, SourceStatus LmuStatus,
-    DateTimeOffset ObservedAt, IReadOnlyList<SettingCheck> Checks, IReadOnlyList<string> Diagnostics);
+    DateTimeOffset ObservedAt, IReadOnlyList<SettingCheck> Checks, IReadOnlyList<string> Diagnostics)
+{
+    // The briefing's stakes lines, most important first; empty for a guest drive or an older Factory Seat.
+    public IReadOnlyList<string> Stakes { get; init; } = [];
+}
 
 public sealed record LayoutMapping(string TrackFolder, string SceneDescription, string LayoutFile);
 public sealed record CompanionOptions
