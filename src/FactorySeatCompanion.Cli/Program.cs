@@ -107,6 +107,7 @@ static void Render(ValidationReport report, LmuScreen screen)
 {
     Console.WriteLine($"\n{report.Career} / {report.Event} / Round {report.Round} | {report.OverallStatus}");
     Console.WriteLine($"Briefing: {report.BriefingStatus}; LMU: {report.LmuStatus} ({screen}); observation: {report.ObservedAt:O}");
+    foreach (var line in report.Stakes) Console.WriteLine($"  {line}");
     foreach (var check in report.Checks)
     {
         if (!Console.IsOutputRedirected) Console.ForegroundColor = check.Status switch

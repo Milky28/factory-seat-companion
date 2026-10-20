@@ -42,6 +42,7 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
         this.AttachDelegate("Diagnostics", () => State().Diagnostics);
         this.AttachDelegate("Hints", () => State().Hints);
         this.AttachDelegate("ManualCheck", () => State().ManualCheck);
+        this.AttachDelegate("Stakes", () => State().Stakes);
         this.AttachDelegate("Screen", () => { State(); return visibility.Screen; });
         this.AttachDelegate("ShowOverlay", () => { State(); return visibility.Visible; });
         // Bind to a key or wheel button in SimHub's Controls and events to hide or show the overlay.
