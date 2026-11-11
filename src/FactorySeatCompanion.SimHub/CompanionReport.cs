@@ -27,6 +27,11 @@ public sealed class CompanionReport
     public List<string> Diagnostics { get; set; } = new List<string>();
     // The briefing's stakes lines, most important first.
     public List<string> Stakes { get; set; } = new List<string>();
+    // true once the race weekend is started in Factory Seat, false while the round is Upcoming.
+    public bool? WeekendStarted { get; set; }
+    public bool TestDay { get; set; }
+    // A to-do that isn't about one LMU setting, such as starting the race weekend.
+    public string? Hint { get; set; }
 }
 
 public sealed class CompanionCheck

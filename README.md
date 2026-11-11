@@ -55,7 +55,7 @@ Until a release is published, both are attached to each run of the [Player packa
 
 ## Using it
 
-1. **Open your career in Factory Seat** and leave Factory Seat running. That's how the companion knows the briefing is current.
+1. **Open your career in Factory Seat**, press **Start race weekend**, and leave Factory Seat running. That's how the companion knows the briefing is current. Until the weekend is started, the overlay reads **START RACE WEEKEND** instead of READY TO RACE, because a race finished before then doesn't count.
 2. **Start LMU** and set up the race in its single-player menus.
 3. **Watch the overlay** while you change settings. Each row updates within a couple of seconds. Fix every red row; when every row is green or grey, the banner turns green and reads **READY TO RACE**.
 
@@ -79,6 +79,8 @@ To hide it on the main menu, bind a key or wheel button to it. In SimHub, open *
 | Fuel consumption, tyre wear, time scale | The round's multipliers |
 | Race start time | The round's start time, or LMU's default |
 
+On a **test day** (Factory Seat 1.3 and later: practice laps in another team's car), only the circuit, layout and car rows are shown, because the race settings don't apply. The line under the checklist says what the team wants to see, such as "Test day for Toyota Racing: 8 laps in practice, within 0.5% of the fastest AI lap in class."
+
 A "Custom team identity" row appears when the round uses a Race Control custom team. LMU can't confirm a custom team, so the row reads – Not checkable and doesn't hold back READY TO RACE.
 
 ## Reading the overlay
@@ -87,8 +89,9 @@ The top banner sums everything up:
 
 | Banner | Meaning |
 | --- | --- |
-| **READY TO RACE** (green) | Every row matches or doesn't apply, and the data is fresh. |
+| **READY TO RACE** (green) | Every row matches or doesn't apply, the race weekend is started in Factory Seat, and the data is fresh. On a test day it reads **READY TO TEST**. |
 | **SETUP MISMATCH** (red) | At least one LMU setting differs from the round. Fix the red rows. |
+| **START RACE WEEKEND** (amber) | LMU's setup matches, but you haven't pressed **Start race weekend** in Factory Seat yet. Only races that finish after you press it count. |
 | **NOT VERIFIED** (amber) | Something can't be confirmed: a row is unknown, LMU or the briefing isn't readable, or the data is out of date. |
 
 Next to the banner is the career (in capitals, as in Factory Seat), event and round, then one row per check showing what the round needs and what LMU currently has. Each row starts with a mark and is coloured by its status:

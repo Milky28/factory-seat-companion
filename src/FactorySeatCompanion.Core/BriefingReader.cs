@@ -94,6 +94,8 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
         var paceStep = ReadInt(JsonRead.Property(pace, "step"));
         var practiceStep = ReadInt(JsonRead.Property(JsonRead.Property(round, "practice"), "aiStrengthStep"));
         var stakes = JsonRead.Property(JsonRead.Property(round, "stakes"), "lines");
+        // 1.3: a test day; null (or absent, before 1.3) for a race.
+        var test = JsonRead.Property(round, "test");
         return new RoundRequirement
         {
             CareerName = ReadString(JsonRead.Property(career, "name")),
@@ -138,7 +140,11 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
             AiStrengthVisits = paceStep is not null ? ReadInt(JsonRead.Property(pace, "visits")) : null,
             Stakes = stakes?.ValueKind == JsonValueKind.Array
                 ? stakes.Value.EnumerateArray().Select(l => ReadString(l)).Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l!.Trim()).ToArray()
-                : []
+                : [],
+            Test = test?.ValueKind == JsonValueKind.Object
+                ? new TestDay(ReadString(JsonRead.Property(test, "team")), ReadInt(JsonRead.Property(test, "minLaps")),
+                    ReadDouble(JsonRead.Property(test, "passShare")))
+                : null
         };
     }
 
