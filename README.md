@@ -23,7 +23,7 @@ The rest of this page explains each step and how to read the overlay.
 - Windows 10 or 11 (64-bit).
 - **Le Mans Ultimate** in windowed or borderless mode. SimHub overlays cannot draw over exclusive fullscreen.
 - **SimHub** (tested with 9.13.2).
-- [**Factory Seat**](https://github.com/factoryseatlmuapp/factory-seat) **1.1 or later**, which writes the open career's next round to `%AppData%\LmuCareer\briefing.json`. Earlier versions don't write this file, so the overlay stays at NOT VERIFIED. The format is described in [docs/briefing.md](docs/briefing.md).
+- [**Factory Seat**](https://github.com/factoryseatlmuapp/factory-seat) **1.1 or later**, which writes the open career's next round to `%AppData%\LmuCareer\briefing.json`. Tested up to Factory Seat 1.4. Earlier versions don't write this file, so the overlay stays at NOT VERIFIED. The format is described in [docs/briefing.md](docs/briefing.md).
 
 You don't need .NET or any developer tools: the installer brings everything the companion needs.
 
@@ -81,6 +81,8 @@ To hide it on the main menu, bind a key or wheel button to it. In SimHub, open *
 
 On a **test day** (Factory Seat 1.3 and later: practice laps in another team's car), only the circuit, layout and car rows are shown, because the race settings don't apply. The line under the checklist says what the team wants to see, such as "Test day for Toyota Racing: 8 laps in practice, within 0.5% of the fastest AI lap in class."
 
+On a **New Game+** round (Factory Seat 1.4 and later), three rows check the round's floor in place of the AI Strength advice: **AI** (exact AI Strength and AI Aggression), **Damage** (the floor's damage percent or more, with mechanical failures on) and, when the round must be wet, **Weather**. Weather set to Rain matches; any other weather is a blue ☐ Check, because Factory Seat counts the race as wet once any car laps on wet tyres. Keep Invulnerability off yourself: LMU reports it somewhere the companion doesn't read.
+
 A "Custom team identity" row appears when the round uses a Race Control custom team. LMU can't confirm a custom team, so the row reads – Not checkable and doesn't hold back READY TO RACE.
 
 ## Reading the overlay
@@ -94,7 +96,7 @@ The top banner sums everything up:
 | **START RACE WEEKEND** (amber) | LMU's setup matches, but you haven't pressed **Start race weekend** in Factory Seat yet. Only races that finish after you press it count. |
 | **NOT VERIFIED** (amber) | Something can't be confirmed: a row is unknown, LMU or the briefing isn't readable, or the data is out of date. |
 
-Next to the banner is the career (in capitals, as in Factory Seat), event and round, then one row per check showing what the round needs and what LMU currently has. Each row starts with a mark and is coloured by its status:
+Next to the banner is the career (in capitals, as in Factory Seat), event and round (with "(IMSA)" after it when the round counts for IMSA), then one row per check showing what the round needs and what LMU currently has. Each row starts with a mark and is coloured by its status:
 
 | Mark | Status | Meaning |
 | --- | --- | --- |
@@ -133,7 +135,7 @@ The installed settings let the checks run while you're in LMU's menus (`"safeSet
 - **Layouts added after October 2026 need a mapping.** Every layout in LMU and Factory Seat's catalog as of October 2026 is mapped (18 tracks, 38 layouts), each confirmed in LMU's track picker. A layout LMU adds later shows Unknown with "No layout mapping for trackFolder …, sceneDescription …" at the bottom of the overlay. Add both values with the round's `layoutFile` (from `briefing.json`) to `layoutMappings` in your own settings file (see [Settings](#settings)) and restart SimHub.
 - **Custom teams** can't be confirmed through LMU's API: it reports the car's generic name, such as "Lexus Custom Team 2026", not your team's. On a Race Control custom team round, Team and Car number show Any and Custom team identity shows Not checkable, so READY TO RACE means every setting LMU can report matches. Check you picked your custom team's car yourself.
 - **Main menu and race setup look the same to the API.** With `GSTATE_SETUP` allowed, checks also run on LMU's main menu, and the overlay shows there too. That's harmless because LMU's own menus read the same data there. Use the toggle in [When the overlay shows](#when-the-overlay-shows) to hide it.
-- **Overlay size.** SimHub refuses to start overlays above an undocumented size, so the overlay is fixed at 720×436.
+- **Overlay size.** SimHub refuses to start overlays above an undocumented size, so the overlay is fixed at 720×476.
 - LMU's local API is unofficial and undocumented. A game update can change it and break checks, which show as Unknown rather than a false match.
 
 ## For developers

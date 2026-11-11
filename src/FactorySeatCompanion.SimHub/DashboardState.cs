@@ -46,8 +46,8 @@ public sealed class DashboardRow
 // a missing, stale, future-dated or overflowing report is never READY TO RACE.
 public sealed class DashboardState
 {
-    // Eleven baseline rows plus the optional custom-team and AI Strength rows.
-    public const int RowSlots = 13;
+    // Eleven baseline rows, the optional custom-team row, and either the AI Strength advice row or the three New Game+ floor rows.
+    public const int RowSlots = 15;
     // Factory Seat puts the most important stakes line first; the overlay has room for two.
     public const int StakesLines = 2;
     public const string ManualCheckText =
@@ -121,6 +121,8 @@ public sealed class DashboardState
         bool manual = report.BriefingStatus == "Available" && (!fresh || report.LmuStatus != "Available") && checks.Count > 0;
         // Factory Seat shows career names in capitals.
         string round = report.Round is int r ? "Round " + r.ToString(CultureInfo.InvariantCulture) : "Round ?";
+        // Factory Seat 1.3 can run IMSA beside the WEC in one season, so say which championship the round counts for.
+        if (!string.IsNullOrWhiteSpace(report.Series)) round += " (" + report.Series!.Trim().ToUpperInvariant() + ")";
         return new DashboardState(ready, overall, $"{(report.Career ?? "").ToUpperInvariant()} / {report.Event} / {round}", message!.Mode,
             fresh ? report.BriefingStatus : "Stale", fresh ? report.LmuStatus : "Stale", age.TotalSeconds,
             bridgeStatus, string.Join(" | ", diagnostics), rows, manual ? ManualCheckText : "",

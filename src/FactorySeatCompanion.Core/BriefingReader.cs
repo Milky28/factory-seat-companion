@@ -96,6 +96,8 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
         var stakes = JsonRead.Property(JsonRead.Property(round, "stakes"), "lines");
         // 1.3: a test day; null (or absent, before 1.3) for a race.
         var test = JsonRead.Property(round, "test");
+        // 1.4: the New Game+ floor; null (or absent, before 1.4) in a normal career.
+        var floor = JsonRead.Property(round, "floor");
         return new RoundRequirement
         {
             CareerName = ReadString(JsonRead.Property(career, "name")),
@@ -144,6 +146,12 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
             Test = test?.ValueKind == JsonValueKind.Object
                 ? new TestDay(ReadString(JsonRead.Property(test, "team")), ReadInt(JsonRead.Property(test, "minLaps")),
                     ReadDouble(JsonRead.Property(test, "passShare")))
+                : null,
+            Series = ReadString(JsonRead.Property(round, "series")) is { } series && !string.IsNullOrWhiteSpace(series)
+                ? series.Trim() : null,
+            Floor = floor?.ValueKind == JsonValueKind.Object
+                ? new FloorRequirement(ReadInt(JsonRead.Property(floor, "aiStrength")), ReadInt(JsonRead.Property(floor, "aiAggression")),
+                    ReadBool(JsonRead.Property(floor, "wet")), ReadInt(JsonRead.Property(floor, "minDamage")))
                 : null
         };
     }
