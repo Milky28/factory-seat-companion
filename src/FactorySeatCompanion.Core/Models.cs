@@ -40,7 +40,14 @@ public sealed record RoundRequirement
     public int? AiStrengthVisits { get; init; }
     // Factory Seat 1.2 stakes.lines: what's riding on the race in English, most important first.
     public IReadOnlyList<string> Stakes { get; init; } = [];
+    // Factory Seat 1.3: a test day (practice laps in another team's car) instead of a race; null for a race.
+    // The race settings in the briefing don't apply on a test day.
+    public TestDay? Test { get; init; }
 }
+
+// Factory Seat 1.3 round.test: the team trying the player out, the practice laps it wants, and how close to
+// the fastest AI lap in class impresses it (0.005 = within 0.5%).
+public sealed record TestDay(string? Team, int? MinLaps, double? PassShare);
 
 public sealed record CarRequirement
 {
@@ -99,7 +106,15 @@ public sealed record ValidationReport(string Career, string Event, int? Round, b
     DateTimeOffset ObservedAt, IReadOnlyList<SettingCheck> Checks, IReadOnlyList<string> Diagnostics)
 {
     // The briefing's stakes lines, most important first; empty for a guest drive or an older Factory Seat.
+    // On a test day the first line describes the test instead.
     public IReadOnlyList<string> Stakes { get; init; } = [];
+    // The round's state in Factory Seat: true once the race weekend is started (Armed), false while Upcoming,
+    // null when unknown. Only races finishing after the weekend is started count.
+    public bool? WeekendStarted { get; init; }
+    // true on a Factory Seat 1.3 test day, where only the track and car are checked.
+    public bool TestDay { get; init; }
+    // A to-do that isn't about one LMU setting, such as starting the race weekend in Factory Seat.
+    public string? Hint { get; init; }
 }
 
 public sealed record LayoutMapping(string TrackFolder, string SceneDescription, string LayoutFile);

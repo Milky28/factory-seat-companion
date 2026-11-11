@@ -82,28 +82,34 @@ public sealed class SettingsValidator(CompanionOptions options)
         else if (car?.CustomTeam is null)
             Add("customTeam", "Custom team identity", null, null, null,
                 reason: "REST custom-team marker has not been established; matching a team name is insufficient.");
-        // Race setup, live (2026-10-10): with finish criteria Time, RACE lengthTime tracks the menu's Race Time
-        // within a second. With "% Track Time" LMU stores a fraction of 24 h and minute-only changes never reach
-        // the API until the hours change or the session starts, so the driver checks it by hand; it never blocks.
-        string raceTime = b?.RaceMinutes is { } m && double.IsFinite(m) && m > 0
-            ? $"Set Race Time to {(int)Math.Round(m) / 60} hrs {(int)Math.Round(m) % 60} mins" : "";
-        if (string.Equals(live.FinishCriteria?.Trim(), "Time", StringComparison.OrdinalIgnoreCase) || raceTime.Length == 0)
-            Number("duration", "Race duration (min)", b?.RaceMinutes, live.RaceMinutes, raceTime, true);
-        else
-            Add("duration", "Race duration (min)", Display(b!.RaceMinutes), "Set in menu", null, manual: true,
-                reason: $"LMU's race finish is '{live.FinishCriteria ?? "unknown"}', so it doesn't report Race Time changes yet.",
-                hint: raceTime + " (change it once and back so LMU confirms it)");
-        Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier,
-            $"Set Fuel Usage to {Factor(b?.FuelMultiplier, "Realistic")}");
-        Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier,
-            $"Set Tyre Wear to {Factor(b?.TireMultiplier, "Realistic")}");
-        Number("timeScale", "Time scale", b?.TimeScale, live.TimeScale,
-            $"Set Time Scale to {Factor(b?.TimeScale, "Normal")}", true);
-        var startTime = Normalization.Time(b?.StartTime);
-        Add("startTime", "Race start time", b?.StartTimeDefault == true ? "LMU default" : b?.StartTime,
-            live.StartTime, b?.StartTimeDefault == false ? Same(startTime, Normalization.Time(live.StartTime)) : null,
-            b?.StartTimeDefault == true, hint: startTime is null ? null : "Set Start Time to " +
-                DateTime.ParseExact(startTime, "HH:mm", CultureInfo.InvariantCulture).ToString("h:mm tt", CultureInfo.InvariantCulture));
+        // Factory Seat 1.3 test day: practice laps in the team's car. The briefing still carries race settings,
+        // but they don't apply, so only the track and car rows are shown.
+        bool testDay = b?.Test is not null;
+        if (!testDay)
+        {
+            // Race setup, live (2026-10-10): with finish criteria Time, RACE lengthTime tracks the menu's Race Time
+            // within a second. With "% Track Time" LMU stores a fraction of 24 h and minute-only changes never reach
+            // the API until the hours change or the session starts, so the driver checks it by hand; it never blocks.
+            string raceTime = b?.RaceMinutes is { } m && double.IsFinite(m) && m > 0
+                ? $"Set Race Time to {(int)Math.Round(m) / 60} hrs {(int)Math.Round(m) % 60} mins" : "";
+            if (string.Equals(live.FinishCriteria?.Trim(), "Time", StringComparison.OrdinalIgnoreCase) || raceTime.Length == 0)
+                Number("duration", "Race duration (min)", b?.RaceMinutes, live.RaceMinutes, raceTime, true);
+            else
+                Add("duration", "Race duration (min)", Display(b!.RaceMinutes), "Set in menu", null, manual: true,
+                    reason: $"LMU's race finish is '{live.FinishCriteria ?? "unknown"}', so it doesn't report Race Time changes yet.",
+                    hint: raceTime + " (change it once and back so LMU confirms it)");
+            Number("fuel", "Fuel consumption", b?.FuelMultiplier, live.FuelMultiplier,
+                $"Set Fuel Usage to {Factor(b?.FuelMultiplier, "Realistic")}");
+            Number("tyres", "Tyre wear", b?.TireMultiplier, live.TireMultiplier,
+                $"Set Tyre Wear to {Factor(b?.TireMultiplier, "Realistic")}");
+            Number("timeScale", "Time scale", b?.TimeScale, live.TimeScale,
+                $"Set Time Scale to {Factor(b?.TimeScale, "Normal")}", true);
+            var startTime = Normalization.Time(b?.StartTime);
+            Add("startTime", "Race start time", b?.StartTimeDefault == true ? "LMU default" : b?.StartTime,
+                live.StartTime, b?.StartTimeDefault == false ? Same(startTime, Normalization.Time(live.StartTime)) : null,
+                b?.StartTimeDefault == true, hint: startTime is null ? null : "Set Start Time to " +
+                    DateTime.ParseExact(startTime, "HH:mm", CultureInfo.InvariantCulture).ToString("h:mm tt", CultureInfo.InvariantCulture));
+        }
         // Factory Seat 1.2 advises an AI Strength change. It can't see LMU's slider and LMU doesn't report it,
         // so this is a manual row worded as a change, never a value to set. No advice yet, no row.
         if (b?.AiStrengthStep is int step)
@@ -122,12 +128,38 @@ public sealed class SettingsValidator(CompanionOptions options)
         }
 
         bool metadataValid = Present(b?.CareerName) && Present(b?.EventName) && b?.RoundNumber > 0;
-        bool ready = valid && metadataValid && checks.All(c => c.Status is CheckStatus.Match or CheckStatus.NotApplicable or CheckStatus.Manual);
+        bool setupReady = valid && metadataValid && checks.All(c => c.Status is CheckStatus.Match or CheckStatus.NotApplicable or CheckStatus.Manual);
+        // Only races that finish after the weekend is started in Factory Seat count, so a matching setup on an
+        // Upcoming round isn't ready yet. The reader accepts only Upcoming and Armed as available.
+        bool? weekendStarted = b?.State switch { "Armed" => true, "Upcoming" => false, _ => null };
+        bool startWeekend = read.Status == SourceStatus.Available && weekendStarted == false;
+        bool ready = setupReady && !startWeekend;
         var diagnostics = live.Diagnostics.Concat([read.Diagnostic]).ToList();
         if (mappingHelp is not null) diagnostics.Add(mappingHelp);
         if (!metadataValid) diagnostics.Add("Briefing career/event/round metadata missing or invalid.");
-        return new(b?.CareerName ?? "Unknown career", b?.EventName ?? "Unknown event", b?.RoundNumber, ready,
-            ready ? "READY TO RACE" : checks.Any(c => c.Status == CheckStatus.Mismatch) ? "SETUP MISMATCH" : "NOT VERIFIED",
-            read.Status, lmuStatus, live.ObservedAt, checks, diagnostics) { Stakes = b?.Stakes ?? [] };
+        string overall = ready ? (testDay ? "READY TO TEST" : "READY TO RACE")
+            : checks.Any(c => c.Status == CheckStatus.Mismatch) ? "SETUP MISMATCH"
+            : setupReady && startWeekend ? "START RACE WEEKEND" : "NOT VERIFIED";
+        var stakes = b?.Stakes ?? [];
+        if (b?.Test is { } test) stakes = [TestLine(test), .. stakes];
+        return new(b?.CareerName ?? "Unknown career", b?.EventName ?? "Unknown event", b?.RoundNumber, ready, overall,
+            read.Status, lmuStatus, live.ObservedAt, checks, diagnostics)
+        {
+            Stakes = stakes,
+            WeekendStarted = weekendStarted,
+            TestDay = testDay,
+            Hint = startWeekend ? "Press Start race weekend in Factory Seat" : null
+        };
+    }
+
+    // "Test day for Toyota Racing: 8 laps in practice, within 0.5% of the fastest AI lap in class."
+    private static string TestLine(TestDay test)
+    {
+        string line = "Test day" + (string.IsNullOrWhiteSpace(test.Team) ? "" : $" for {test.Team!.Trim()}");
+        var parts = new List<string>();
+        if (test.MinLaps is > 0 and var laps) parts.Add($"{laps} lap{(laps == 1 ? "" : "s")} in practice");
+        if (test.PassShare is { } share && double.IsFinite(share) && share > 0)
+            parts.Add($"within {(share * 100).ToString("0.##", CultureInfo.InvariantCulture)}% of the fastest AI lap in class");
+        return line + (parts.Count > 0 ? ": " + string.Join(", ", parts) : "") + ".";
     }
 }

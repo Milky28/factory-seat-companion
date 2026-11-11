@@ -25,8 +25,8 @@ All are prefixed `FactorySeatPlugin.`
 
 | Property | Meaning |
 | --- | --- |
-| `ReadyToRace` | Boolean. True only for a fresh, fully matching report. |
-| `OverallStatus` | `READY TO RACE`, `SETUP MISMATCH` or `NOT VERIFIED`. |
+| `ReadyToRace` | Boolean. True only for a fresh, fully matching report on a round whose race weekend is started. |
+| `OverallStatus` | `READY TO RACE` (`READY TO TEST` on a test day), `SETUP MISMATCH`, `START RACE WEEKEND` (everything matches but the round is still Upcoming in Factory Seat) or `NOT VERIFIED`. |
 | `Headline` | Career / event / round. |
 | `Mode` | `Fixture` or `Live`. |
 | `Screen` | `Menu`, `Loading`, `InSession` or `Unknown` from the latest fresh report, or `NotRunning` while LMU's process isn't running. |
@@ -35,8 +35,10 @@ All are prefixed `FactorySeatPlugin.`
 | `ReportAgeSeconds` | Age of the report's observation. |
 | `BridgeStatus` | `Running`, or why the companion is not running. |
 | `Diagnostics` | Report diagnostics joined with ` \| `. |
-| `Hints` | Fix hints of every row that has one, joined with ` · `. Empty when nothing mismatches or the report is stale. |
-| `Stakes` | What's riding on the race: the first two of Factory Seat's stakes lines (1.2 and later), joined with ` · `. Empty for a guest drive or an older Factory Seat. |
+| `Hints` | Fix hints of every row that has one, joined with ` · `, after "Press Start race weekend in Factory Seat" while the round is Upcoming. Empty when there's nothing to do, the report is stale, or `ManualCheck` is set. |
+| `Stakes` | What's riding on the race: the first two of Factory Seat's stakes lines (1.2 and later), joined with ` · `. Empty for a guest drive or an older Factory Seat. On a test day the first line describes the test. |
+| `Weekend` | The round's race weekend in Factory Seat: `Started` (Armed), `Not started` (Upcoming) or `Unknown`. Only races that finish after it's started count. |
+| `TestDay` | Boolean. True on a Factory Seat 1.3 test day: practice laps in another team's car, so only the track and car rows are shown. |
 | `ManualCheck` | A note to check each setting by hand, set when the briefing is available but LMU's settings can't be read or the report is stale. Otherwise empty. |
 | `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Icon`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any` and `Manual` as `Check`; `Icon` is ✓, ✗, – (Any), ☐ (Check) or ○ (Unknown); `Hint` is set on a fresh `Mismatch` or `Manual` row. `Manual` rows (Race duration outside LMU's Time finish mode) don't block READY TO RACE. |
 

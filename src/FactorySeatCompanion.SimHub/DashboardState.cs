@@ -54,12 +54,13 @@ public sealed class DashboardState
         "Can't read LMU's settings, so nothing here is verified. Check each setting in LMU's menu by hand against ROUND NEEDS.";
 
     private DashboardState(bool ready, string overall, string headline, string mode, string briefing, string lmu,
-        double? age, string bridge, string diagnostics, IReadOnlyList<DashboardRow> rows, string manualCheck = "", string stakes = "")
+        double? age, string bridge, string diagnostics, IReadOnlyList<DashboardRow> rows, string manualCheck = "", string stakes = "",
+        string hint = "", string weekend = "Unknown", bool testDay = false)
     {
-        ManualCheck = manualCheck; Stakes = stakes;
+        ManualCheck = manualCheck; Stakes = stakes; Weekend = weekend; TestDay = testDay;
         ReadyToRace = ready; OverallStatus = overall; Headline = headline; Mode = mode; BriefingStatus = briefing;
         LmuStatus = lmu; ReportAgeSeconds = age; BridgeStatus = bridge; Diagnostics = diagnostics; Rows = rows;
-        Hints = string.Join(" \u00B7 ", rows.Where(r => r.Visible && r.Hint.Length > 0).Select(r => r.Hint));
+        Hints = string.Join(" \u00B7 ", new[] { hint }.Concat(rows.Where(r => r.Visible).Select(r => r.Hint)).Where(h => h.Length > 0));
     }
 
     public bool ReadyToRace { get; }
@@ -77,6 +78,11 @@ public sealed class DashboardState
     public string ManualCheck { get; }
     // What's riding on the race: the briefing's first stakes lines on one line, or empty.
     public string Stakes { get; }
+    // The round's race weekend in Factory Seat: "Started", "Not started" or "Unknown". Only races finishing
+    // after the weekend is started count.
+    public string Weekend { get; }
+    // A Factory Seat 1.3 test day: practice laps in another team's car, so only track and car are checked.
+    public bool TestDay { get; }
     public IReadOnlyList<DashboardRow> Rows { get; }
 
     public static DashboardState Create(CompanionMessage? message, DateTimeOffset now, TimeSpan maxAge, string bridgeStatus)
@@ -107,8 +113,10 @@ public sealed class DashboardState
 
         bool ready = fresh && report.ReadyToRace && checks.Count > 0 && checks.Count <= RowSlots &&
             checks.All(c => c.Status == "Match" || c.Status == "NotApplicable" || c.Status == "Manual");
-        string overall = ready ? "READY TO RACE"
-            : fresh && report.OverallStatus == "SETUP MISMATCH" ? "SETUP MISMATCH" : "NOT VERIFIED";
+        // The report words readiness ("READY TO RACE", or "READY TO TEST" on a test day); a stale report never passes.
+        string overall = ready ? (report.OverallStatus == "READY TO TEST" ? "READY TO TEST" : "READY TO RACE")
+            : fresh && report.OverallStatus is "SETUP MISMATCH" or "START RACE WEEKEND" ? report.OverallStatus : "NOT VERIFIED";
+        string weekend = report.WeekendStarted switch { true => "Started", false => "Not started", _ => "Unknown" };
         // The briefing gives the values to set, so the rows still help when LMU's side is unreadable or the report is old.
         bool manual = report.BriefingStatus == "Available" && (!fresh || report.LmuStatus != "Available") && checks.Count > 0;
         // Factory Seat shows career names in capitals.
@@ -116,6 +124,8 @@ public sealed class DashboardState
         return new DashboardState(ready, overall, $"{(report.Career ?? "").ToUpperInvariant()} / {report.Event} / {round}", message!.Mode,
             fresh ? report.BriefingStatus : "Stale", fresh ? report.LmuStatus : "Stale", age.TotalSeconds,
             bridgeStatus, string.Join(" | ", diagnostics), rows, manual ? ManualCheckText : "",
-            string.Join(" \u00B7 ", (report.Stakes ?? new List<string>()).Where(l => !string.IsNullOrWhiteSpace(l)).Take(StakesLines)));
+            string.Join(" \u00B7 ", (report.Stakes ?? new List<string>()).Where(l => !string.IsNullOrWhiteSpace(l)).Take(StakesLines)),
+            // The overlay shows either the To do line or the manual-check note, and the note matters more.
+            fresh && !manual ? report.Hint ?? "" : "", weekend, report.TestDay);
     }
 }

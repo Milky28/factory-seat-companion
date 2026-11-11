@@ -825,6 +825,66 @@ Test("Overlay shows the first two stakes lines", () =>
     Assert(state.Stakes == "You're P3 with 40 points. \u00B7 A Driver is 4.5 ahead in P2.", state.Stakes);
     Assert(Dash(Report()).Stakes == "");
 });
+Test("Factory Seat 1.3 test day is read; races have no test", () =>
+{
+    var json = Change(Fixture("briefing.spec-example.json"), n =>
+    {
+        n["round"]!["series"] = "imsa";
+        n["round"]!["test"] = JsonNode.Parse("""{"team":"Toyota Racing","minLaps":8,"passShare":0.005}""");
+    });
+    var parsed = FactorySeatBriefingReader.Parse(json, running);
+    Assert(parsed.Status == SourceStatus.Available, parsed.Diagnostic);
+    Assert(parsed.Briefing!.Test == new TestDay("Toyota Racing", 8, 0.005), $"{parsed.Briefing!.Test}");
+    var race = Change(Fixture("briefing.spec-example.json"), n => n["round"]!["test"] = null);
+    Assert(FactorySeatBriefingReader.Parse(race, running).Briefing!.Test is null);
+    Assert(FactorySeatBriefingReader.Parse(Fixture("briefing.spec-example.json"), running).Briefing!.Test is null);
+});
+Test("A test day checks only the track and car, and reads READY TO TEST", () =>
+{
+    // Factory Seat still writes race settings on a test day; they don't apply, so a mismatch there is ignored.
+    var b = briefing.Briefing! with { Test = new TestDay("Toyota Racing", 8, 0.005), RaceMinutes = 30, FuelMultiplier = 3 };
+    var report = Report(requirement: b);
+    foreach (var id in new[] { "duration", "fuel", "tyres", "timeScale", "startTime" })
+        Assert(!report.Checks.Any(c => c.Id == id), $"{id} shown on a test day");
+    Assert(report.ReadyToRace && report.OverallStatus == "READY TO TEST" && report.TestDay, report.OverallStatus);
+    Assert(report.Stakes.Count == 1 &&
+        report.Stakes[0] == "Test day for Toyota Racing: 8 laps in practice, within 0.5% of the fastest AI lap in class.", report.Stakes[0]);
+    var state = Dash(report);
+    Assert(state.ReadyToRace && state.OverallStatus == "READY TO TEST" && state.TestDay, state.OverallStatus);
+    Assert(state.Stakes.StartsWith("Test day for Toyota Racing"), state.Stakes);
+    // The car still has to be the team's.
+    var wrongCar = Report(live with { CarFolder = "Other_Car" }, b);
+    Assert(wrongCar.OverallStatus == "SETUP MISMATCH" && Dash(wrongCar).OverallStatus == "SETUP MISMATCH");
+    // A race keeps every row, and a stale report never reads READY TO TEST.
+    Assert(Report().Checks.Any(c => c.Id == "fuel") && !Report().TestDay);
+    Assert(Dash(report, 30).OverallStatus == "NOT VERIFIED");
+    Assert(Report(requirement: b with { Test = new TestDay(null, null, null) }).Stakes[0] == "Test day.");
+});
+Test("An Upcoming round asks to start the race weekend before READY TO RACE", () =>
+{
+    var upcoming = briefing.Briefing! with { State = "Upcoming" };
+    var report = Report(requirement: upcoming);
+    Assert(!report.ReadyToRace && report.OverallStatus == "START RACE WEEKEND" && report.WeekendStarted == false, report.OverallStatus);
+    Assert(report.Hint == "Press Start race weekend in Factory Seat");
+    var state = Dash(report);
+    Assert(!state.ReadyToRace && state.OverallStatus == "START RACE WEEKEND" && state.Weekend == "Not started", state.OverallStatus);
+    Assert(state.Hints == "Press Start race weekend in Factory Seat", state.Hints);
+    // A setup mismatch still reads SETUP MISMATCH, with the weekend first on the To do line.
+    var mismatch = Dash(Report(live with { FuelMultiplier = 2 }, upcoming));
+    Assert(mismatch.OverallStatus == "SETUP MISMATCH" && mismatch.Hints.StartsWith("Press Start race weekend in Factory Seat \u00B7 Set Fuel Usage"),
+        mismatch.Hints);
+    // Started: ready as before. Stale or unreadable sources never say START RACE WEEKEND.
+    var armed = Report();
+    Assert(armed.ReadyToRace && armed.WeekendStarted == true && armed.Hint is null && Dash(armed).Weekend == "Started");
+    Assert(Dash(report, 30).OverallStatus == "NOT VERIFIED" && Dash(report, 30).Hints == "");
+    Assert(Report(live with { Status = SourceStatus.Unavailable }, upcoming).OverallStatus == "NOT VERIFIED");
+    var unreadable = Report(live with { Status = SourceStatus.Unavailable }, upcoming);
+    Assert(unreadable.Hint is not null, "the weekend reminder needs only the briefing");
+    // The overlay has one line for both; while LMU can't be read, the manual-check note takes it.
+    Assert(Dash(unreadable).Hints == "" && Dash(unreadable).ManualCheck == DashboardState.ManualCheckText);
+    // A test day needs its weekend started too.
+    Assert(Report(requirement: upcoming with { Test = new TestDay("Toyota Racing", 8, 0.005) }).OverallStatus == "START RACE WEEKEND");
+});
 int failures = 0;
 foreach (var test in tests)
 {
