@@ -587,7 +587,7 @@ Test("Dashboard does not trust a ready flag over row statuses", () =>
     message.Report!.Checks[2].Status = "Unknown";
     Assert(!DashboardState.Create(message, message.Report.ObservedAt, TimeSpan.FromSeconds(10), "Running").ReadyToRace);
     message = Bridge(Report());
-    for (int i = 0; i < 3; i++) message.Report!.Checks.Add(message.Report.Checks[0]);
+    while (message.Report!.Checks.Count <= DashboardState.RowSlots) message.Report.Checks.Add(message.Report.Checks[0]);
     Assert(!DashboardState.Create(message, message.Report!.ObservedAt, TimeSpan.FromSeconds(10), "Running").ReadyToRace);
 });
 Test("Bridge carries the screen; only a fresh report vouches for it", () =>
@@ -891,6 +891,62 @@ Test("An Upcoming round asks to start the race weekend before READY TO RACE", ()
     Assert(Dash(unreadable).Hints == "" && Dash(unreadable).ManualCheck == DashboardState.ManualCheckText);
     // A test day needs its weekend started too.
     Assert(Report(requirement: upcoming with { Test = new TestDay("Toyota Racing", 8, 0.005) }).OverallStatus == "START RACE WEEKEND");
+});
+// Keys as LMU reported them on SIMRIG, 2026-11-11 (GET /rest/sessions/).
+var ngSessions = Change(sessions, n =>
+{
+    n["SESSSET_AI_Strength"] = JsonNode.Parse("""{"currentValue":94,"stringValue":"94%"}""");
+    n["SESSSET_AI_Aggression"] = JsonNode.Parse("""{"currentValue":2,"stringValue":"High"}""");
+    n["SESSSET_Damage_Multi"] = JsonNode.Parse("""{"currentValue":100,"stringValue":"100%"}""");
+    n["SESSSET_Mech_Failures"] = JsonNode.Parse("""{"currentValue":1,"stringValue":"Normal"}""");
+    n["SESSSET_weather"] = JsonNode.Parse("""{"currentValue":2,"stringValue":"Rain"}""");
+});
+var ngLive = LmuJsonParser.Parse(ngSessions, durations, setup, now);
+var ngFloor = new FloorRequirement(94, 2, true, 100);
+Test("Factory Seat 1.4 floor and LMU's floor settings are read", () =>
+{
+    var json = Change(Fixture("briefing.spec-example.json"), n =>
+        n["round"]!["floor"] = JsonNode.Parse("""{"aiStrength":94,"aiAggression":2,"wet":true,"minDamage":100}"""));
+    Assert(FactorySeatBriefingReader.Parse(json, running).Briefing!.Floor == ngFloor);
+    Assert(FactorySeatBriefingReader.Parse(Fixture("briefing.spec-example.json"), running).Briefing!.Floor is null);
+    Assert(ngLive is { AiStrength: 94, AiAggression: 2, DamagePercent: 100, MechFailures: 1, Weather: 2, WeatherText: "Rain" },
+        $"{ngLive.AiStrength} {ngLive.AiAggression} {ngLive.DamagePercent} {ngLive.MechFailures} {ngLive.Weather}");
+    // A career without a floor never needs these, so missing keys add no diagnostics.
+    Assert(live.AiStrength is null && live.Weather is null && live.Diagnostics.Length == LmuJsonParser.Parse(sessions, durations, setup, now).Diagnostics.Length);
+    Assert(!live.Diagnostics.Any(d => d.Contains("AI_Strength") || d.Contains("weather")));
+});
+Test("A New Game+ round checks the floor and replaces the AI advice", () =>
+{
+    var b = briefing.Briefing! with { Floor = ngFloor, AiStrengthStep = 3 };
+    var report = Report(ngLive, b);
+    Assert(report.ReadyToRace, string.Join("; ", report.Checks.Where(c => c.Status != CheckStatus.Match).Select(c => c.Id + "=" + c.Status)));
+    Assert(!report.Checks.Any(c => c.Id == "aiStrength"), "the floor's exact AI Strength replaces the advice row");
+    Assert(report.Checks.Single(c => c.Id == "floorAi") is { Required: "94%, High", Current: "94%, High", Status: CheckStatus.Match });
+    Status(report, "floorDamage", CheckStatus.Match);
+    Status(report, "floorWet", CheckStatus.Match);
+    // Wrong AI and damage block READY TO RACE, with one hint per setting.
+    var low = Report(ngLive with { AiStrength = 92, AiAggression = 1, AiAggressionText = "Medium", DamagePercent = 75, MechFailures = 0 }, b);
+    var ai = low.Checks.Single(c => c.Id == "floorAi");
+    Assert(ai.Status == CheckStatus.Mismatch && ai.Current == "92%, Medium" && ai.Hint == "Set AI Strength to 94% \u00B7 Set AI Aggression to High", ai.Hint ?? "");
+    var damage = low.Checks.Single(c => c.Id == "floorDamage");
+    Assert(damage.Status == CheckStatus.Mismatch && damage.Hint == "Set Damage to 100% or more \u00B7 Turn Mechanical Failures on", damage.Hint ?? "");
+    Assert(!low.ReadyToRace && low.OverallStatus == "SETUP MISMATCH");
+    // More damage than the floor is fine; scripted weather is a non-blocking reminder.
+    var scripted = Report(ngLive with { DamagePercent = 100, Weather = 4, WeatherText = "Scripted" }, b with { Floor = ngFloor with { MinDamage = 60 } });
+    Status(scripted, "floorDamage", CheckStatus.Match);
+    Assert(scripted.Checks.Single(c => c.Id == "floorWet") is { Status: CheckStatus.Manual, Current: "Scripted", Hint: "Set Weather to Rain" });
+    Assert(scripted.ReadyToRace);
+    // A dry floor has no weather row; LMU not reporting a setting leaves it Unknown.
+    Assert(!Report(ngLive, b with { Floor = ngFloor with { Wet = false } }).Checks.Any(c => c.Id == "floorWet"));
+    Status(Report(live, b), "floorAi", CheckStatus.Unknown);
+    Assert(!Report(live, b).ReadyToRace);
+});
+Test("The most rows a round can have fit the overlay", () =>
+{
+    var b = briefing.Briefing! with { Floor = ngFloor, Car = briefing.Briefing!.Car! with { CustomTeam = true } };
+    var report = Report(ngLive, b);
+    Assert(report.Checks.Count == DashboardState.RowSlots, $"{report.Checks.Count} rows");
+    Assert(Dash(report).Rows.All(r => r.Visible) && Dash(report).ReadyToRace);
 });
 int failures = 0;
 foreach (var test in tests)

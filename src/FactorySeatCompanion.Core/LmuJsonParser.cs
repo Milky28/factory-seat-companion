@@ -148,6 +148,20 @@ public static class LmuJsonParser
             return value;
         }
 
+        // New Game+ floor settings. Read quietly: a career without a floor never needs them, so a missing key
+        // adds no diagnostic; the validator explains an Unknown floor row instead.
+        JsonElement? Quiet(string name) => sessions is null ? null : JsonRead.UniqueNamed(sessions.RootElement, name);
+        double? Percent(string name)
+        {
+            var text = JsonRead.Text(JsonRead.Property(Quiet(name), "stringValue"))?.Trim();
+            var match = text is null ? null : Regex.Match(text, @"^([0-9]+(?:\.[0-9]+)?)\s*%$", RegexOptions.CultureInvariant);
+            return match is { Success: true } ? Normalization.Number(match.Groups[1].Value) : null;
+        }
+        // An enum index, read from currentValue: Factory Seat's floor uses LMU's own indices.
+        int? Index(string name) => Quiet(name) is { } s && JsonRead.Property(s, "currentValue") is { ValueKind: JsonValueKind.Number } v &&
+            v.TryGetInt32(out var i) && i >= 0 ? i : null;
+        string? Label(string name) => JsonRead.Text(JsonRead.Property(Quiet(name), "stringValue"))?.Trim() is { Length: > 0 } t ? t : null;
+
         double? raceMinutes = null;
         // Live capture: with "% Track Time" the menu showed 2h24 while RACE lengthTime was 48
         // (Bahrain) or 24 (Road Atlanta). lengthTime matched the menu only when the criteria was "Time".
@@ -193,6 +207,14 @@ public static class LmuJsonParser
             TireMultiplier = Multiplier("SESSSET_Tire_Wear"),
             TimeScale = Multiplier("SESSSET_race_timescale"),
             StartTime = StartingTime(),
+            AiStrength = Percent("SESSSET_AI_Strength"),
+            DamagePercent = Percent("SESSSET_Damage_Multi"),
+            AiAggression = Index("SESSSET_AI_Aggression"),
+            AiAggressionText = Label("SESSSET_AI_Aggression"),
+            MechFailures = Index("SESSSET_Mech_Failures"),
+            MechFailuresText = Label("SESSSET_Mech_Failures"),
+            Weather = Index("SESSSET_weather"),
+            WeatherText = Label("SESSSET_weather"),
             Diagnostics = diagnostics.ToArray()
         };
     }

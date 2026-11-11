@@ -40,7 +40,7 @@ All are prefixed `FactorySeatPlugin.`
 | `Weekend` | The round's race weekend in Factory Seat: `Started` (Armed), `Not started` (Upcoming) or `Unknown`. Only races that finish after it's started count. |
 | `TestDay` | Boolean. True on a Factory Seat 1.3 test day: practice laps in another team's car, so only the track and car rows are shown. |
 | `ManualCheck` | A note to check each setting by hand, set when the briefing is available but LMU's settings can't be read or the report is stale. Otherwise empty. |
-| `Row01.` … `Row13.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Icon`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any` and `Manual` as `Check`; `Icon` is ✓, ✗, – (Any), ☐ (Check) or ○ (Unknown); `Hint` is set on a fresh `Mismatch` or `Manual` row. `Manual` rows (Race duration outside LMU's Time finish mode) don't block READY TO RACE. |
+| `Row01.` … `Row15.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Icon`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any` and `Manual` as `Check`; `Icon` is ✓, ✗, – (Any), ☐ (Check) or ○ (Unknown); `Hint` is set on a fresh `Mismatch` or `Manual` row. `Manual` rows (Race duration outside LMU's Time finish mode) don't block READY TO RACE. |
 
 ## When the overlay shows
 
@@ -81,7 +81,7 @@ Needs Windows, SimHub, the .NET 8 SDK and the .NET Framework 4.8 Developer Pack.
 
 Then start SimHub and enable Factory Seat Companion when it asks about the new plugin. Dash Studio's Import button only takes packaged `.simhubdash` files, so copy `dashboard/FactorySeatCompanion.djson` to `SimHub\DashTemplates\FactorySeatCompanion\FactorySeatCompanion.djson` and start it from Dash Studio's Overlays list.
 
-SimHub refuses to start overlays above an undocumented pixel area ("This overlay is too large"). 900×580 was refused and 900×390 runs, so the overlay is 720×436 (an area under the 900×390 that runs). SimHub caches the size in a `.djson.metadata` file next to the dashboard; delete it after resizing.
+SimHub refuses to start overlays above an undocumented pixel area ("This overlay is too large"). 900×580 was refused and 900×390 runs, so the overlay is 720×476 (an area under the 900×390 that runs). SimHub caches the size in a `.djson.metadata` file next to the dashboard; delete it after resizing.
 
 The plugin saves its settings only when SimHub exits cleanly (tray icon, Exit). The file is `SimHub\PluginsData\Common\FactorySeatPlugin.GeneralSettings.json`.
 

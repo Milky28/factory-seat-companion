@@ -112,7 +112,9 @@ public sealed class SettingsValidator(CompanionOptions options)
         }
         // Factory Seat 1.2 advises an AI Strength change. It can't see LMU's slider and LMU doesn't report it,
         // so this is a manual row worded as a change, never a value to set. No advice yet, no row.
-        if (b?.AiStrengthStep is int step)
+        // Factory Seat 1.4 New Game+ floor. Its AI Strength is exact, so it takes the place of the advice row.
+        if (b?.Floor is { } floor) Floor(floor);
+        else if (b?.AiStrengthStep is int step)
         {
             string change = step > 0 ? $"Raise {step}%" : step < 0 ? $"Lower {-step}%" : "Keep as is";
             string? from = b.AiStrengthSource switch
@@ -125,6 +127,48 @@ public sealed class SettingsValidator(CompanionOptions options)
             Add("aiStrength", "AI Strength", change, "Set in menu", null, manual: true,
                 reason: "Factory Seat's advice" + (from is null ? "" : $" from {from}") + "; LMU doesn't report AI Strength.",
                 hint: step == 0 ? null : $"{(step > 0 ? "Raise" : "Lower")} AI Strength {Math.Abs(step)}%");
+        }
+
+        void Floor(FloorRequirement floor)
+        {
+            const string Unread = "LMU didn't report this setting.";
+            static string Aggression(int? index) => index switch { 0 => "Low", 1 => "Medium", 2 => "High", null => "Unknown", _ => index.Value.ToString(CultureInfo.InvariantCulture) };
+            // AI: exact strength and aggression, both on LMU's Race Weekend settings.
+            bool? strengthOk = floor.AiStrength is int s && live.AiStrength is double ls ? Math.Abs(ls - s) < 0.001 : null;
+            bool? aggressionOk = floor.AiAggression is int a && live.AiAggression is int la ? a == la : null;
+            var aiHints = new List<string>();
+            if (strengthOk == false) aiHints.Add($"Set AI Strength to {floor.AiStrength}%");
+            if (aggressionOk == false) aiHints.Add($"Set AI Aggression to {Aggression(floor.AiAggression)}");
+            Add("floorAi", "AI (New Game+)",
+                floor.AiStrength is null || floor.AiAggression is null ? null : $"{floor.AiStrength}%, {Aggression(floor.AiAggression)}",
+                live.AiStrength is null && live.AiAggression is null ? null
+                    : $"{Display(live.AiStrength) ?? "?"}%, {live.AiAggressionText ?? Aggression(live.AiAggression)}",
+                strengthOk == false || aggressionOk == false ? false : strengthOk is null || aggressionOk is null ? null : true,
+                reason: strengthOk is null || aggressionOk is null ? Unread : null, hint: aiHints.Count > 0 ? string.Join(" \u00B7 ", aiHints) : null);
+            // Damage at the floor's percent or more, with mechanical failures on. Invulnerability is a driving aid
+            // that /rest/sessions/ doesn't carry, so it is named in the reason only.
+            bool? damageOk = floor.MinDamage is int d && live.DamagePercent is double ld ? ld >= d - 0.001 : null;
+            bool? failuresOk = live.MechFailures is int f ? f > 0 : null;
+            var damageHints = new List<string>();
+            if (damageOk == false) damageHints.Add($"Set Damage to {floor.MinDamage}% or more");
+            if (failuresOk == false) damageHints.Add("Turn Mechanical Failures on");
+            Add("floorDamage", "Damage (New Game+)",
+                floor.MinDamage is null ? null : $"{floor.MinDamage}%+, failures on",
+                live.DamagePercent is null && live.MechFailures is null ? null
+                    : $"{Display(live.DamagePercent) ?? "?"}%, failures {live.MechFailuresText ?? (live.MechFailures == 0 ? "off" : live.MechFailures is null ? "?" : "on")}",
+                damageOk == false || failuresOk == false ? false : damageOk is null || failuresOk is null ? null : true,
+                reason: (damageOk is null || failuresOk is null ? Unread + " " : "") + "Keep Invulnerability off too; LMU reports it elsewhere.",
+                hint: damageHints.Count > 0 ? string.Join(" \u00B7 ", damageHints) : null);
+            // Factory Seat counts a race as wet once any car runs a lap on wet tyres, which can't be known before the
+            // race. Weather set to Rain matches; anything else is a non-blocking reminder.
+            if (floor.Wet == true)
+            {
+                bool rain = live.Weather == 2;
+                Add("floorWet", "Weather (New Game+)", "Wet race", live.WeatherText ?? (live.Weather is null ? null : $"Mode {live.Weather}"),
+                    rain ? true : null, manual: !rain,
+                    reason: rain ? null : "The round must be raced in the rain; it counts once any car laps on wet tyres.",
+                    hint: "Set Weather to Rain");
+            }
         }
 
         bool metadataValid = Present(b?.CareerName) && Present(b?.EventName) && b?.RoundNumber > 0;

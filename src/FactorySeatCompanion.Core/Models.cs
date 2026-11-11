@@ -46,7 +46,13 @@ public sealed record RoundRequirement
     // Factory Seat 1.3: the championship raced beside the season's own that this round counts for ("imsa"),
     // or null for the season's own.
     public string? Series { get; init; }
+    // Factory Seat 1.4: a New Game+ round's floor, what the race must be run at to count; null in a normal career.
+    public FloorRequirement? Floor { get; init; }
 }
+
+// Factory Seat 1.4 round.floor, in LMU's own values: AI Strength exactly (94 = 94%), AI Aggression as LMU's index
+// (2 = High), a wet race, and LMU's damage percent or more. Null fields were missing from the briefing.
+public sealed record FloorRequirement(int? AiStrength, int? AiAggression, bool? Wet, int? MinDamage);
 
 // Factory Seat 1.3 round.test: the team trying the player out, the practice laps it wants, and how close to
 // the fastest AI lap in class impresses it (0.005 = within 0.5%).
@@ -86,6 +92,19 @@ public sealed record LmuSnapshot
     public double? TireMultiplier { get; init; }
     public double? TimeScale { get; init; }
     public string? StartTime { get; init; }
+    // Race settings a New Game+ floor needs, from /rest/sessions/ (live 2026-11-11, LMU on SIMRIG).
+    // SESSSET_AI_Strength and SESSSET_Damage_Multi read as "92%" and "100%".
+    public double? AiStrength { get; init; }
+    public double? DamagePercent { get; init; }
+    // SESSSET_AI_Aggression index (1 read "Medium"; Factory Seat's 2 is High) with LMU's label.
+    public int? AiAggression { get; init; }
+    public string? AiAggressionText { get; init; }
+    // SESSSET_Mech_Failures index: 0 none, 1 "Normal", 2 timescaled.
+    public int? MechFailures { get; init; }
+    public string? MechFailuresText { get; init; }
+    // SESSSET_weather index: 0 sun, 1 clouds, 2 rain, 3 default, 4 scripted.
+    public int? Weather { get; init; }
+    public string? WeatherText { get; init; }
     // From the navigation reads of the same poll; decides when the overlay shows, never readiness.
     public LmuScreen Screen { get; init; } = LmuScreen.Unknown;
     public string[] Diagnostics { get; init; } = [];
