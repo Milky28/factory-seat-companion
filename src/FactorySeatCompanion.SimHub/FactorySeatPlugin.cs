@@ -1,8 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
 using GameReaderCommon;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SimHub.Plugins;
 
 namespace FactorySeatCompanion.SimHub;
@@ -49,6 +52,8 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
         this.AttachDelegate("ShowOverlay", () => { State(); return visibility.Visible; });
         // Bind to a key or wheel button in SimHub's Controls and events to hide or show the overlay.
         this.AddAction("ToggleOverlay", (a, b) => visibility.Toggle());
+        // Bind to a key or wheel button to press Start race weekend in Factory Seat (1.5) without leaving LMU.
+        this.AddAction("StartRaceWeekend", (a, b) => RequestStartWeekend());
         for (int i = 0; i < DashboardState.RowSlots; i++)
         {
             int slot = i;
@@ -74,6 +79,44 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
     {
         bridge?.Dispose();
         this.SaveCommonSettings(SettingsName, settings);
+    }
+
+    // Reads briefing.json afresh at the press, so the request always carries the career open right now,
+    // and writes start-weekend.request only when Factory Seat could act on it. The banner flips to
+    // Started once Factory Seat rewrites the briefing with the round Armed.
+    private void RequestStartWeekend()
+    {
+        try
+        {
+            string path = string.IsNullOrWhiteSpace(settings.BriefingPath) ? DefaultBriefingPath() : settings.BriefingPath;
+            var briefing = JObject.Parse(File.ReadAllText(path));
+            if (Text(briefing["format"]) != "factory-seat-briefing") return;
+            bool? open = briefing["open"]?.Type == JTokenType.Boolean ? (bool)briefing["open"]! : (bool?)null;
+            string? careerId = Text(briefing["career"]?["id"]);
+            if (StartWeekendRequest.Refusal(FactorySeatRunning(), open, Text(briefing["round"]?["state"]), careerId) == null)
+                StartWeekendRequest.Write(Path.GetDirectoryName(Path.GetFullPath(path)) ?? "", careerId!);
+        }
+        // Nothing to start, or the briefing is mid-write: the press does nothing, like Factory Seat's own checks.
+        catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException || ex is JsonException ||
+            ex is ArgumentException || ex is InvalidOperationException) { }
+    }
+
+    private static string? Text(JToken? token) => token?.Type == JTokenType.String ? (string?)token : null;
+
+    // Factory Seat writes next to its saves: %AppData%\LmuCareer, or LMUCAREER_HOME when set.
+    private static string DefaultBriefingPath()
+    {
+        var home = Environment.GetEnvironmentVariable("LMUCAREER_HOME");
+        if (string.IsNullOrWhiteSpace(home))
+            home = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LmuCareer");
+        return Path.Combine(home, "briefing.json");
+    }
+
+    private static bool FactorySeatRunning()
+    {
+        var processes = Process.GetProcessesByName("FactorySeat");
+        foreach (var process in processes) process.Dispose();
+        return processes.Length > 0;
     }
 
     // Delegates are read many times per frame; rebuild at most every 250 ms. Age limits are

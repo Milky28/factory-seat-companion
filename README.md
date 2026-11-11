@@ -4,7 +4,7 @@ A SimHub overlay for **Le Mans Ultimate** that tells you, before you start a rac
 
 ![The overlay showing READY TO RACE: every row matches the round](docs/images/overlay-ready-to-race.png)
 
-It only reads. It never changes LMU's settings, never writes to Factory Seat or your career save, and its only game traffic is local HTTP reads from LMU on your own PC.
+It only reads. It never changes LMU's settings or your career save, and its only game traffic is local HTTP reads from LMU on your own PC. It never writes to Factory Seat, except the start-weekend request, and only when you press the button (see [Starting the race weekend from your wheel](#starting-the-race-weekend-from-your-wheel)).
 
 > **Status:** early. It has been run end to end on one PC; expect rough edges.
 
@@ -62,6 +62,12 @@ Until a release is published, both are attached to each run of the [Player packa
 ![The overlay showing SETUP MISMATCH: race duration and tyre wear are red, with a To do line](docs/images/overlay-setup-mismatch.png)
 
 In this example the round needs a 30-minute race and tyre wear 3, but LMU is set to 45 minutes and tyre wear 2. The **To do:** line says what to change in LMU's own wording.
+
+### Starting the race weekend from your wheel
+
+With **Factory Seat 1.5 or later**, you can press **Start race weekend** without leaving LMU. In SimHub, open **Controls and events**, add a new mapping, press the button you want, and pick the action **FactorySeatPlugin.StartRaceWeekend**. When the overlay reads **START RACE WEEKEND**, press it: within a few seconds Factory Seat starts the weekend and the banner moves on.
+
+The button only does something when Factory Seat is running with your career open and its next round waiting to start (a test day counts too). Then the companion writes one small file, `start-weekend.request`, next to `briefing.json`, holding only the career's id. Factory Seat reads it, deletes it, and starts the weekend. Pressing it at any other time does nothing, and Factory Seat ignores a request older than a minute, so an old press never starts a weekend later. Older Factory Seat versions ignore the file.
 
 ### When the overlay shows
 

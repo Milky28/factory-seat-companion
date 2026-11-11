@@ -42,6 +42,10 @@ All are prefixed `FactorySeatPlugin.`
 | `ManualCheck` | A note to check each setting by hand, set when the briefing is available but LMU's settings can't be read or the report is stale. Otherwise empty. |
 | `Row01.` … `Row15.` + `Visible`, `Id`, `Label`, `Required`, `Current`, `Status`, `StatusText`, `Icon`, `Reason`, `Hint` | One slot per check row in report order. Unused slots have `Visible` false. `StatusText` is `Status` with `NotApplicable` shown as `Any` and `Manual` as `Check`; `Icon` is ✓, ✗, – (Any), ☐ (Check) or ○ (Unknown); `Hint` is set on a fresh `Mismatch` or `Manual` row. `Manual` rows (Race duration outside LMU's Time finish mode) don't block READY TO RACE. |
 
+## Starting the race weekend
+
+The `FactorySeatPlugin.StartRaceWeekend` action presses Factory Seat 1.5's **Start race weekend** for the driver ([Factory Seat's spec](https://github.com/factoryseatlmuapp/factory-seat/blob/1.5/docs/briefing-json.md#starting-the-race-weekend-from-a-companion-15)). It's the one thing the companion writes, and only on a press. The plugin reads `briefing.json` afresh (the configured `BriefingPath`, else Factory Seat's default) and writes `start-weekend.request`, holding only `career.id`, into the same folder, but only when the `FactorySeat` process is running, `open` is `true` and `round.state` is `Upcoming`. It's written to `start-weekend.request.tmp` and renamed into place, so Factory Seat never sees half a file. Otherwise the press does nothing. Factory Seat deletes the file whether or not it acts on it, and drops a request older than a minute. There's no reply: `Weekend` turns `Started` when Factory Seat rewrites the briefing with the round `Armed`. The decision and the write live in `StartWeekendRequest.cs`, which the tests compile.
+
 ## When the overlay shows
 
 The CLI classifies each poll's `/navigation/state` (`LmuScreenClassifier` in the core) and the `--jsonl` line carries it as `screen`. Values from the live probe on 2026-10-10 (LMU v1.4200, notes in the project's live-test findings):
