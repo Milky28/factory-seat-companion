@@ -34,6 +34,7 @@ Fixture mode (`--fixtures`) skips the process check because it is synthetic end 
 | `round.pace.step`, else `round.practice.aiStrengthStep` (1.2) | AI Strength | Advice, shown as a manual row (Check) worded as a change, e.g. "Raise 3%", with a "Raise AI Strength 3%" hint; `0` reads "Keep as is". Factory Seat can't see LMU's slider and LMU doesn't report it, so it never blocks readiness. No row when neither is present |
 | `round.stakes.lines` (1.2) | Overlay stakes line | The first two lines, most important first; not a check |
 | `round.state` | Race weekend | `Upcoming` holds a fully matching setup at START RACE WEEKEND with a "Press Start race weekend in Factory Seat" to-do, because only races finishing after the weekend is started count. `Armed` is ready |
+| `round.series` (1.3) | Overlay headline | `imsa` adds "(IMSA)" after the round number, since a season can run IMSA rounds beside its own; not a check |
 | `round.test` (1.3) | Test day | Practice laps in another team's car. The briefing still carries race settings, but they don't apply, so the duration, fuel, tyre, time scale and start time rows are left out and the banner reads READY TO TEST. The stakes line starts with the test, e.g. "Test day for Toyota Racing: 8 laps in practice, within 0.5% of the fastest AI lap in class." |
 
-A missing field is never a default: it leaves its row Unknown and blocks readiness. `liveryNumbers`, `carTypes`, `pitPlan`, `sponsors`, `writtenAt`, `series` (1.3) and `floor` (1.4) are read by nothing yet.
+A missing field is never a default: it leaves its row Unknown and blocks readiness. `liveryNumbers`, `carTypes`, `pitPlan`, `sponsors`, `writtenAt` and `floor` (1.4) are read by nothing yet.

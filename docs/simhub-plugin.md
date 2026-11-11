@@ -27,7 +27,7 @@ All are prefixed `FactorySeatPlugin.`
 | --- | --- |
 | `ReadyToRace` | Boolean. True only for a fresh, fully matching report on a round whose race weekend is started. |
 | `OverallStatus` | `READY TO RACE` (`READY TO TEST` on a test day), `SETUP MISMATCH`, `START RACE WEEKEND` (everything matches but the round is still Upcoming in Factory Seat) or `NOT VERIFIED`. |
-| `Headline` | Career / event / round. |
+| `Headline` | Career / event / round, with the championship after the round when it isn't the season's own, e.g. `Round 3 (IMSA)`. |
 | `Mode` | `Fixture` or `Live`. |
 | `Screen` | `Menu`, `Loading`, `InSession` or `Unknown` from the latest fresh report, or `NotRunning` while LMU's process isn't running. |
 | `ShowOverlay` | Boolean. Every item in the bundled overlay is bound to it; see [When the overlay shows](#when-the-overlay-shows). |

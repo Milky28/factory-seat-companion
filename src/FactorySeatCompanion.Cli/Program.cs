@@ -105,7 +105,7 @@ static async Task<int> RunAsync(string[] args)
 
 static void Render(ValidationReport report, LmuScreen screen)
 {
-    Console.WriteLine($"\n{report.Career} / {report.Event} / Round {report.Round} | {report.OverallStatus}");
+    Console.WriteLine($"\n{report.Career} / {report.Event} / Round {report.Round}{(report.Series is null ? "" : $" ({report.Series.ToUpperInvariant()})")} | {report.OverallStatus}");
     Console.WriteLine($"Briefing: {report.BriefingStatus}; LMU: {report.LmuStatus} ({screen}); observation: {report.ObservedAt:O}");
     foreach (var line in report.Stakes) Console.WriteLine($"  {line}");
     if (report.Hint is not null) Console.WriteLine($"  To do: {report.Hint}");

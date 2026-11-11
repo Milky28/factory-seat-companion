@@ -148,7 +148,8 @@ public sealed class SettingsValidator(CompanionOptions options)
             Stakes = stakes,
             WeekendStarted = weekendStarted,
             TestDay = testDay,
-            Hint = startWeekend ? "Press Start race weekend in Factory Seat" : null
+            Hint = startWeekend ? "Press Start race weekend in Factory Seat" : null,
+            Series = b?.Series
         };
     }
 

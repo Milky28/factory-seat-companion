@@ -43,6 +43,9 @@ public sealed record RoundRequirement
     // Factory Seat 1.3: a test day (practice laps in another team's car) instead of a race; null for a race.
     // The race settings in the briefing don't apply on a test day.
     public TestDay? Test { get; init; }
+    // Factory Seat 1.3: the championship raced beside the season's own that this round counts for ("imsa"),
+    // or null for the season's own.
+    public string? Series { get; init; }
 }
 
 // Factory Seat 1.3 round.test: the team trying the player out, the practice laps it wants, and how close to
@@ -115,6 +118,8 @@ public sealed record ValidationReport(string Career, string Event, int? Round, b
     public bool TestDay { get; init; }
     // A to-do that isn't about one LMU setting, such as starting the race weekend in Factory Seat.
     public string? Hint { get; init; }
+    // Factory Seat 1.3: "imsa" when the round counts for IMSA beside the season's own championship; else null.
+    public string? Series { get; init; }
 }
 
 public sealed record LayoutMapping(string TrackFolder, string SceneDescription, string LayoutFile);

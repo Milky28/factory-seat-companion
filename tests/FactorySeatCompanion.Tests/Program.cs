@@ -838,6 +838,13 @@ Test("Factory Seat 1.3 test day is read; races have no test", () =>
     var race = Change(Fixture("briefing.spec-example.json"), n => n["round"]!["test"] = null);
     Assert(FactorySeatBriefingReader.Parse(race, running).Briefing!.Test is null);
     Assert(FactorySeatBriefingReader.Parse(Fixture("briefing.spec-example.json"), running).Briefing!.Test is null);
+    Assert(parsed.Briefing!.Series == "imsa" && FactorySeatBriefingReader.Parse(race, running).Briefing!.Series is null);
+});
+Test("An IMSA round says so in the overlay headline", () =>
+{
+    var imsa = Report(requirement: briefing.Briefing! with { Series = "imsa" });
+    Assert(imsa.Series == "imsa" && Dash(imsa).Headline.EndsWith("Round 3 (IMSA)"), Dash(imsa).Headline);
+    Assert(Dash(Report()).Headline.EndsWith("Round 3"), Dash(Report()).Headline);
 });
 Test("A test day checks only the track and car, and reads READY TO TEST", () =>
 {

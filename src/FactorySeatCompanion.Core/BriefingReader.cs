@@ -144,7 +144,9 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
             Test = test?.ValueKind == JsonValueKind.Object
                 ? new TestDay(ReadString(JsonRead.Property(test, "team")), ReadInt(JsonRead.Property(test, "minLaps")),
                     ReadDouble(JsonRead.Property(test, "passShare")))
-                : null
+                : null,
+            Series = ReadString(JsonRead.Property(round, "series")) is { } series && !string.IsNullOrWhiteSpace(series)
+                ? series.Trim() : null
         };
     }
 

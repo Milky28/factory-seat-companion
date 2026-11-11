@@ -32,6 +32,8 @@ public sealed class CompanionReport
     public bool TestDay { get; set; }
     // A to-do that isn't about one LMU setting, such as starting the race weekend.
     public string? Hint { get; set; }
+    // "imsa" when the round counts for IMSA; null for the season's own championship.
+    public string? Series { get; set; }
 }
 
 public sealed class CompanionCheck

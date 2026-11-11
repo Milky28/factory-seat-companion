@@ -23,7 +23,7 @@ The rest of this page explains each step and how to read the overlay.
 - Windows 10 or 11 (64-bit).
 - **Le Mans Ultimate** in windowed or borderless mode. SimHub overlays cannot draw over exclusive fullscreen.
 - **SimHub** (tested with 9.13.2).
-- [**Factory Seat**](https://github.com/factoryseatlmuapp/factory-seat) **1.1 or later**, which writes the open career's next round to `%AppData%\LmuCareer\briefing.json`. Earlier versions don't write this file, so the overlay stays at NOT VERIFIED. The format is described in [docs/briefing.md](docs/briefing.md).
+- [**Factory Seat**](https://github.com/factoryseatlmuapp/factory-seat) **1.1 or later**, which writes the open career's next round to `%AppData%\LmuCareer\briefing.json`. Tested up to Factory Seat 1.4. Earlier versions don't write this file, so the overlay stays at NOT VERIFIED. The format is described in [docs/briefing.md](docs/briefing.md).
 
 You don't need .NET or any developer tools: the installer brings everything the companion needs.
 
@@ -94,7 +94,7 @@ The top banner sums everything up:
 | **START RACE WEEKEND** (amber) | LMU's setup matches, but you haven't pressed **Start race weekend** in Factory Seat yet. Only races that finish after you press it count. |
 | **NOT VERIFIED** (amber) | Something can't be confirmed: a row is unknown, LMU or the briefing isn't readable, or the data is out of date. |
 
-Next to the banner is the career (in capitals, as in Factory Seat), event and round, then one row per check showing what the round needs and what LMU currently has. Each row starts with a mark and is coloured by its status:
+Next to the banner is the career (in capitals, as in Factory Seat), event and round (with "(IMSA)" after it when the round counts for IMSA), then one row per check showing what the round needs and what LMU currently has. Each row starts with a mark and is coloured by its status:
 
 | Mark | Status | Meaning |
 | --- | --- | --- |
