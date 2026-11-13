@@ -1,4 +1,4 @@
-**Factory Seat Companion** is a SimHub overlay for Le Mans Ultimate. Before you start a race, it checks LMU's race setup against the next round of your [Factory Seat](https://github.com/factoryseatlmuapp/factory-seat) career and shows a checklist that reads **READY TO RACE** only when everything matches. It only reads: it never changes LMU's settings or your career.
+**Factory Seat Companion** is a SimHub overlay for Le Mans Ultimate. Before you start a race, it checks LMU's race setup against the next round of your [Factory Seat](https://github.com/factoryseatlmuapp/factory-seat) career and shows a checklist that reads **READY TO RACE** only when everything matches. It never changes LMU's settings or your career; the only thing it writes is a start-weekend request to Factory Seat, when you press the optional button.
 
 ![The overlay showing READY TO RACE](https://raw.githubusercontent.com/Milky28/factory-seat-companion/main/docs/images/overlay-ready-to-race.png)
 

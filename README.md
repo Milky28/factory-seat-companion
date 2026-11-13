@@ -23,7 +23,7 @@ The rest of this page explains each step and how to read the overlay.
 - Windows 10 or 11 (64-bit).
 - **Le Mans Ultimate** in windowed or borderless mode. SimHub overlays cannot draw over exclusive fullscreen.
 - **SimHub** (tested with 9.13.2).
-- [**Factory Seat**](https://github.com/factoryseatlmuapp/factory-seat) **1.1 or later**, which writes the open career's next round to `%AppData%\LmuCareer\briefing.json`. Tested up to Factory Seat 1.4. Earlier versions don't write this file, so the overlay stays at NOT VERIFIED. The format is described in [docs/briefing.md](docs/briefing.md).
+- [**Factory Seat**](https://github.com/factoryseatlmuapp/factory-seat) **1.1 or later**, which writes the open career's next round to `%AppData%\LmuCareer\briefing.json`. Tested up to Factory Seat 1.5 (beta). Earlier versions don't write this file, so the overlay stays at NOT VERIFIED. The format is described in [docs/briefing.md](docs/briefing.md).
 
 You don't need .NET or any developer tools: the installer brings everything the companion needs.
 
