@@ -948,6 +948,29 @@ Test("The most rows a round can have fit the overlay", () =>
     Assert(report.Checks.Count == DashboardState.RowSlots, $"{report.Checks.Count} rows");
     Assert(Dash(report).Rows.All(r => r.Visible) && Dash(report).ReadyToRace);
 });
+Test("Start race weekend is requested only when Factory Seat could start it", () =>
+{
+    const string id = "3f2b8c1e-0000-4000-8000-000000000001";
+    Assert(StartWeekendRequest.Refusal(true, true, "Upcoming", id) is null);
+    Assert(StartWeekendRequest.Refusal(false, true, "Upcoming", id) is not null, "Factory Seat closed");
+    Assert(StartWeekendRequest.Refusal(true, false, "Upcoming", id) is not null, "career closed");
+    Assert(StartWeekendRequest.Refusal(true, null, "Upcoming", id) is not null, "open flag missing");
+    Assert(StartWeekendRequest.Refusal(true, true, "Armed", id) is not null, "already started");
+    Assert(StartWeekendRequest.Refusal(true, true, null, id) is not null, "no round");
+    Assert(StartWeekendRequest.Refusal(true, true, "Upcoming", " ") is not null, "no career id");
+});
+Test("Start race weekend request holds only the career id and leaves no temp file", () =>
+{
+    var folder = Directory.CreateTempSubdirectory("fsc-request-").FullName;
+    try
+    {
+        StartWeekendRequest.Write(folder, " first-id ");
+        StartWeekendRequest.Write(folder, "second-id");
+        Assert(File.ReadAllText(Path.Combine(folder, StartWeekendRequest.FileName)) == "second-id");
+        Assert(Directory.GetFiles(folder).Length == 1, "temp file left behind");
+    }
+    finally { Directory.Delete(folder, true); }
+});
 int failures = 0;
 foreach (var test in tests)
 {
