@@ -93,7 +93,9 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
         var pace = JsonRead.Property(round, "pace");
         var paceStep = ReadInt(JsonRead.Property(pace, "step"));
         var practiceStep = ReadInt(JsonRead.Property(JsonRead.Property(round, "practice"), "aiStrengthStep"));
-        var stakes = JsonRead.Property(JsonRead.Property(round, "stakes"), "lines");
+        var stakesObject = JsonRead.Property(round, "stakes");
+        var stakes = JsonRead.Property(stakesObject, "lines");
+        var pitPlan = JsonRead.Property(round, "pitPlan");
         // 1.3: a test day; null (or absent, before 1.3) for a race.
         var test = JsonRead.Property(round, "test");
         // 1.4: the New Game+ floor; null (or absent, before 1.4) in a normal career.
@@ -152,9 +154,24 @@ public sealed class FactorySeatBriefingReader(string path, Func<bool>? isFactory
             Floor = floor?.ValueKind == JsonValueKind.Object
                 ? new FloorRequirement(ReadInt(JsonRead.Property(floor, "aiStrength")), ReadInt(JsonRead.Property(floor, "aiAggression")),
                     ReadBool(JsonRead.Property(floor, "wet")), ReadInt(JsonRead.Property(floor, "minDamage")))
+                : null,
+            PitPlan = pitPlan?.ValueKind == JsonValueKind.Object
+                ? new PitPlan(ReadInt(JsonRead.Property(pitPlan, "stints")), ReadDouble(JsonRead.Property(pitPlan, "stintMinutes")),
+                    ReadInt(JsonRead.Property(pitPlan, "stops")))
+                : null,
+            Standings = stakesObject?.ValueKind == JsonValueKind.Object
+                ? new Standings(ReadInt(JsonRead.Property(stakesObject, "position")), ReadDouble(JsonRead.Property(stakesObject, "points")),
+                    ReadInt(JsonRead.Property(career, "targetPosition")), ReadRival(JsonRead.Property(stakesObject, "ahead")),
+                    ReadRival(JsonRead.Property(stakesObject, "behind")))
                 : null
         };
     }
+
+    // stakes.ahead / stakes.behind: null when there's no driver on that side.
+    private static Rival? ReadRival(JsonElement? value) => value?.ValueKind == JsonValueKind.Object
+        ? new Rival(ReadString(JsonRead.Property(value, "name")), ReadInt(JsonRead.Property(value, "position")),
+            ReadDouble(JsonRead.Property(value, "gap")))
+        : null;
 
     private static string? ReadString(JsonElement? value) =>
         value?.ValueKind == JsonValueKind.String ? value.Value.GetString() : null;

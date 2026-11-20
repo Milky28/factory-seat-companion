@@ -34,6 +34,33 @@ public sealed class CompanionReport
     public string? Hint { get; set; }
     // "imsa" when the round counts for IMSA; null for the season's own championship.
     public string? Series { get; set; }
+    // The briefing's pit plan; null on a test day.
+    public CompanionPitPlan? PitPlan { get; set; }
+    // The championship standings in numbers; null for a guest drive or an older Factory Seat.
+    public CompanionStandings? Standings { get; set; }
+}
+
+public sealed class CompanionPitPlan
+{
+    public int? Stints { get; set; }
+    public double? StintMinutes { get; set; }
+    public int? Stops { get; set; }
+}
+
+public sealed class CompanionStandings
+{
+    public int? Position { get; set; }
+    public double? Points { get; set; }
+    public int? TargetPosition { get; set; }
+    public CompanionRival? Ahead { get; set; }
+    public CompanionRival? Behind { get; set; }
+}
+
+public sealed class CompanionRival
+{
+    public string? Name { get; set; }
+    public int? Position { get; set; }
+    public double? Gap { get; set; }
 }
 
 public sealed class CompanionCheck

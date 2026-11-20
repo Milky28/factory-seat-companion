@@ -825,6 +825,30 @@ Test("Overlay shows the first two stakes lines", () =>
     Assert(state.Stakes == "You're P3 with 40 points. \u00B7 A Driver is 4.5 ahead in P2.", state.Stakes);
     Assert(Dash(Report()).Stakes == "");
 });
+Test("Pit plan and standings reach the dashboard as numbers", () =>
+{
+    var json = Change(Fixture("briefing.spec-example.json"), n => n["round"]!["stakes"] = JsonNode.Parse(
+        """{"position":3,"points":40,"ahead":{"name":"A Driver","position":2,"gap":4.5,"finish":4},"behind":{"name":"B Driver","position":4,"gap":12,"finish":null,"settled":false},"openBet":null,"lines":["You're P3 in the championship with 40 points."]}"""));
+    var b = FactorySeatBriefingReader.Parse(json, running).Briefing!;
+    Assert(b.PitPlan == new PitPlan(2, 15, 1), $"{b.PitPlan}");
+    Assert(b.Standings is { Position: 3, Points: 40, TargetPosition: 6 } s &&
+        s.Ahead == new Rival("A Driver", 2, 4.5) && s.Behind == new Rival("B Driver", 4, 12), $"{b.Standings}");
+    var state = Dash(Report(requirement: briefing.Briefing! with { PitPlan = b.PitPlan, Standings = b.Standings }));
+    Assert(state.PitStints == 2 && state.StintMinutes == 15 && state.PitStops == 1);
+    Assert(state.ChampionshipPosition == 3 && state.ChampionshipPoints == 40 && state.TargetPosition == 6);
+    Assert(state.AheadName == "A Driver" && state.AheadPosition == 2 && state.AheadGap == 4.5);
+    Assert(state.BehindName == "B Driver" && state.BehindPosition == 4 && state.BehindGap == 12);
+    // The leader has no one ahead; before any points the position is null.
+    var leader = Dash(Report(requirement: briefing.Briefing! with { Standings = new Standings(null, 0, 6, null, null) }));
+    Assert(leader.ChampionshipPosition is null && leader.ChampionshipPoints == 0 && leader.AheadName == "" && leader.AheadGap is null);
+    // A guest drive (stakes null) and a 1.1 briefing (no stakes) have no standings; a test day has no pit plan.
+    var guest = FactorySeatBriefingReader.Parse(Change(json, n => n["round"]!["stakes"] = null), running).Briefing!;
+    Assert(guest.Standings is null && guest.PitPlan is not null);
+    Assert(FactorySeatBriefingReader.Parse(Fixture("briefing.spec-example.json"), running).Briefing!.Standings is null);
+    var test = Report(requirement: briefing.Briefing! with { PitPlan = b.PitPlan, Test = new TestDay("Toyota Racing", 8, 0.005) });
+    Assert(test.PitPlan is null && Dash(test).PitStops is null);
+    Assert(Dash(Report()).PitStops == 5, "fixture pit plan");
+});
 Test("Factory Seat 1.3 test day is read; races have no test", () =>
 {
     var json = Change(Fixture("briefing.spec-example.json"), n =>
