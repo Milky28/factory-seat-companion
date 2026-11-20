@@ -193,7 +193,10 @@ public sealed class SettingsValidator(CompanionOptions options)
             WeekendStarted = weekendStarted,
             TestDay = testDay,
             Hint = startWeekend ? "Press Start race weekend in Factory Seat" : null,
-            Series = b?.Series
+            Series = b?.Series,
+            // A test day is practice in another team's car, so the race's pit plan doesn't apply.
+            PitPlan = testDay ? null : b?.PitPlan,
+            Standings = b?.Standings
         };
     }
 

@@ -55,8 +55,14 @@ public sealed class DashboardState
 
     private DashboardState(bool ready, string overall, string headline, string mode, string briefing, string lmu,
         double? age, string bridge, string diagnostics, IReadOnlyList<DashboardRow> rows, string manualCheck = "", string stakes = "",
-        string hint = "", string weekend = "Unknown", bool testDay = false)
+        string hint = "", string weekend = "Unknown", bool testDay = false, CompanionPitPlan? pitPlan = null,
+        CompanionStandings? standings = null)
     {
+        PitStints = pitPlan?.Stints; StintMinutes = pitPlan?.StintMinutes; PitStops = pitPlan?.Stops;
+        ChampionshipPosition = standings?.Position; ChampionshipPoints = standings?.Points;
+        TargetPosition = standings?.TargetPosition;
+        AheadName = standings?.Ahead?.Name ?? ""; AheadPosition = standings?.Ahead?.Position; AheadGap = standings?.Ahead?.Gap;
+        BehindName = standings?.Behind?.Name ?? ""; BehindPosition = standings?.Behind?.Position; BehindGap = standings?.Behind?.Gap;
         ManualCheck = manualCheck; Stakes = stakes; Weekend = weekend; TestDay = testDay;
         ReadyToRace = ready; OverallStatus = overall; Headline = headline; Mode = mode; BriefingStatus = briefing;
         LmuStatus = lmu; ReportAgeSeconds = age; BridgeStatus = bridge; Diagnostics = diagnostics; Rows = rows;
@@ -83,6 +89,24 @@ public sealed class DashboardState
     public string Weekend { get; }
     // A Factory Seat 1.3 test day: practice laps in another team's car, so only track and car are checked.
     public bool TestDay { get; }
+    // The briefing's pit plan, for dashboards: stints, about how long a tank lasts in minutes, and pit stops.
+    // Null on a test day, before a report arrives, or when the briefing has none.
+    public int? PitStints { get; }
+    public double? StintMinutes { get; }
+    public int? PitStops { get; }
+    // The championship this round counts for, in numbers. Position is null before any points; all are null
+    // on a guest drive. TargetPosition is the team's target in the class standings.
+    public int? ChampionshipPosition { get; }
+    public double? ChampionshipPoints { get; }
+    public int? TargetPosition { get; }
+    // The drivers either side in the standings, gaps in points (always positive); empty name and nulls when
+    // there's no one on that side.
+    public string AheadName { get; }
+    public int? AheadPosition { get; }
+    public double? AheadGap { get; }
+    public string BehindName { get; }
+    public int? BehindPosition { get; }
+    public double? BehindGap { get; }
     public IReadOnlyList<DashboardRow> Rows { get; }
 
     public static DashboardState Create(CompanionMessage? message, DateTimeOffset now, TimeSpan maxAge, string bridgeStatus)
@@ -128,6 +152,6 @@ public sealed class DashboardState
             bridgeStatus, string.Join(" | ", diagnostics), rows, manual ? ManualCheckText : "",
             string.Join(" \u00B7 ", (report.Stakes ?? new List<string>()).Where(l => !string.IsNullOrWhiteSpace(l)).Take(StakesLines)),
             // The overlay shows either the To do line or the manual-check note, and the note matters more.
-            fresh && !manual ? report.Hint ?? "" : "", weekend, report.TestDay);
+            fresh && !manual ? report.Hint ?? "" : "", weekend, report.TestDay, report.PitPlan, report.Standings);
     }
 }

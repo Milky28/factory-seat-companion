@@ -48,6 +48,19 @@ public sealed class FactorySeatPlugin : IPlugin, IDataPlugin
         this.AttachDelegate("Stakes", () => State().Stakes);
         this.AttachDelegate("Weekend", () => State().Weekend);
         this.AttachDelegate("TestDay", () => State().TestDay);
+        // Round info for your own dashboards: the planned strategy and the championship standings.
+        this.AttachDelegate("PitStints", () => State().PitStints);
+        this.AttachDelegate("StintMinutes", () => State().StintMinutes);
+        this.AttachDelegate("PitStops", () => State().PitStops);
+        this.AttachDelegate("ChampionshipPosition", () => State().ChampionshipPosition);
+        this.AttachDelegate("ChampionshipPoints", () => State().ChampionshipPoints);
+        this.AttachDelegate("TargetPosition", () => State().TargetPosition);
+        this.AttachDelegate("AheadName", () => State().AheadName);
+        this.AttachDelegate("AheadPosition", () => State().AheadPosition);
+        this.AttachDelegate("AheadGap", () => State().AheadGap);
+        this.AttachDelegate("BehindName", () => State().BehindName);
+        this.AttachDelegate("BehindPosition", () => State().BehindPosition);
+        this.AttachDelegate("BehindGap", () => State().BehindGap);
         this.AttachDelegate("Screen", () => { State(); return visibility.Screen; });
         this.AttachDelegate("ShowOverlay", () => { State(); return visibility.Visible; });
         // Bind to a key or wheel button in SimHub's Controls and events to hide or show the overlay.

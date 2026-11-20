@@ -48,7 +48,19 @@ public sealed record RoundRequirement
     public string? Series { get; init; }
     // Factory Seat 1.4: a New Game+ round's floor, what the race must be run at to count; null in a normal career.
     public FloorRequirement? Floor { get; init; }
+    // The briefing's pit plan; it doesn't apply on a test day.
+    public PitPlan? PitPlan { get; init; }
+    // Factory Seat 1.2 stakes as numbers, for dashboards; null for a guest drive or an older Factory Seat.
+    public Standings? Standings { get; init; }
 }
+
+// round.pitPlan: stints, about how long a tank lasts at the briefing's Fuel Usage, and pit stops.
+public sealed record PitPlan(int? Stints, double? StintMinutes, int? Stops);
+
+// Factory Seat 1.2 round.stakes in numbers: the player's class drivers' standings (Position is null before any
+// points), the team's target position (career.targetPosition) and the drivers either side, gaps in points.
+public sealed record Standings(int? Position, double? Points, int? TargetPosition, Rival? Ahead, Rival? Behind);
+public sealed record Rival(string? Name, int? Position, double? Gap);
 
 // Factory Seat 1.4 round.floor, in LMU's own values: AI Strength exactly (94 = 94%), AI Aggression as LMU's index
 // (2 = High), a wet race, and LMU's damage percent or more. Null fields were missing from the briefing.
@@ -139,6 +151,10 @@ public sealed record ValidationReport(string Career, string Event, int? Round, b
     public string? Hint { get; init; }
     // Factory Seat 1.3: "imsa" when the round counts for IMSA beside the season's own championship; else null.
     public string? Series { get; init; }
+    // The briefing's pit plan; null on a test day or when the briefing has none.
+    public PitPlan? PitPlan { get; init; }
+    // The championship standings this round counts for; null for a guest drive or an older Factory Seat.
+    public Standings? Standings { get; init; }
 }
 
 public sealed record LayoutMapping(string TrackFolder, string SceneDescription, string LayoutFile);
